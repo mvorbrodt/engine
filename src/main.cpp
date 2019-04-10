@@ -8,11 +8,37 @@
 #include "types.hpp"
 #include "vector.hpp"
 #include "matrix.hpp"
+#include "operators.hpp"
 
 using namespace std;
 
 void init()
 {
+	vec4 v1{1,0,0}, v2{0,1,0};
+	vec4 v = v1 ^ v2;
+	cout << v << endl << endl;
+
+	mat4x4 m1
+	{
+		1, 2, 3, 4,
+		5, 6, 7, 8,
+		9, 10, 11, 12,
+		13, 14, 15, 16
+	};
+	mat4x4 m2
+	{
+		1, 2, 3, 4,
+		5, 6, 7, 8,
+		9, 10, 11, 12,
+		13, 14, 15, 16
+	};
+	mat4x4 m = m1 * m2;
+	cout << m << endl << endl;
+
+	vec4 v3{4,3,2,1};
+	v = m * v3;
+	cout << v << endl << endl;
+
 	cout << glGetString(GL_VENDOR) << endl;
 	cout << glGetString(GL_RENDERER) << endl;
 	cout << glGetString(GL_VERSION) << endl;
