@@ -2,4 +2,7 @@
 
 #include "types.hpp"
 
-const real PI = 3.14159265359;
+namespace engine
+{
+	const real PI = 3.14159265359;
+}

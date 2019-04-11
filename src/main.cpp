@@ -12,6 +12,7 @@
 #include "transforms.hpp"
 
 using namespace std;
+using namespace engine;
 
 void init()
 {
@@ -35,17 +36,15 @@ void reshape(int w, int h)
 
 void draw()
 {
-	static float rotation{};
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
-
+	static float rotation{};
 	auto t = translate({0.0, 0.0, -3.0});
 	auto r1 = rotate(25, {1.0, 0.0, 0.0});
-	auto r2 = rotate(++rotation, {0.0, 1.0, 0,0});
+	auto r2 = rotate(++rotation, {0.0, 1.0, 0.0});
 	auto mv = t * r1 * r2;
-
 	glLoadMatrixf(mv.data());
 
 	glColor3f(0.0, 0.0, 0.0);
