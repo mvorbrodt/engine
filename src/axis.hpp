@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "vector.hpp"
 #include "matrix.hpp"
+#include "transforms.hpp"
 
 namespace engine
 {
@@ -16,6 +17,22 @@ namespace engine
 			m_axis[X].normalize();
 			m_axis[Y].normalize();
 			m_axis[Z].normalize();
+		}
+
+		void rotate(real angle, const vector& axis)
+		{
+			auto m = engine::rotate(angle, axis);
+			m_axis[X] *= m;
+			m_axis[Y] *= m;
+			m_axis[Z] *= m;
+		}
+
+		void rotate(const quaternion& q)
+		{
+			auto m = engine::rotate(q);
+			m_axis[X] *= m;
+			m_axis[Y] *= m;
+			m_axis[Z] *= m;
 		}
 
 		matrix to_local() const

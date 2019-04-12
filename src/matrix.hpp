@@ -79,6 +79,12 @@ namespace engine
 		};
 	}
 
+	inline matrix& operator *= (matrix& lhs, const matrix& rhs)
+	{
+		lhs = lhs * rhs;
+		return lhs;
+	}
+
 	inline vector operator * (const matrix& m, const vector& v)
 	{
 		return
@@ -89,6 +95,12 @@ namespace engine
 		};
 	}
 
+	inline vector& operator *= (vector& v, const matrix& m)
+	{
+		v = m * v;
+		return v;
+	}
+
 	inline point operator * (const matrix& m, const point& p)
 	{
 		return
@@ -97,6 +109,12 @@ namespace engine
 			m[R2C1] * p[X] + m[R2C2] * p[Y] + m[R2C3] * p[Z] + m[R2C4],
 			m[R3C1] * p[X] + m[R3C2] * p[Y] + m[R3C3] * p[Z] + m[R3C4]
 		};
+	}
+
+	inline point& operator *= (point& p, const matrix& m)
+	{
+		p = m * p;
+		return p;
 	}
 
 	inline std::ostream& operator << (std::ostream& os, const matrix& m)

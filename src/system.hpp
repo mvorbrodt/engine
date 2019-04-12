@@ -15,17 +15,38 @@ namespace engine
 		system(const axis& a = IDENTITY_AXIS, const point& o = ORIGIN)
 		: m_axis{ a }, m_origin{ o } {}
 
+		void rotate(real angle, const vector& axis)
+		{
+			auto m = engine::rotate(angle, axis);
+			m_axis[X] *= m;
+			m_axis[Y] *= m;
+			m_axis[Z] *= m;
+		}
+
+		void rotate(const quaternion& q)
+		{
+			auto m = engine::rotate(q);
+			m_axis[X] *= m;
+			m_axis[Y] *= m;
+			m_axis[Z] *= m;
+		}
+
+		void translate(const vector& v)
+		{
+			m_origin += v;
+		}
+
 		matrix to_local() const
 		{
 			auto r = m_axis.to_local();
-			auto t = translate({ -m_origin[X], -m_origin[Y], -m_origin[Z] });
+			auto t = engine::translate({ -m_origin[X], -m_origin[Y], -m_origin[Z] });
 			return r * t;
 		}
 
 		matrix to_global() const
 		{
 			auto r = m_axis.to_global();
-			auto t = translate({ m_origin[X], m_origin[Y], m_origin[Z] });
+			auto t = engine::translate({ m_origin[X], m_origin[Y], m_origin[Z] });
 			return t * r;
 		}
 

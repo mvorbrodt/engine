@@ -92,21 +92,23 @@ void draw()
 
 	static real a = 0.0;
 	engine::system l;
-	l *= rotate(a, UNIT_X);
-	l *= rotate(a * 1.5, UNIT_Y);
-	l *= rotate(a * 2.0, UNIT_Z);
+	//l.translate(UNIT_Y / 2);
+	l.rotate({a, UNIT_X});
+	l.rotate({a * 1.5f, UNIT_Y});
+	l.rotate({a * 2.0f, UNIT_Z});
+	//l.translate(-3 * UNIT_Z);
 	++a;
 
 	engine::system g;
-	g *= rotate(90, UNIT_Y);
-	g *= translate({3.0, 0.0, 0.0});
+	g.rotate(90, UNIT_Y);
+	g.translate({3.0, 0.0, 0.0});
 
 	auto mv = g.to_local() * l.to_global();
 	glLoadMatrixf(mv.data());
 
 	glColor3f(0.0, 0.0, 0.0);
 	glutWireCube(1);
-	//glutWireTeapot(1.0);
+	glutWireTeapot(1.0);
 
 	glutSwapBuffers();
 }
@@ -116,7 +118,7 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(/*GLUT_3_2_CORE_PROFILE |*/ GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(640, 480);
-	glutCreateWindow("Hello OpenGL");
+	glutCreateWindow("Hello 3D Engine");
 	init();
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyboard);
