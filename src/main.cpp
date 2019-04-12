@@ -7,6 +7,7 @@
 #endif
 #include "types.hpp"
 #include "vector.hpp"
+#include "quaternion.hpp"
 #include "matrix.hpp"
 #include "operators.hpp"
 #include "transforms.hpp"
@@ -43,7 +44,8 @@ void draw()
 	static float rotation{};
 	auto t = translate({0.0, 0.0, -3.0});
 	auto r1 = rotate(25, {1.0, 0.0, 0.0});
-	auto r2 = rotate(++rotation, {0.0, 1.0, 0.0});
+	quaternion q(++rotation, {0, 1, 0});
+	auto r2 = rotate(q);//rotate(++rotation, {0.0, 1.0, 0.0});
 	auto mv = t * r1 * r2;
 	glLoadMatrixf(mv.data());
 

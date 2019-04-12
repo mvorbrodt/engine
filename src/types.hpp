@@ -9,6 +9,7 @@ namespace engine
 		X = 0,
 		Y = 1,
 		Z = 2,
+		W = 3
 	};
 
 	enum MC
@@ -28,6 +29,6 @@ namespace engine
 		R1C4 = 12,
 		R2C4 = 13,
 		R3C4 = 14,
-		R4C4 = 15,
+		R4C4 = 15
 	};
 }

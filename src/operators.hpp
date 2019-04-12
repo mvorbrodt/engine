@@ -77,7 +77,7 @@ namespace engine
 		return os;
 	}
 
-
+/* QUATERNION OPS GO HERE */
 
 	inline mat4x4 operator * (const mat4x4& lhs, const mat4x4& rhs)
 	{

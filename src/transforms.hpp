@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "consts.hpp"
 #include "vector.hpp"
+#include "quaternion.hpp"
 #include "matrix.hpp"
 
 namespace engine
@@ -34,6 +35,23 @@ namespace engine
 			y * x * (1 - c) + z * s, c + y * y * (1 - c), y * z * (1 - c) - x * s, 0,
 			z * x * (1 - c) - y * s, z * y * (1 - c) + x * s, c + z * z * (1 - c), 0,
 			0,                       0,                       0,                   1
+		};
+	}
+
+	inline mat4x4 rotate(const quaternion& q)
+	{
+		auto n = q.normal();
+		auto x = n[X];
+		auto y = n[Y];
+		auto z = n[Z];
+		auto w = n[W];
+
+		return
+		{
+			1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y), 0,
+			2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x), 0,
+			2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y), 0,
+			0,                   0,                   0,                       1
 		};
 	}
 
