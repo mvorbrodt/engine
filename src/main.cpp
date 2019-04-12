@@ -42,13 +42,23 @@ void draw()
 
 	glMatrixMode(GL_MODELVIEW);
 
-	static float rotation{};
+	/*static float rotation{};
 	quaternion q1(30, UNIT_X);
 	quaternion q2(rotation, UNIT_Y);
 	auto r = rotate(q1 * q2);
 	auto t = translate(UNIT_Z * -3);
 	auto mv = t * r;
 	++rotation;
+	glLoadMatrixf(mv.data());*/
+
+	auto q1 = quaternion(45, UNIT_Y);
+	auto q2 = quaternion(90, UNIT_X);
+	static real a = 0.0;
+	a+=0.01;
+	real i = (sin(a) + 1.0) / 2.0;
+	auto q = ((1.0 - i) * q1) + (i * q2);
+	auto t = translate(UNIT_Z * -3);
+	auto mv = t * rotate(q);
 	glLoadMatrixf(mv.data());
 
 	glColor3f(0.0, 0.0, 0.0);
