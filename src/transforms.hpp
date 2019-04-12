@@ -13,10 +13,10 @@ namespace engine
 	{
 		return
 		{
-			1, 0, 0, v[X],
-			0, 1, 0, v[Y],
-			0, 0, 1, v[Z],
-			0, 0, 0, 1
+			1.0, 0.0, 0.0, v[X],
+			0.0, 1.0, 0.0, v[Y],
+			0.0, 0.0, 1.0, v[Z],
+			0.0, 0.0, 0.0, 1.0
 		};
 	}
 
@@ -26,16 +26,16 @@ namespace engine
 		auto x = u[X];
 		auto y = u[Y];
 		auto z = u[Z];
-		auto s = std::sin(angle * PI / 180);
-		auto c = std::cos(angle * PI / 180);
+		auto s = std::sin(angle * PI / (real)180);
+		auto c = std::cos(angle * PI / (real)180);
 
-		return
-		{
-			c + x * x * (1 - c), x * y * (1 - c) - z * s, x * z * (1 - c) + y * s, 0,
-			y * x * (1 - c) + z * s, c + y * y * (1 - c), y * z * (1 - c) - x * s, 0,
-			z * x * (1 - c) - y * s, z * y * (1 - c) + x * s, c + z * z * (1 - c), 0,
-			0,                       0,                       0,                   1
-		};
+		return mat4x4
+		(
+			c + x * x * (1.0 - c), x * y * (1.0 - c) - z * s, x * z * (1.0 - c) + y * s, 0.0,
+			y * x * (1.0 - c) + z * s, c + y * y * (1.0 - c), y * z * (1.0 - c) - x * s, 0.0,
+			z * x * (1.0 - c) - y * s, z * y * (1.0 - c) + x * s, c + z * z * (1.0 - c), 0.0,
+			0.0, 0.0, 0.0, 1.0
+		);
 	}
 
 	inline mat4x4 rotate(const quaternion& q)
@@ -46,24 +46,24 @@ namespace engine
 		auto z = n[Z];
 		auto w = n[W];
 
-		return
-		{
-			1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y), 0,
-			2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x), 0,
-			2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y), 0,
-			0,                   0,                   0,                       1
-		};
+		return mat4x4
+		(
+			1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - w * z), 2.0 * (x * z + w * y), 0.0,
+			2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x), 0.0,
+			2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y), 0.0,
+			0.0, 0.0, 0.0, 1.0
+		);
 	}
 
 	inline mat4x4 scale(real xs, real ys, real zs)
 	{
-		return
-		{
-			xs,  0,   0, 0,
-			0,  ys,   0, 0,
-			0,   0,  zs, 0,
-			0,   0,   0, 1
-		};
+		return mat4x4
+		(
+			 xs, 0.0, 0.0, 0.0,
+			0.0,  ys, 0.0, 0.0,
+			0.0, 0.0,  zs, 0.0,
+			0.0, 0.0, 0.0, 1.0
+		);
 	}
 
 	inline mat4x4 scale(real s)
@@ -73,13 +73,13 @@ namespace engine
 
 	inline mat4x4 projection(real l, real r, real t, real b, real n, real f)
 	{
-		return
-		{
-			2 * n / (r - l), 0,               (r + l) / (r - l),                    0,
-			0,               2 * n / (t - b), (t + b) / (t - b),                    0,
-			0,               0,              -(f + n) / (f - n), -2 * f * n / (f - n),
-			0,               0,                              -1,                    0
-		};
+		return mat4x4
+		(
+			2.0 * n / (r - l), 0.0, (r + l) / (r - l), 0.0,
+			0.0, 2.0 * n / (t - b), (t + b) / (t - b), 0.0,
+			0.0, 0.0, -(f + n) / (f - n), -2.0 * f * n / (f - n),
+			0.0, 0.0, -1.0, 0.0
+		);
 	}
 
 	inline mat4x4 projection(real fov, real aspect, real near, real far)

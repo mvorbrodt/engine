@@ -7,9 +7,9 @@
 #endif
 #include "types.hpp"
 #include "vector.hpp"
+#include "point.hpp"
 #include "quaternion.hpp"
 #include "matrix.hpp"
-#include "operators.hpp"
 #include "transforms.hpp"
 
 using namespace std;
@@ -41,12 +41,14 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
+
 	static float rotation{};
-	auto t = translate({0.0, 0.0, -3.0});
-	auto r1 = rotate(25, {1.0, 0.0, 0.0});
-	quaternion q(++rotation, {0, 1, 0});
-	auto r2 = rotate(q);//rotate(++rotation, {0.0, 1.0, 0.0});
-	auto mv = t * r1 * r2;
+	quaternion q1(30, UNIT_X);
+	quaternion q2(rotation, UNIT_Y);
+	auto r = rotate(q1 * q2);
+	auto t = translate(UNIT_Z * -3);
+	auto mv = t * r;
+	++rotation;
 	glLoadMatrixf(mv.data());
 
 	glColor3f(0.0, 0.0, 0.0);
@@ -54,6 +56,7 @@ void draw()
 
 	glutSwapBuffers();
 }
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);

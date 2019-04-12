@@ -1,13 +1,15 @@
 #pragma once
 
+#include <ostream>
 #include "types.hpp"
+#include "vector.hpp"
 
 namespace engine
 {
 	class point
 	{
 	public:
-		point(real x = 0, real y = 0, real z = 0)
+		point(real x = 0.0, real y = 0.0, real z = 0.0)
 		: m_data{ x, y, z } {}
 
 		real* data()
@@ -33,4 +35,34 @@ namespace engine
 	private:
 		real m_data[3];
 	};
+
+	inline static const point ORIGIN = { 0.0, 0.0, 0.0 };
+
+	inline point operator + (const point& p, const vector& v)
+	{
+		return { p[X] + v[X], p[Y] + v[Y], p[Z] + v[Z] };
+	}
+
+	inline point& operator += (point& p, const vector& v)
+	{
+		p = p + v;
+		return p;
+	}
+
+	inline point operator - (const point& p, const vector& v)
+	{
+		return { p[X] - v[X], p[Y] - v[Y], p[Z] - v[Z] };
+	}
+
+	inline point& operator -= (point& p, const vector& v)
+	{
+		p = p - v;
+		return p;
+	}
+
+	inline std::ostream& operator << (std::ostream& os, const point& p)
+	{
+		os << "[" << p[X] << ", " << p[Y] << ", " << p[Z] << "]";
+		return os;
+	}
 }
