@@ -4,12 +4,13 @@
 #include "types.hpp"
 #include "consts.hpp"
 #include "vector.hpp"
+#include "point.hpp"
 #include "quaternion.hpp"
 #include "matrix.hpp"
 
 namespace engine
 {
-	inline mat4x4 translate(const vector& v)
+	inline matrix translate(const vector& v)
 	{
 		return
 		{
@@ -20,7 +21,7 @@ namespace engine
 		};
 	}
 
-	inline mat4x4 rotate(real angle, const vector& axis)
+	inline matrix rotate(real angle, const vector& axis)
 	{
 		auto u = axis.normal();
 		auto x = u[X];
@@ -29,7 +30,7 @@ namespace engine
 		auto s = std::sin(angle * PI / (real)180);
 		auto c = std::cos(angle * PI / (real)180);
 
-		return mat4x4
+		return matrix
 		(
 			c + x * x * (1.0 - c), x * y * (1.0 - c) - z * s, x * z * (1.0 - c) + y * s, 0.0,
 			y * x * (1.0 - c) + z * s, c + y * y * (1.0 - c), y * z * (1.0 - c) - x * s, 0.0,
@@ -38,7 +39,7 @@ namespace engine
 		);
 	}
 
-	inline mat4x4 rotate(const quaternion& q)
+	inline matrix rotate(const quaternion& q)
 	{
 		auto n = q.normal();
 		auto x = n[X];
@@ -46,7 +47,7 @@ namespace engine
 		auto z = n[Z];
 		auto w = n[W];
 
-		return mat4x4
+		return matrix
 		(
 			1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - w * z), 2.0 * (x * z + w * y), 0.0,
 			2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x), 0.0,
@@ -55,9 +56,9 @@ namespace engine
 		);
 	}
 
-	inline mat4x4 scale(real xs, real ys, real zs)
+	inline matrix scale(real xs, real ys, real zs)
 	{
-		return mat4x4
+		return matrix
 		(
 			 xs, 0.0, 0.0, 0.0,
 			0.0,  ys, 0.0, 0.0,
@@ -66,14 +67,14 @@ namespace engine
 		);
 	}
 
-	inline mat4x4 scale(real s)
+	inline matrix scale(real s)
 	{
 		return scale(s, s, s);
 	}
 
-	inline mat4x4 projection(real l, real r, real t, real b, real n, real f)
+	inline matrix projection(real l, real r, real t, real b, real n, real f)
 	{
-		return mat4x4
+		return matrix
 		(
 			2.0 * n / (r - l), 0.0, (r + l) / (r - l), 0.0,
 			0.0, 2.0 * n / (t - b), (t + b) / (t - b), 0.0,
@@ -82,7 +83,7 @@ namespace engine
 		);
 	}
 
-	inline mat4x4 projection(real fov, real aspect, real near, real far)
+	inline matrix projection(real fov, real aspect, real near, real far)
 	{
 		auto top = std::tan(fov * PI / 360) * near;
 		auto bottom = -top;

@@ -10,6 +10,8 @@
 #include "point.hpp"
 #include "quaternion.hpp"
 #include "matrix.hpp"
+#include "axis.hpp"
+#include "system.hpp"
 #include "transforms.hpp"
 
 using namespace std;
@@ -35,6 +37,33 @@ void reshape(int w, int h)
 	glLoadMatrixf(p.data());
 }
 
+void keyboard(unsigned char c, int x, int y)
+{
+	switch(c)
+	{
+		case 'a': break;
+		case 'd': break;
+		case 'w': break;
+		case 's': break;
+	}
+}
+
+void mouse(int button, int state, int x, int y)
+{
+}
+
+void motion(int x, int y)
+{
+	static int last_x = 0;
+	static int last_y = 0;
+
+	int dx = x - last_x;
+	int dy = y - last_y;
+
+	last_x = x;
+	last_y = y;
+}
+
 void draw()
 {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
@@ -51,7 +80,7 @@ void draw()
 	++rotation;
 	glLoadMatrixf(mv.data());*/
 
-	auto q1 = quaternion(45, UNIT_Y);
+	/*auto q1 = quaternion(45, UNIT_Y);
 	auto q2 = quaternion(90, UNIT_X);
 	static real a = 0.0;
 	a+=0.01;
@@ -59,10 +88,25 @@ void draw()
 	auto q = ((1.0 - i) * q1) + (i * q2);
 	auto t = translate(UNIT_Z * -3);
 	auto mv = t * rotate(q);
+	glLoadMatrixf(mv.data());*/
+
+	static real a = 0.0;
+	engine::system l;
+	l *= rotate(a, UNIT_X);
+	l *= rotate(a * 1.5, UNIT_Y);
+	l *= rotate(a * 2.0, UNIT_Z);
+	++a;
+
+	engine::system g;
+	g *= rotate(90, UNIT_Y);
+	g *= translate({3.0, 0.0, 0.0});
+
+	auto mv = g.to_local() * l.to_global();
 	glLoadMatrixf(mv.data());
 
 	glColor3f(0.0, 0.0, 0.0);
-	glutWireTeapot(1.0);
+	glutWireCube(1);
+	//glutWireTeapot(1.0);
 
 	glutSwapBuffers();
 }
@@ -74,8 +118,12 @@ int main(int argc, char** argv)
 	glutInitWindowSize(640, 480);
 	glutCreateWindow("Hello OpenGL");
 	init();
-	glutIdleFunc(draw);
 	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyboard);
+	glutMouseFunc(mouse);
+	glutMotionFunc(motion);
+	//glutPassiveMotionFunc(motion);
+	glutIdleFunc(draw);
 	glutDisplayFunc(draw);
 	glutMainLoop();
 }

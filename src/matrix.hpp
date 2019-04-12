@@ -7,10 +7,10 @@
 
 namespace engine
 {
-	class mat4x4
+	class matrix
 	{
 	public:
-		mat4x4
+		matrix
 		(
 			real r1c1 = 1.0, real r1c2 = 0.0, real r1c3 = 0.0, real r1c4 = 0.0,
 			real r2c1 = 0.0, real r2c2 = 1.0, real r2c3 = 0.0, real r2c4 = 0.0,
@@ -48,7 +48,7 @@ namespace engine
 		real m_data[16];
 	};
 
-	inline static const mat4x4 IDENTITY_MATRIX =
+	inline static const matrix IDENTITY_MATRIX =
 	{
 		1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
@@ -56,7 +56,7 @@ namespace engine
 		0.0, 0.0, 0.0, 1.0
 	};
 
-	inline mat4x4 operator * (const mat4x4& lhs, const mat4x4& rhs)
+	inline matrix operator * (const matrix& lhs, const matrix& rhs)
 	{
 		return
 		{
@@ -79,7 +79,7 @@ namespace engine
 		};
 	}
 
-	inline vector operator * (const mat4x4& m, const vector& v)
+	inline vector operator * (const matrix& m, const vector& v)
 	{
 		return
 		{
@@ -89,7 +89,7 @@ namespace engine
 		};
 	}
 
-	inline point operator * (const mat4x4& m, const point& p)
+	inline point operator * (const matrix& m, const point& p)
 	{
 		return
 		{
@@ -99,7 +99,7 @@ namespace engine
 		};
 	}
 
-	inline std::ostream& operator << (std::ostream& os, const mat4x4& m)
+	inline std::ostream& operator << (std::ostream& os, const matrix& m)
 	{
 		os << "[" << m[R1C1] << ", " << m[R1C2] << ", " << m[R1C3] << ", " << m[R1C4] << "]\n";
 		os << "[" << m[R2C1] << ", " << m[R2C2] << ", " << m[R2C3] << ", " << m[R2C4] << "]\n";
