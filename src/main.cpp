@@ -12,12 +12,13 @@
 #include "matrix.hpp"
 #include "axis.hpp"
 #include "system.hpp"
+#include "pov.hpp"
 #include "transforms.hpp"
 
 using namespace std;
 using namespace engine;
 
-engine::system l;
+engine::pov camera({0.0, 0.0, 3.0}, -UNIT_Z, UNIT_Y);
 
 void init()
 {
@@ -43,31 +44,33 @@ void keyboard(unsigned char c, int x, int y)
 {
 	switch(c)
 	{
-		case '1': glEnable(GL_MULTISAMPLE_ARB); break;
-		case '2': glDisable(GL_MULTISAMPLE_ARB); break;
-		case 'q': l.rotate({ 10, UNIT_Y}); break;
-		case 'e': l.rotate({-10, UNIT_Y}); break;
-		case 'a': l.translate(-UNIT_X); break;
-		case 'd': l.translate( UNIT_X); break;
-		case 'w': l.translate(-UNIT_Z); break;
-		case 's': l.translate( UNIT_Z); break;
+		case 'q': camera.roll(-10); break;
+		case 'e': camera.roll( 10); break;
+		case 'a': camera.move( 0,  1); break;
+		case 'd': camera.move( 0, -1); break;
+		case 'w': camera.move( 1,  0); break;
+		case 's': camera.move(-1,  0); break;
 	}
-}
-
-void mouse(int button, int state, int x, int y)
-{
 }
 
 void motion(int x, int y)
 {
-	static int last_x = 640 / 2;
-	static int last_y = 480 / 2;
+	static bool first = true;
+	static int last_x = 0;
+	static int last_y = 0;
+
+	if(first)
+	{
+		last_x = x;
+		last_y = y;
+		first = false;
+	}
 
 	real dx = x - last_x;
 	real dy = y - last_y;
 
-	l.translate({dx / (real)100.0f, 0.0, 0.0});
-	l.translate({0.0, 0.0, dy / 100.0f});
+	camera.turn(-dx / 3.0f);
+	camera.look(-dy / 3.0f);
 
 	last_x = x;
 	last_y = y;
@@ -97,14 +100,13 @@ void draw()
 	auto mv = t * rotate(q);
 	glLoadMatrixf(mv.data());*/
 
-	auto lm = look_at({0.0, 2.0, 5.0}, {0.0, 0.0, 0.0}, UNIT_Y);
-	auto mv = lm * l.to_global();
+	auto mv = camera.view_matrix();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(mv.data());
 
 	glColor3f(0.0, 0.0, 0.0);
-	//glutWireCube(1);
+	glutWireCube(2);
 	glutWireTeapot(1.0);
 
 	glutSwapBuffers();
@@ -113,15 +115,13 @@ void draw()
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(/*GLUT_3_2_CORE_PROFILE |*/ GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE | GLUT_MULTISAMPLE);
+	glutInitDisplayMode(/*GLUT_3_2_CORE_PROFILE |*/ GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(640, 480);
 	glutCreateWindow("Hello 3D Engine");
 	init();
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyboard);
-	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
-	//glutPassiveMotionFunc(motion);
 	glutIdleFunc(draw);
 	glutDisplayFunc(draw);
 	glutMainLoop();
