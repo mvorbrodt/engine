@@ -60,14 +60,14 @@ void mouse(int button, int state, int x, int y)
 
 void motion(int x, int y)
 {
-	static int last_x = 0;
-	static int last_y = 0;
+	static int last_x = 640 / 2;
+	static int last_y = 480 / 2;
 
 	real dx = x - last_x;
 	real dy = y - last_y;
 
-	//l.translate({dx / (real)100.0f, 0.0, 0.0});
-	//l.translate({0.0, 0.0, dy / 100.0f});
+	l.translate({dx / (real)100.0f, 0.0, 0.0});
+	l.translate({0.0, 0.0, dy / 100.0f});
 
 	last_x = x;
 	last_y = y;

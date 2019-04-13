@@ -24,6 +24,17 @@ namespace engine
 			r1c4, r2c4, r3c4, r4c4
 		} {}
 
+		matrix transpose() const
+		{
+			return
+			{
+				m_data[R1C1], m_data[R2C1], m_data[R3C1], m_data[R4C1],
+				m_data[R1C2], m_data[R2C2], m_data[R3C2], m_data[R4C2],
+				m_data[R1C3], m_data[R2C3], m_data[R3C3], m_data[R4C3],
+				m_data[R1C4], m_data[R2C4], m_data[R3C4], m_data[R4C4]
+			};
+		}
+
 		real* data()
 		{
 			return m_data;
