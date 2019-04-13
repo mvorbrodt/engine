@@ -10,16 +10,6 @@
 
 namespace engine
 {
-	inline real degrees_to_radians(real degrees)
-	{
-		return degrees * PI / 180.0;
-	}
-
-	inline real radians_to_degrees(real radians)
-	{
-		return radians * 180.0 / PI;
-	}
-
 	template<typename T>
 	T interpolate(real i, const T& s, const T& e)
 	{
@@ -43,8 +33,8 @@ namespace engine
 		auto x = u[X];
 		auto y = u[Y];
 		auto z = u[Z];
-		auto s = std::sin(degrees_to_radians(angle));
-		auto c = std::cos(degrees_to_radians(angle));
+		auto s = std::sin(angle * PI / 180.0);
+		auto c = std::cos(angle * PI / 180.0);
 
 		return matrix
 		(
@@ -101,7 +91,7 @@ namespace engine
 
 	inline matrix projection(real fov, real aspect, real near, real far)
 	{
-		auto top = std::tan(degrees_to_radians(fov) / 2.0) * near;
+		auto top = std::tan(fov * PI / 360.0) * near;
 		auto bottom = -top;
 		auto right = top * aspect;
 		auto left = -top * aspect;
