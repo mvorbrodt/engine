@@ -91,7 +91,7 @@ void draw()
 	++rotation;
 	glLoadMatrixf(mv.data());*/
 
-	auto q1 = quaternion(45, UNIT_Y);
+	/*auto q1 = quaternion(45, UNIT_Y);
 	auto q2 = quaternion(90, UNIT_X);
 	static real a = 0.0;
 	a+=0.01;
@@ -99,9 +99,9 @@ void draw()
 	auto q = interpolate(i, q1, q2);
 	auto t = translate(UNIT_Z * -3);
 	auto mv = t * rotate(q);
-	glLoadMatrixf(mv.data());
+	glLoadMatrixf(mv.data());*/
 
-	//glLoadMatrixf(camera.view_matrix().data());
+	glLoadMatrixf(camera.view_matrix().data());
 
 	glColor3f(0.0, 0.0, 0.0);
 	glutWireCube(2);
