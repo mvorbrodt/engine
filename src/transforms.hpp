@@ -10,15 +10,31 @@
 
 namespace engine
 {
+	inline real degrees_to_radians(real degrees)
+	{
+		return degrees * PI / 180.0;
+	}
+
+	inline real radians_to_degrees(real radians)
+	{
+		return radians * 180.0 / PI;
+	}
+
+	template<typename T>
+	T interpolate(real i, const T& s, const T& e)
+	{
+		return (1.0 - i) * s + (e * i);
+	}
+
 	inline matrix translate(const vector& v)
 	{
-		return
-		{
+		return matrix
+		(
 			1.0, 0.0, 0.0, v[X],
 			0.0, 1.0, 0.0, v[Y],
 			0.0, 0.0, 1.0, v[Z],
 			0.0, 0.0, 0.0, 1.0
-		};
+		);
 	}
 
 	inline matrix rotate(real angle, const vector& axis)
@@ -27,8 +43,8 @@ namespace engine
 		auto x = u[X];
 		auto y = u[Y];
 		auto z = u[Z];
-		auto s = std::sin(angle * PI / (real)180);
-		auto c = std::cos(angle * PI / (real)180);
+		auto s = std::sin(degrees_to_radians(angle));
+		auto c = std::cos(degrees_to_radians(angle));
 
 		return matrix
 		(
@@ -85,7 +101,7 @@ namespace engine
 
 	inline matrix projection(real fov, real aspect, real near, real far)
 	{
-		auto top = std::tan(fov * PI / 360) * near;
+		auto top = std::tan(degrees_to_radians(fov) / 2.0) * near;
 		auto bottom = -top;
 		auto right = top * aspect;
 		auto left = -top * aspect;
@@ -97,7 +113,7 @@ namespace engine
 	{
 		auto z = (eye - at).normal();
 		auto x = (up ^ z).normal();
-		auto y = z ^ x;
+		auto y = (z ^ x).normal();
 
 		matrix r =
 		{

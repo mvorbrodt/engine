@@ -31,8 +31,8 @@ namespace engine
 
 		void look(real angle)
 		{
-			auto size = (m_up ^ m_direction).normal();
-			auto m = engine::rotate(angle, size);
+			auto side = (m_up ^ m_direction).normal();
+			auto m = engine::rotate(angle, side);
 			m_direction *= m;
 		}
 

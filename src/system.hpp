@@ -79,7 +79,7 @@ namespace engine
 
 	inline system operator * (const matrix& m, const system& s)
 	{
-		return { m * s.axis(), m * s.origin() };
+		return system(m * s.axis(), m * s.origin());
 	}
 
 	inline system operator *= (system& s, const matrix& m)

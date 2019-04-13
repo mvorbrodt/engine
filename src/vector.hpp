@@ -25,7 +25,7 @@ namespace engine
 		vector normal() const
 		{
 			real len = 1.0 / length();
-			return { m_data[X] * len, m_data[Y] * len, m_data[Z] * len };
+			return vector(m_data[X] * len, m_data[Y] * len, m_data[Z] * len);
 		}
 
 		void normalize()
@@ -66,7 +66,7 @@ namespace engine
 
 	inline vector operator + (const vector& lhs, const vector& rhs)
 	{
-		return { lhs[X] + rhs[X], lhs[Y] + rhs[Y], lhs[Z] + rhs[Z] };
+		return vector(lhs[X] + rhs[X], lhs[Y] + rhs[Y], lhs[Z] + rhs[Z]);
 	}
 
 	inline vector& operator += (vector& lhs, const vector& rhs)
@@ -77,7 +77,7 @@ namespace engine
 
 	inline vector operator - (const vector& lhs, const vector& rhs)
 	{
-		return { lhs[X] - rhs[X], lhs[Y] - rhs[Y], lhs[Z] - rhs[Z] };
+		return vector(lhs[X] - rhs[X], lhs[Y] - rhs[Y], lhs[Z] - rhs[Z]);
 	}
 
 	inline vector& operator -= (vector& lhs, const vector& rhs)
@@ -88,17 +88,17 @@ namespace engine
 
 	inline vector operator - (const vector& v)
 	{
-		return { -v[X], -v[Y], -v[Z] };
+		return vector(-v[X], -v[Y], -v[Z]);
 	}
 
 	inline vector operator * (real r, const vector& v)
 	{
-		return { r * v[X], r * v[Y], r * v[Z] };
+		return vector(r * v[X], r * v[Y], r * v[Z]);
 	}
 
 	inline vector operator * (const vector& v, real r)
 	{
-		return { v[X] * r, v[Y] * r, v[Z] * r };
+		return vector(v[X] * r, v[Y] * r, v[Z] * r);
 	}
 
 	inline vector& operator *= (vector& v, real r)
@@ -109,7 +109,7 @@ namespace engine
 
 	inline vector operator / (const vector& v, real r)
 	{
-		return { v[X] / r, v[Y] / r, v[Z] / r };
+		return vector(v[X] / r, v[Y] / r, v[Z] / r);
 	}
 
 	inline vector& operator /= (vector& v, real r)
@@ -125,12 +125,12 @@ namespace engine
 
 	inline vector operator ^ (const vector& lhs, const vector& rhs)
 	{
-		return
-		{
+		return vector
+		(
 			lhs[Y] * rhs[Z] - lhs[Z] * rhs[Y],
 			lhs[Z] * rhs[X] - lhs[X] * rhs[Z],
 			lhs[X] * rhs[Y] - lhs[Y] * rhs[X]
-		};
+		);
 	}
 
 	inline std::ostream& operator << (std::ostream& os, const vector& v)

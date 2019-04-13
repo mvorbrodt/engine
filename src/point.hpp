@@ -40,7 +40,7 @@ namespace engine
 
 	inline point operator + (const point& p, const vector& v)
 	{
-		return { p[X] + v[X], p[Y] + v[Y], p[Z] + v[Z] };
+		return point(p[X] + v[X], p[Y] + v[Y], p[Z] + v[Z]);
 	}
 
 	inline point& operator += (point& p, const vector& v)
@@ -51,7 +51,7 @@ namespace engine
 
 	inline point operator - (const point& p, const vector& v)
 	{
-		return { p[X] - v[X], p[Y] - v[Y], p[Z] - v[Z] };
+		return point(p[X] - v[X], p[Y] - v[Y], p[Z] - v[Z]);
 	}
 
 	inline point& operator -= (point& p, const vector& v)
@@ -62,7 +62,7 @@ namespace engine
 
 	inline vector operator - (const point& lhs, const point& rhs)
 	{
-		return { lhs[X] - rhs[X], lhs[Y] - rhs[Y], lhs[Z] - rhs[Z] };
+		return vector(lhs[X] - rhs[X], lhs[Y] - rhs[Y], lhs[Z] - rhs[Z]);
 	}
 
 	inline std::ostream& operator << (std::ostream& os, const point& p)

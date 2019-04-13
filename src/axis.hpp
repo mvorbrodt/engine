@@ -37,24 +37,24 @@ namespace engine
 
 		matrix to_local() const
 		{
-			return
-			{
+			return matrix
+			(
 				m_axis[X][X], m_axis[X][Y], m_axis[X][Z], 0.0,
 				m_axis[Y][X], m_axis[Y][Y], m_axis[Y][Z], 0.0,
 				m_axis[Z][X], m_axis[Z][Y], m_axis[Z][Z], 0.0,
 				0.0, 0.0, 0.0, 1.0
-			};
+			);
 		}
 
 		matrix to_global() const
 		{
-			return
-			{
+			return matrix
+			(
 				m_axis[X][X], m_axis[Y][X], m_axis[Z][X], 0.0,
 				m_axis[X][Y], m_axis[Y][Y], m_axis[Z][Y], 0.0,
 				m_axis[X][Z], m_axis[Y][Z], m_axis[Z][Z], 0.0,
 				0.0, 0.0, 0.0, 1.0
-			};
+			);
 		}
 
 		vector& operator[](VC c)
@@ -75,7 +75,7 @@ namespace engine
 
 	inline axis operator * (const matrix& m, const axis& a)
 	{
-		return { m * a[X], m * a[Y], m * a[Z] };
+		return axis(m * a[X], m * a[Y], m * a[Z]);
 	}
 
 	inline axis& operator *= (axis& a, const matrix& m)

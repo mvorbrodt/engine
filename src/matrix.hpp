@@ -26,13 +26,13 @@ namespace engine
 
 		matrix transpose() const
 		{
-			return
-			{
+			return matrix
+			(
 				m_data[R1C1], m_data[R2C1], m_data[R3C1], m_data[R4C1],
 				m_data[R1C2], m_data[R2C2], m_data[R3C2], m_data[R4C2],
 				m_data[R1C3], m_data[R2C3], m_data[R3C3], m_data[R4C3],
 				m_data[R1C4], m_data[R2C4], m_data[R3C4], m_data[R4C4]
-			};
+			);
 		}
 
 		real* data()
@@ -69,8 +69,8 @@ namespace engine
 
 	inline matrix operator * (const matrix& lhs, const matrix& rhs)
 	{
-		return
-		{
+		return matrix
+		(
 			lhs[R1C1] * rhs[R1C1] + lhs[R1C2] * rhs[R2C1] + lhs[R1C3] * rhs[R3C1] + lhs[R1C4] * rhs[R4C1],
 			lhs[R1C1] * rhs[R1C2] + lhs[R1C2] * rhs[R2C2] + lhs[R1C3] * rhs[R3C2] + lhs[R1C4] * rhs[R4C2],
 			lhs[R1C1] * rhs[R1C3] + lhs[R1C2] * rhs[R2C3] + lhs[R1C3] * rhs[R3C3] + lhs[R1C4] * rhs[R4C3],
@@ -86,8 +86,8 @@ namespace engine
 			lhs[R4C1] * rhs[R1C1] + lhs[R4C2] * rhs[R2C1] + lhs[R4C3] * rhs[R3C1] + lhs[R4C4] * rhs[R4C1],
 			lhs[R4C1] * rhs[R1C2] + lhs[R4C2] * rhs[R2C2] + lhs[R4C3] * rhs[R3C2] + lhs[R4C4] * rhs[R4C2],
 			lhs[R4C1] * rhs[R1C3] + lhs[R4C2] * rhs[R2C3] + lhs[R4C3] * rhs[R3C3] + lhs[R4C4] * rhs[R4C3],
-			lhs[R4C1] * rhs[R1C4] + lhs[R4C2] * rhs[R2C4] + lhs[R4C3] * rhs[R3C4] + lhs[R4C4] * rhs[R4C4],
-		};
+			lhs[R4C1] * rhs[R1C4] + lhs[R4C2] * rhs[R2C4] + lhs[R4C3] * rhs[R3C4] + lhs[R4C4] * rhs[R4C4]
+		);
 	}
 
 	inline matrix& operator *= (matrix& lhs, const matrix& rhs)
@@ -98,12 +98,12 @@ namespace engine
 
 	inline vector operator * (const matrix& m, const vector& v)
 	{
-		return
-		{
+		return vector
+		(
 			m[R1C1] * v[X] + m[R1C2] * v[Y] + m[R1C3] * v[Z],
 			m[R2C1] * v[X] + m[R2C2] * v[Y] + m[R2C3] * v[Z],
 			m[R3C1] * v[X] + m[R3C2] * v[Y] + m[R3C3] * v[Z]
-		};
+		);
 	}
 
 	inline vector& operator *= (vector& v, const matrix& m)
@@ -114,12 +114,12 @@ namespace engine
 
 	inline point operator * (const matrix& m, const point& p)
 	{
-		return
-		{
+		return point
+		(
 			m[R1C1] * p[X] + m[R1C2] * p[Y] + m[R1C3] * p[Z] + m[R1C4],
 			m[R2C1] * p[X] + m[R2C2] * p[Y] + m[R2C3] * p[Z] + m[R2C4],
 			m[R3C1] * p[X] + m[R3C2] * p[Y] + m[R3C3] * p[Z] + m[R3C4]
-		};
+		);
 	}
 
 	inline point& operator *= (point& p, const matrix& m)

@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "consts.hpp"
 #include "vector.hpp"
+#include "point.hpp"
 
 namespace engine
 {
@@ -41,7 +42,7 @@ namespace engine
 		quaternion normal() const
 		{
 			real len = 1.0 / length();
-			return { m_data[X] * len, m_data[Y] * len, m_data[Z] * len, m_data[W] * len };
+			return quaternion(m_data[X] * len, m_data[Y] * len, m_data[Z] * len, m_data[W] * len);
 		}
 
 		void normalize()
@@ -87,8 +88,7 @@ namespace engine
 		auto rw = r[W];
 		auto ri = qv + rv;
 		auto rr = qw + rw;
-
-		return { ri[X], ri[Y], ri[Z], rr };
+		return quaternion(ri[X], ri[Y], ri[Z], rr);
 	}
 
 	inline quaternion& operator += (quaternion& q, const quaternion& r)
@@ -99,17 +99,17 @@ namespace engine
 
 	inline quaternion operator - (const quaternion& q)
 	{
-		return { -q[X], -q[Y], -q[Z], q[W] };
+		return quaternion(-q[X], -q[Y], -q[Z], q[W]);
 	}
 
 	inline quaternion operator * (real s, const quaternion& q)
 	{
-		return { s * q[X], s * q[Y], s * q[Z], s * q[W] };
+		return quaternion(s * q[X], s * q[Y], s * q[Z], s * q[W]);
 	}
 
 	inline quaternion operator * (const quaternion& q, real s)
 	{
-		return { q[X] * s, q[Y] * s, q[Z] * s, q[W] * s };
+		return quaternion(q[X] * s, q[Y] * s, q[Z] * s, q[W] * s);
 	}
 
 	inline quaternion operator * (const quaternion& q, const quaternion& r)
@@ -120,14 +120,41 @@ namespace engine
 		auto rw = r[W];
 		auto ri = (qv ^ rv) + (rw * qv) + (qw * rv);
 		auto rr = (qw * rw) - (qv * rv);
-
-		return { ri[X], ri[Y], ri[Z], rr };
+		return quaternion(ri[X], ri[Y], ri[Z], rr);
 	}
 
 	inline quaternion& operator *= (quaternion& q, const quaternion& r)
 	{
 		q = q * r;
 		return q;
+	}
+
+	inline vector operator * (const quaternion& q, const vector& v)
+	{
+		auto qv = quaternion{ v[X], v[Y], v[Z], 0.0 };
+		auto c = -q;
+		auto r = q * qv * c;
+		return vector(r[X], r[Y], r[Z]);
+	}
+
+	inline vector& operator *= (vector& v, const quaternion& q)
+	{
+		v = q * v;
+		return v;
+	}
+
+	inline point operator * (const quaternion& q, const point& p)
+	{
+		auto qv = quaternion{ p[X], p[Y], p[Z], 0.0 };
+		auto c = -q;
+		auto r = q * qv * c;
+		return point(r[X], r[Y], r[Z]);
+	}
+
+	inline point& operator *= (point& p, const quaternion& q)
+	{
+		p = q * p;
+		return p;
 	}
 
 	inline std::ostream& operator << (std::ostream& os, const quaternion& q)

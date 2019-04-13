@@ -80,6 +80,7 @@ void draw()
 {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
 
 	/*static float rotation{};
 	quaternion q1(30, UNIT_X);
@@ -95,15 +96,12 @@ void draw()
 	static real a = 0.0;
 	a+=0.01;
 	real i = (sin(a) + 1.0) / 2.0;
-	auto q = ((1.0 - i) * q1) + (i * q2);
+	auto q = interpolate(i, q1, q2);
 	auto t = translate(UNIT_Z * -3);
 	auto mv = t * rotate(q);
 	glLoadMatrixf(mv.data());*/
 
-	auto mv = camera.view_matrix();
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(mv.data());
+	glLoadMatrixf(camera.view_matrix().data());
 
 	glColor3f(0.0, 0.0, 0.0);
 	glutWireCube(2);
