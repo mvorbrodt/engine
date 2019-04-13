@@ -92,4 +92,29 @@ namespace engine
 
 		return projection(left, right, top, bottom, near, far);
 	}
+
+	inline matrix look_at(const point& eye, const point& at, const vector& up)
+	{
+		auto z = (eye - at).normal();
+		auto x = (up ^ z).normal();
+		auto y = z ^ x;
+
+		matrix r =
+		{
+			x[X], x[Y], x[Z], 0.0,
+			y[X], y[Y], y[Z], 0.0,
+			z[X], z[Y], z[Z], 0.0,
+			 0.0,  0.0,  0.0, 1.0
+		};
+
+		matrix t =
+		{
+			1.0, 0.0, 0.0, -eye[X],
+			0.0, 1.0, 0.0, -eye[Y],
+			0.0, 0.0, 1.0, -eye[Z],
+			0.0, 0.0, 0.0, 1.0
+		};
+
+		return r * t;
+	}
 }

@@ -60,6 +60,11 @@ namespace engine
 		return p;
 	}
 
+	inline vector operator - (const point& lhs, const point& rhs)
+	{
+		return { lhs[X] - rhs[X], lhs[Y] - rhs[Y], lhs[Z] - rhs[Z] };
+	}
+
 	inline std::ostream& operator << (std::ostream& os, const point& p)
 	{
 		os << "[" << p[X] << ", " << p[Y] << ", " << p[Z] << "]";
