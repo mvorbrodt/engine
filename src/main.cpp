@@ -116,8 +116,9 @@ void draw()
 	glutSwapBuffers();
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	glutInit(&argc, argv);
 	glfwSetErrorCallback(error);
 	if(!glfwInit()) return -1;
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
