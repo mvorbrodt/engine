@@ -8,6 +8,8 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif()
 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
 include_directories("/usr/local/include")
 link_directories("/usr/local/lib")
 
