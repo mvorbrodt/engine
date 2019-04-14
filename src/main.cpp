@@ -22,7 +22,8 @@
 using namespace std;
 using namespace engine;
 
-engine::pov camera({0.0, 0.0, 3.0}, -UNIT_Z, UNIT_Y);
+engine::point eye{0.0, 5.0, 10.0};
+engine::pov camera(eye, ORIGIN - eye, UNIT_Y);
 
 void error(int error, const char* description)
 {
@@ -31,10 +32,10 @@ void error(int error, const char* description)
 
 void init()
 {
-	cout << glGetString(GL_VENDOR) << endl;
-	cout << glGetString(GL_RENDERER) << endl;
-	cout << glGetString(GL_VERSION) << endl;
-	cout << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
+	cout << "VENDOR   : " << glGetString(GL_VENDOR) << endl;
+	cout << "RENDERED : " << glGetString(GL_RENDERER) << endl;
+	cout << "VERSION  : " << glGetString(GL_VERSION) << endl;
+	cout << "GLSL     : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 }
 
 void reshape(GLFWwindow* window, int w, int h)
@@ -89,18 +90,10 @@ void draw()
 {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glColor3f(0.0, 0.0, 0.0);
 	glMatrixMode(GL_MODELVIEW);
 
-	/*static float rotation{};
-	quaternion q1(30, UNIT_X);
-	quaternion q2(rotation, UNIT_Y);
-	auto r = rotate(q1 * q2);
-	auto t = translate(UNIT_Z * -3);
-	auto mv = t * r;
-	++rotation;
-	glLoadMatrixf(mv.data());*/
-
-	auto q1 = quaternion(45, UNIT_Y);
+	/*auto q1 = quaternion(45, UNIT_Y);
 	auto q2 = quaternion(90, UNIT_X);
 	static real a = 0.0;
 	a+=0.01;
@@ -108,12 +101,45 @@ void draw()
 	auto q = interpolate(i, q1, q2);
 	auto t = translate(UNIT_Z * -3);
 	auto mv = t * rotate(q);
+	glLoadMatrixf(mv.data());*/
+
+	static float rotation{};
+	engine::system l1, l2, l3, l4, l5;
+	quaternion q(++rotation, UNIT_Y);
+	l1.rotate(q);
+	l2.rotate(q);
+	l3.rotate(q);
+	l4.rotate(q);
+	l5.rotate(q);
+
+	l2.translate(5 *  UNIT_X);
+	l3.translate(5 * -UNIT_X);
+	l4.translate(5 * -UNIT_Z);
+	l5.translate(5 *  UNIT_Z);
+
+	auto mv = camera.view_matrix() * l1.to_global();
 	glLoadMatrixf(mv.data());
+	glutWireCube(2.0);
+	glutWireTeapot(1.0);
 
-	//glLoadMatrixf(camera.view_matrix().data());
+	mv = camera.view_matrix() * l2.to_global();
+	glLoadMatrixf(mv.data());
+	glutWireCube(2.0);
+	glutWireTeapot(1.0);
 
-	glColor3f(0.0, 0.0, 0.0);
-	glutWireCube(2);
+	mv = camera.view_matrix() * l3.to_global();
+	glLoadMatrixf(mv.data());
+	glutWireCube(2.0);
+	glutWireTeapot(1.0);
+
+	mv = camera.view_matrix() * l4.to_global();
+	glLoadMatrixf(mv.data());
+	glutWireCube(2.0);
+	glutWireTeapot(1.0);
+
+	mv = camera.view_matrix() * l5.to_global();
+	glLoadMatrixf(mv.data());
+	glutWireCube(2.0);
 	glutWireTeapot(1.0);
 }
 
