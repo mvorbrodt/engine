@@ -68,6 +68,8 @@ void init()
 	cout << "VERSION  : " << glGetString(GL_VERSION) << endl;
 	cout << "GLSL     : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 
+	glEnable(GL_DEPTH_TEST);
+
 	int  success;
 	char infoLog[512];
 
@@ -173,16 +175,6 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3f(0.0, 0.0, 0.0);
 	glMatrixMode(GL_MODELVIEW);
-
-	/*auto q1 = quaternion(45, UNIT_Y);
-	auto q2 = quaternion(90, UNIT_X);
-	static real a = 0.0;
-	a+=0.01;
-	real i = (sin(a) + 1.0) / 2.0;
-	auto q = interpolate(i, q1, q2);
-	auto t = translate(UNIT_Z * -3);
-	auto mv = t * rotate(q);
-	glLoadMatrixf(mv.data());*/
 
 	glUseProgram(shaderProgram);
 	glBindVertexArray(VAO);
