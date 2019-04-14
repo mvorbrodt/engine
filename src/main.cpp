@@ -16,6 +16,9 @@
 #include "pov.hpp"
 #include "transforms.hpp"
 
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480
+
 using namespace std;
 using namespace engine;
 
@@ -122,7 +125,7 @@ int main(int argc, char** argv)
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello 3D Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello 3D Engine", NULL, NULL);
 	if(!window)
 	{
 		glfwTerminate();
@@ -132,14 +135,14 @@ int main(int argc, char** argv)
 	glfwSetKeyCallback(window, keyboard);
 	glfwSetCursorPosCallback(window, mouse);
 	glfwSetFramebufferSizeCallback(window, reshape);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glfwSwapInterval(1);
 
 	init();
-	reshape(window, 640, 480);
+	reshape(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	while (!glfwWindowShouldClose(window))
 	{
