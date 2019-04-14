@@ -1,11 +1,6 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 #include "types.hpp"
 #include "vector.hpp"
 #include "point.hpp"
@@ -25,6 +20,42 @@ using namespace engine;
 engine::point eye{0.0, 5.0, 10.0};
 engine::pov camera(eye, ORIGIN - eye, UNIT_Y);
 
+real vertices[] =
+{
+	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
+	 0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f
+};
+unsigned int VBO;
+unsigned int VAO;
+
+const GLchar * const vs =
+	"#version 330 core\n"
+	"layout (location = 0) in vec3 aPos;\n"
+	"layout (location = 1) in vec3 aColor;\n"
+	"out vec3 ourColor;\n"
+	"uniform mat4 Projection;\n"
+	"uniform mat4 ModelView;\n"
+	"void main()\n"
+	"{\n"
+	"	gl_Position = Projection * ModelView * vec4(aPos, 1.0);\n"
+	"	ourColor = aColor;\n"
+	"}\n";
+
+
+const GLchar * const fs =
+	"#version 330 core\n"
+	"out vec4 FragColor;\n"
+	"in vec3 ourColor;\n"
+	"void main()\n"
+	"{\n"
+	"	FragColor = vec4(ourColor, 1.0);\n"
+	"}\n";
+
+unsigned int vertexShader;
+unsigned int fragmentShader;
+unsigned int shaderProgram;
+
 void error(int error, const char* description)
 {
 	cout << "GLFW error code: " << error << ", description: " << description << endl;
@@ -36,15 +67,64 @@ void init()
 	cout << "RENDERED : " << glGetString(GL_RENDERER) << endl;
 	cout << "VERSION  : " << glGetString(GL_VERSION) << endl;
 	cout << "GLSL     : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
+
+	int  success;
+	char infoLog[512];
+
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vs, NULL);
+	glCompileShader(vertexShader);
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if(!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		cout << infoLog << endl;
+	}
+
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fs, NULL);
+	glCompileShader(fragmentShader);
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if(!success)
+	{
+		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		cout << infoLog << endl;
+	}
+
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+	if(!success)
+	{
+		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		cout << infoLog << endl;
+	}
+
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 }
 
 void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
-	glMatrixMode(GL_PROJECTION);
-	auto r = (real)w / (real)h;
-	auto p = projection(60, r, 1, 100);
-	glLoadMatrixf(p.data());
+	glUseProgram(shaderProgram);
+	auto p = projection(60, (real)w / (real)h, 1, 100);
+	auto id = glGetUniformLocation(shaderProgram, "Projection");
+	glUniformMatrix4fv(id, 1, GL_FALSE, p.data());
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -59,6 +139,7 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_D: camera.move( 0, -1); break;
 			case GLFW_KEY_W: camera.move( 1,  0); break;
 			case GLFW_KEY_S: camera.move(-1,  0); break;
+			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 		}
 	}
 }
@@ -103,6 +184,9 @@ void draw()
 	auto mv = t * rotate(q);
 	glLoadMatrixf(mv.data());*/
 
+	glUseProgram(shaderProgram);
+	glBindVertexArray(VAO);
+
 	static float rotation{};
 	engine::system l1, l2, l3, l4, l5;
 	quaternion q(++rotation, UNIT_Y);
@@ -118,39 +202,35 @@ void draw()
 	l5.translate(5 *  UNIT_Z);
 
 	auto mv = camera.view_matrix() * l1.to_global();
-	glLoadMatrixf(mv.data());
-	glutWireCube(2.0);
-	glutWireTeapot(1.0);
+	auto id = glGetUniformLocation(shaderProgram, "ModelView");
+	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	mv = camera.view_matrix() * l2.to_global();
-	glLoadMatrixf(mv.data());
-	glutWireCube(2.0);
-	glutWireTeapot(1.0);
+	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	mv = camera.view_matrix() * l3.to_global();
-	glLoadMatrixf(mv.data());
-	glutWireCube(2.0);
-	glutWireTeapot(1.0);
+	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	mv = camera.view_matrix() * l4.to_global();
-	glLoadMatrixf(mv.data());
-	glutWireCube(2.0);
-	glutWireTeapot(1.0);
+	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	mv = camera.view_matrix() * l5.to_global();
-	glLoadMatrixf(mv.data());
-	glutWireCube(2.0);
-	glutWireTeapot(1.0);
+	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int main(int argc, char** argv)
 {
 	glfwSetErrorCallback(error);
 	if(!glfwInit()) return -1;
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello 3D Engine", NULL, NULL);
 	if(!window)
 	{
@@ -176,6 +256,9 @@ int main(int argc, char** argv)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
 
 	glfwTerminate();
 }

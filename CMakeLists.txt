@@ -14,7 +14,6 @@ include_directories("/usr/local/include")
 link_directories("/usr/local/lib")
 
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 find_package(GLFW3 REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++2a")
