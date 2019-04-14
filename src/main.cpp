@@ -112,8 +112,6 @@ void draw()
 	glColor3f(0.0, 0.0, 0.0);
 	glutWireCube(2);
 	glutWireTeapot(1.0);
-
-	glutSwapBuffers();
 }
 
 int main(int argc, char** argv)
