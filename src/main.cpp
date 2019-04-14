@@ -1,5 +1,6 @@
 #include <iostream>
-#include <GL/glew.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -20,18 +21,20 @@ using namespace engine;
 
 engine::pov camera({0.0, 0.0, 3.0}, -UNIT_Z, UNIT_Y);
 
+void error(int error, const char* description)
+{
+	cout << "GLFW error code: " << error << ", description: " << description << endl;
+}
+
 void init()
 {
 	cout << glGetString(GL_VENDOR) << endl;
 	cout << glGetString(GL_RENDERER) << endl;
 	cout << glGetString(GL_VERSION) << endl;
 	cout << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
-
-	glewExperimental=true;
-	glewInit();
 }
 
-void reshape(int w, int h)
+void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
@@ -40,20 +43,23 @@ void reshape(int w, int h)
 	glLoadMatrixf(p.data());
 }
 
-void keyboard(unsigned char c, int x, int y)
+void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	switch(c)
+	if(action == GLFW_PRESS)
 	{
-		case 'q': camera.roll(-10); break;
-		case 'e': camera.roll( 10); break;
-		case 'a': camera.move( 0,  1); break;
-		case 'd': camera.move( 0, -1); break;
-		case 'w': camera.move( 1,  0); break;
-		case 's': camera.move(-1,  0); break;
+		switch(key)
+		{
+			case GLFW_KEY_Q: camera.roll(-10); break;
+			case GLFW_KEY_E: camera.roll( 10); break;
+			case GLFW_KEY_A: camera.move( 0,  1); break;
+			case GLFW_KEY_D: camera.move( 0, -1); break;
+			case GLFW_KEY_W: camera.move( 1,  0); break;
+			case GLFW_KEY_S: camera.move(-1,  0); break;
+		}
 	}
 }
 
-void motion(int x, int y)
+void mouse(GLFWwindow* window, double x, double y)
 {
 	static bool first = true;
 	static int last_x = 0;
@@ -91,7 +97,7 @@ void draw()
 	++rotation;
 	glLoadMatrixf(mv.data());*/
 
-	/*auto q1 = quaternion(45, UNIT_Y);
+	auto q1 = quaternion(45, UNIT_Y);
 	auto q2 = quaternion(90, UNIT_X);
 	static real a = 0.0;
 	a+=0.01;
@@ -99,9 +105,9 @@ void draw()
 	auto q = interpolate(i, q1, q2);
 	auto t = translate(UNIT_Z * -3);
 	auto mv = t * rotate(q);
-	glLoadMatrixf(mv.data());*/
+	glLoadMatrixf(mv.data());
 
-	glLoadMatrixf(camera.view_matrix().data());
+	//glLoadMatrixf(camera.view_matrix().data());
 
 	glColor3f(0.0, 0.0, 0.0);
 	glutWireCube(2);
@@ -110,17 +116,39 @@ void draw()
 	glutSwapBuffers();
 }
 
-int main(int argc, char** argv)
+int main()
 {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(/*GLUT_3_2_CORE_PROFILE |*/ GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(640, 480);
-	glutCreateWindow("Hello 3D Engine");
+	glfwSetErrorCallback(error);
+	if(!glfwInit()) return -1;
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "Hello 3D Engine", NULL, NULL);
+	if(!window)
+	{
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwSetKeyCallback(window, keyboard);
+	glfwSetCursorPosCallback(window, mouse);
+	glfwSetFramebufferSizeCallback(window, reshape);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	glfwMakeContextCurrent(window);
+	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+	glfwSwapInterval(1);
+
 	init();
-	glutReshapeFunc(reshape);
-	glutKeyboardFunc(keyboard);
-	glutMotionFunc(motion);
-	glutIdleFunc(draw);
-	glutDisplayFunc(draw);
-	glutMainLoop();
+	reshape(window, 640, 480);
+
+	while (!glfwWindowShouldClose(window))
+	{
+		draw();
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
 }
