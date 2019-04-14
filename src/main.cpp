@@ -241,7 +241,7 @@ int main(int argc, char** argv)
 	glfwSetKeyCallback(window, keyboard);
 	glfwSetCursorPosCallback(window, mouse);
 	glfwSetFramebufferSizeCallback(window, reshape);
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
