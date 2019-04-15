@@ -22,11 +22,23 @@ engine::pov camera(eye, ORIGIN - eye, UNIT_Y);
 
 real vertices[] =
 {
-	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,
-	 0.0f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f
+	-0.5f, -0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	 0.5f,  0.5f, 0.0f,
+	-0.5f,  0.5f, 0.0f,
 };
-unsigned int VBO;
+unsigned char colors[] =
+{
+	255, 0, 0,
+	0, 255, 0,
+	0, 0, 255,
+	255, 255, 255
+};
+unsigned int indices[] =
+{
+	0, 1, 2, 2, 3, 0
+};
+unsigned int VBO_V, VBO_C, VBO_I;
 unsigned int VAO;
 
 const GLchar * const vs =
@@ -108,16 +120,27 @@ void init()
 	glDeleteShader(fragmentShader);
 
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
 	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glGenBuffers(1, &VBO_V);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_V);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glGenBuffers(1, &VBO_C);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_C);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(unsigned char), (void*)0);
 	glEnableVertexAttribArray(1);
+
+	glGenBuffers(1, &VBO_I);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_I);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void reshape(GLFWwindow* window, int w, int h)
@@ -196,23 +219,29 @@ void draw()
 	auto mv = camera.view_matrix() * l1.to_global();
 	auto id = glGetUniformLocation(shaderProgram, "ModelView");
 	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l2.to_global();
 	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l3.to_global();
 	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l4.to_global();
 	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l5.to_global();
 	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
 }
 
 int main(int argc, char** argv)
@@ -250,7 +279,8 @@ int main(int argc, char** argv)
 	}
 
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &VBO_V);
+	glDeleteBuffers(1, &VBO_C);
 
 	glfwTerminate();
 }
