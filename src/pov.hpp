@@ -17,10 +17,10 @@ namespace engine
 			m_up.normalize();
 		}
 
-		void move(real forward, real size)
+		void move(real forward, real side)
 		{
 			auto v = (m_up ^ m_direction).normal();
-			m_origin += forward * m_direction + size * v;
+			m_origin += forward * m_direction + side * v;
 		}
 
 		void turn(real angle)

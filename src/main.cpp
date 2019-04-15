@@ -27,6 +27,7 @@ real vertices[] =
 	 0.5f,  0.5f, 0.0f,
 	-0.5f,  0.5f, 0.0f,
 };
+
 unsigned char colors[] =
 {
 	255, 0, 0,
@@ -34,10 +35,12 @@ unsigned char colors[] =
 	0, 0, 255,
 	255, 255, 255
 };
+
 unsigned int indices[] =
 {
 	0, 1, 2, 2, 3, 0
 };
+
 unsigned int VBO_V, VBO_C, VBO_I;
 unsigned int VAO;
 
@@ -53,7 +56,6 @@ const GLchar * const vs =
 	"	gl_Position = Projection * ModelView * vec4(aPos, 1.0);\n"
 	"	ourColor = aColor;\n"
 	"}\n";
-
 
 const GLchar * const fs =
 	"#version 330 core\n"
@@ -83,7 +85,6 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 
 	int  success;
-	char infoLog[512];
 
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vs, NULL);
@@ -91,17 +92,25 @@ void init()
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if(!success)
 	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		GLint length{};
+		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
+		string infoLog;
+		infoLog.resize(length + 1);
+		glGetShaderInfoLog(vertexShader, length, NULL, infoLog.data());
 		cout << infoLog << endl;
 	}
 
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fs, NULL);
 	glCompileShader(fragmentShader);
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if(!success)
 	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+		GLint length{};
+		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
+		string infoLog;
+		infoLog.resize(length + 1);
+		glGetShaderInfoLog(fragmentShader, length, NULL, infoLog.data());
 		cout << infoLog << endl;
 	}
 
@@ -112,7 +121,11 @@ void init()
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if(!success)
 	{
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+		GLint length{};
+		glGetShaderiv(shaderProgram, GL_INFO_LOG_LENGTH, &length);
+		string infoLog;
+		infoLog.resize(length);
+		glGetShaderInfoLog(shaderProgram, length, NULL, infoLog.data());
 		cout << infoLog << endl;
 	}
 
@@ -136,7 +149,7 @@ void init()
 
 	glGenBuffers(1, &VBO_I);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_I);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
