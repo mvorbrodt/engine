@@ -23,7 +23,7 @@ using namespace engine;
 engine::point eye{0.0, 5.0, 10.0};
 engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, ORIGIN - eye, UNIT_Y);
 
-real vertices[] =
+real i_vertices[] =
 {
 	-0.5f, -0.5f, 0.0f,
 	 0.5f, -0.5f, 0.0f,
@@ -31,7 +31,7 @@ real vertices[] =
 	-0.5f,  0.5f, 0.0f,
 };
 
-unsigned char colors[] =
+unsigned char i_colors[] =
 {
 	255, 0, 0,
 	0, 255, 0,
@@ -39,7 +39,7 @@ unsigned char colors[] =
 	255, 255, 255
 };
 
-real texture_coords[] =
+real i_texture_coords[] =
 {
 	0.0, 0.0,
 	1.0, 0.0,
@@ -92,19 +92,19 @@ void init()
 
 	glGenBuffers(1, &VBO_V);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_V);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(i_vertices), i_vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	glGenBuffers(1, &VBO_T);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_T);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coords), texture_coords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(i_texture_coords), i_texture_coords, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 
 	glGenBuffers(1, &VBO_C);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_C);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(i_colors), i_colors, GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(unsigned char), (void*)0);
 	glEnableVertexAttribArray(2);
 
@@ -178,6 +178,7 @@ void draw()
 
 	s2->use();
 	s2->load_matrix("Projection", camera.projection_matrix());
+	s2->load_matrix("Camera", camera.view_matrix());
 	t1->bind(0);
 
 	static float rotation{};
@@ -194,33 +195,29 @@ void draw()
 	l4.translate(5 * -UNIT_Z);
 	l5.translate(5 *  UNIT_Z);
 
-	auto mv = camera.view_matrix() * l1.to_global();
-	s2->load_matrix("ModelView", mv);
+	s2->load_matrix("Model", l1.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	s1->use();
 	s1->load_matrix("Projection", camera.projection_matrix());
+	s2->load_matrix("Camera", camera.view_matrix());
 	t2->bind(0);
 	t3->bind(1);
 
-	mv = camera.view_matrix() * l2.to_global();
-	s1->load_matrix("ModelView", mv);
+	s1->load_matrix("Model", l2.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	mv = camera.view_matrix() * l3.to_global();
-	s1->load_matrix("ModelView", mv);
+	s1->load_matrix("Model", l3.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	mv = camera.view_matrix() * l4.to_global();
-	s1->load_matrix("ModelView", mv);
+	s1->load_matrix("Model", l4.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	mv = camera.view_matrix() * l5.to_global();
-	s1->load_matrix("ModelView", mv);
+	s1->load_matrix("Model", l5.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
@@ -230,10 +227,11 @@ int main(int argc, char** argv)
 {
 	glfwSetErrorCallback(error);
 	if(!glfwInit()) return -1;
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 16);
 	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello 3D Engine", NULL, NULL);
 	if(!window)
 	{

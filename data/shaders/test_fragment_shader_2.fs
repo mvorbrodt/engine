@@ -1,4 +1,4 @@
-#version 330 core
+#version 410 core
 
 in vec3 ourColor;
 in vec2 texCoord;
@@ -9,5 +9,5 @@ out vec4 FragColor;
 
 void main()
 {
-	FragColor = texture(ourTexture1, texCoord);
+	FragColor = texture(ourTexture1, texCoord) * vec4(ourColor, 1.0);
 }
