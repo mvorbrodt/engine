@@ -9,6 +9,10 @@ namespace engine
 	{
 	public:
 		shader(const char* vertex_shader_source, const char* fragment_shader_source);
+		shader(const shader&) = delete;
+		shader(shader&&) = delete;
+		shader& operator = (const shader&) = delete;
+		shader& operator = (shader&&) = delete;
 		~shader();
 
 		void use() const;
