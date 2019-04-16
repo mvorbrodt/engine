@@ -66,6 +66,7 @@ namespace engine
 		void set_near(real near)
 		{
 			if(near < 1.0) near = 1.0;
+			if(near > m_far) near = m_far - 1.0;
 			m_near = near;
 		}
 
