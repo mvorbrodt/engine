@@ -14,14 +14,36 @@ namespace engine
 	class pov
 	{
 	public:
-		pov(int w, int h, real fov = 60.0, real near = 1.0, real far = 100.0, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
-		: m_width{ w }, m_height{ h }, m_fov{ fov }, m_near{ near }, m_far{ far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
+		pov(int width, int height, real fov = 60.0, real near = 1.0, real far = 100.0, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
+		: m_width{ width }, m_height{ height }, m_fov{ fov }, m_near{ near }, m_far{ far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
 		{
 			assert(m_width > 1 && m_height > 1);
 			assert(m_fov >= MIN_FOV && m_fov <= MAX_FOV);
 			assert(m_near >= 1.0 && m_far >= 1.0 && m_near < m_far);
 			m_direction.normalize();
 			m_up.normalize();
+		}
+
+		int get_width() const
+		{
+			return m_width;
+		}
+
+		void set_width(int width)
+		{
+			if(width < 1) width = 1;
+			m_width = width;
+		}
+
+		int get_height() const
+		{
+			return m_height;
+		}
+
+		void set_height(int height)
+		{
+			if(height < 1) height = 1;
+			m_height = height;
 		}
 
 		real get_fov() const
@@ -36,26 +58,27 @@ namespace engine
 			m_fov = fov;
 		}
 
-		int get_width() const
+		real get_near() const
 		{
-			return m_width;
+			return m_near;
 		}
 
-		void set_width(int w)
+		void set_near(real near)
 		{
-			if(w < 1) w = 1;
-			m_width = w;
+			if(near < 1.0) near = 1.0;
+			m_near = near;
 		}
 
-		int get_height() const
+		real get_far() const
 		{
-			return m_height;
+			return m_far;
 		}
 
-		void set_height(int h)
+		void set_far(real far)
 		{
-			if(h < 1) h = 1;
-			m_height = h;
+			if(far < 1.0) far = 1.0;
+			if(far < m_near) far = m_near + 1.0;
+			m_far = far;
 		}
 
 		void move(real forward, real side)

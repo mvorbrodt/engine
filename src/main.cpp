@@ -12,6 +12,7 @@
 #include "pov.hpp"
 #include "transforms.hpp"
 #include "shader.hpp"
+#include "texture.hpp"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -38,15 +39,24 @@ unsigned char colors[] =
 	255, 255, 255
 };
 
+real texture_coords[] =
+{
+	0.0, 0.0,
+	1.0, 0.0,
+	1.0, 1.0,
+	0.0, 1.0
+};
+
 unsigned int indices[] =
 {
 	0, 1, 2, 2, 3, 0
 };
 
-unsigned int VBO_V, VBO_C, VBO_I;
+unsigned int VBO_V, VBO_T, VBO_C, VBO_I;
 unsigned int VAO;
 
 engine::shader_ptr s;
+engine::texture_ptr t;
 
 void error(int error, const char* description)
 {
@@ -58,6 +68,7 @@ void init()
 	try
 	{
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
+		t = load_texture("data/textures/cpp.png", true);
 	}
 	catch(exception& e)
 	{
@@ -74,11 +85,17 @@ void init()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	glGenBuffers(1, &VBO_T);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO_T);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coords), texture_coords, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+
 	glGenBuffers(1, &VBO_C);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_C);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(unsigned char), (void*)0);
-	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(unsigned char), (void*)0);
+	glEnableVertexAttribArray(2);
 
 	glGenBuffers(1, &VBO_I);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_I);
@@ -128,11 +145,11 @@ void mouse(GLFWwindow* window, double x, double y)
 		first = false;
 	}
 
-	real dx = x - last_x;
-	real dy = y - last_y;
+	int dx = x - last_x;
+	int dy = y - last_y;
 
-	camera.turn(-dx / 3.0f);
-	camera.look(-dy / 3.0f);
+	camera.turn(-dx / 5.0f);
+	camera.look(-dy / 5.0f);
 
 	last_x = x;
 	last_y = y;
@@ -149,8 +166,6 @@ void draw()
 {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3f(0.0, 0.0, 0.0);
-	glMatrixMode(GL_MODELVIEW);
 
 	s->use();
 	glBindVertexArray(VAO);
