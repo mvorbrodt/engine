@@ -55,7 +55,7 @@ unsigned int indices[] =
 unsigned int VBO_V, VBO_T, VBO_C, VBO_I;
 unsigned int VAO;
 
-engine::shader_ptr s;
+engine::shader_ptr s1, s2;
 engine::texture_ptr t1, t2, t3;
 
 void error(int error, const char* description)
@@ -67,16 +67,18 @@ void init()
 {
 	try
 	{
-		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
+		s1 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_1.fs");
+		s2 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_2.fs");
 		t1 = load_texture("data/textures/avatar.png", true);
 		t2 = load_texture("data/textures/cpp.png", true);
 		t3 = load_texture("data/textures/mask.png", true);
 
-		s->use();
-		t1->bind(0);
-		s->bind_texture("ourTexture1", 0);
-		t2->bind(1);
-		s->bind_texture("ourTexture2", 1);
+		s1->use();
+		s1->bind_texture("ourTexture1", 0);
+		s1->bind_texture("ourTexture2", 1);
+
+		s2->use();
+		s2->bind_texture("ourTexture1", 0);
 	}
 	catch(exception& e)
 	{
@@ -119,8 +121,10 @@ void reshape(GLFWwindow* window, int w, int h)
 	glViewport(0, 0, w, h);
 	camera.set_width(w);
 	camera.set_height(h);
-	s->use();
-	s->load_matrix("Projection", camera.projection_matrix());
+	s1->use();
+	s1->load_matrix("Projection", camera.projection_matrix());
+	s2->use();
+	s2->load_matrix("Projection", camera.projection_matrix());
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -166,8 +170,10 @@ void mouse(GLFWwindow* window, double x, double y)
 void scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.set_fov(camera.get_fov() - yoffset);
-	s->use();
-	s->load_matrix("Projection", camera.projection_matrix());
+	s1->use();
+	s1->load_matrix("Projection", camera.projection_matrix());
+	s2->use();
+	s2->load_matrix("Projection", camera.projection_matrix());
 }
 
 void draw()
@@ -177,9 +183,8 @@ void draw()
 
 	glBindVertexArray(VAO);
 
-	s->use();
+	s2->use();
 	t1->bind(0);
-	t3->bind(1);
 
 	static float rotation{};
 	engine::system l1, l2, l3, l4, l5;
@@ -196,30 +201,31 @@ void draw()
 	l5.translate(5 *  UNIT_Z);
 
 	auto mv = camera.view_matrix() * l1.to_global();
-	s->load_matrix("ModelView", mv);
+	s2->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
+	s1->use();
 	t2->bind(0);
 	t3->bind(1);
 
 	mv = camera.view_matrix() * l2.to_global();
-	s->load_matrix("ModelView", mv);
+	s1->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l3.to_global();
-	s->load_matrix("ModelView", mv);
+	s1->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l4.to_global();
-	s->load_matrix("ModelView", mv);
+	s1->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l5.to_global();
-	s->load_matrix("ModelView", mv);
+	s1->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
