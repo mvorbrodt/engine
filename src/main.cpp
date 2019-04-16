@@ -20,7 +20,7 @@ using namespace std;
 using namespace engine;
 
 engine::point eye{0.0, 5.0, 10.0};
-engine::pov camera(eye, ORIGIN - eye, UNIT_Y);
+engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, ORIGIN - eye, UNIT_Y);
 
 real vertices[] =
 {
@@ -92,9 +92,10 @@ void init()
 void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
+	camera.set_width(w);
+	camera.set_height(h);
 	s->use();
-	auto p = projection(60, (real)w / (real)h, 1, 100);
-	s->load_matrix("Projection", p);
+	s->load_matrix("Projection", camera.projection_matrix());
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -135,6 +136,13 @@ void mouse(GLFWwindow* window, double x, double y)
 
 	last_x = x;
 	last_y = y;
+}
+
+void scroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.set_fov(camera.get_fov() - yoffset);
+	s->use();
+	s->load_matrix("Projection", camera.projection_matrix());
 }
 
 void draw()
@@ -205,6 +213,7 @@ int main(int argc, char** argv)
 
 	glfwSetKeyCallback(window, keyboard);
 	glfwSetCursorPosCallback(window, mouse);
+	glfwSetScrollCallback(window, scroll);
 	glfwSetFramebufferSizeCallback(window, reshape);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
