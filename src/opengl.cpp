@@ -14,7 +14,7 @@ namespace
 
 namespace engine
 {
-	void init_opengl()
+	void opengl_defaults()
 	{
 		cout << "VENDOR   : " << glGetString(GL_VENDOR) << endl;
 		cout << "RENDERED : " << glGetString(GL_RENDERER) << endl;
@@ -31,5 +31,8 @@ namespace engine
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_MULTISAMPLE);
+		glEnable(GL_FRAMEBUFFER_SRGB);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }

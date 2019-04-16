@@ -16,6 +16,7 @@ link_directories("/usr/local/lib")
 
 find_package(OpenGL REQUIRED)
 find_package(GLFW3 REQUIRED)
+find_package(ASSIMP REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++2a")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")

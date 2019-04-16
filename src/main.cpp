@@ -70,9 +70,9 @@ void init()
 		s1 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_1.fs");
 		s2 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_2.fs");
 
-		t1 = load_texture("data/textures/avatar.png", true);
-		t2 = load_texture("data/textures/cpp.png", true);
-		t3 = load_texture("data/textures/mask.png", false);
+		t1 = load_texture("data/textures/avatar.png", true, true);
+		t2 = load_texture("data/textures/cpp.png", true, true);
+		t3 = load_texture("data/textures/mask.png", false, false);
 
 		s1->use();
 		s1->bind_texture("ourTexture1", 0);
@@ -177,8 +177,8 @@ void draw()
 	glBindVertexArray(VAO);
 
 	s2->use();
-	s2->load_matrix("Projection", camera.projection_matrix());
-	s2->load_matrix("Camera", camera.view_matrix());
+	s2->set_matrix("Projection", camera.projection_matrix());
+	s2->set_matrix("Camera", camera.view_matrix());
 	t1->bind(0);
 
 	static float rotation{};
@@ -195,29 +195,29 @@ void draw()
 	l4.translate(5 * -UNIT_Z);
 	l5.translate(5 *  UNIT_Z);
 
-	s2->load_matrix("Model", l1.to_global());
+	s2->set_matrix("Model", l1.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	s1->use();
-	s1->load_matrix("Projection", camera.projection_matrix());
-	s2->load_matrix("Camera", camera.view_matrix());
+	s1->set_matrix("Projection", camera.projection_matrix());
+	s2->set_matrix("Camera", camera.view_matrix());
 	t2->bind(0);
 	t3->bind(1);
 
-	s1->load_matrix("Model", l2.to_global());
+	s1->set_matrix("Model", l2.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	s1->load_matrix("Model", l3.to_global());
+	s1->set_matrix("Model", l3.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	s1->load_matrix("Model", l4.to_global());
+	s1->set_matrix("Model", l4.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
-	s1->load_matrix("Model", l5.to_global());
+	s1->set_matrix("Model", l5.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
@@ -249,7 +249,7 @@ int main(int argc, char** argv)
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glfwSwapInterval(1);
 
-	init_opengl();
+	opengl_defaults();
 	init();
 	reshape(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 

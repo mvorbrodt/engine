@@ -2,5 +2,5 @@
 
 namespace engine
 {
-	void init_opengl();
+	void opengl_defaults();
 }
