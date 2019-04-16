@@ -17,6 +17,7 @@ namespace engine
 
 		void use() const;
 
+		void bind_texture(const char* name, int unit) const;
 		void load_matrix(const char* name, const matrix& m) const;
 
 	private:

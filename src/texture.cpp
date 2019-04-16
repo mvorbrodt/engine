@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <stb_image.h>
 #include "texture.hpp"
-#include <iostream>
+
 using namespace std;
 
 namespace engine
@@ -41,7 +41,6 @@ namespace engine
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char *data = stbi_load(texture_file, &width, &height, &channels, 0);
 		if(data == nullptr) throw runtime_error((string("Error loading texture ") + texture_file).c_str());
-		cout << texture_file << " width: " << width << ", height: " << height << ", channels: " << channels << endl;
 		return make_shared<texture>(width, height, channels, data, mipmaps);
 	}
 }

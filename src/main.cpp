@@ -56,7 +56,7 @@ unsigned int VBO_V, VBO_T, VBO_C, VBO_I;
 unsigned int VAO;
 
 engine::shader_ptr s;
-engine::texture_ptr t;
+engine::texture_ptr t1, t2, t3;
 
 void error(int error, const char* description)
 {
@@ -68,7 +68,15 @@ void init()
 	try
 	{
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
-		t = load_texture("data/textures/cpp.png", true);
+		t1 = load_texture("data/textures/avatar.png", true);
+		t2 = load_texture("data/textures/cpp.png", true);
+		t3 = load_texture("data/textures/mask.png", true);
+
+		s->use();
+		t1->bind(0);
+		s->bind_texture("ourTexture1", 0);
+		t2->bind(1);
+		s->bind_texture("ourTexture2", 1);
 	}
 	catch(exception& e)
 	{
@@ -167,8 +175,11 @@ void draw()
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	s->use();
 	glBindVertexArray(VAO);
+
+	s->use();
+	t1->bind(0);
+	t3->bind(1);
 
 	static float rotation{};
 	engine::system l1, l2, l3, l4, l5;
@@ -188,6 +199,9 @@ void draw()
 	s->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+	t2->bind(0);
+	t3->bind(1);
 
 	mv = camera.view_matrix() * l2.to_global();
 	s->load_matrix("ModelView", mv);

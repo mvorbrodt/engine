@@ -69,6 +69,12 @@ namespace engine
 		glUseProgram(m_handle);
 	}
 
+	void shader::bind_texture(const char* name, int unit) const
+	{
+		auto id = glGetUniformLocation(m_handle, name);
+		glUniform1i(id, unit);
+	}
+
 	void shader::load_matrix(const char* name, const matrix& m) const
 	{
 		auto id = glGetUniformLocation(m_handle, name);
