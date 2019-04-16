@@ -57,7 +57,7 @@ void init()
 {
 	try
 	{
-		s = load_shader("data/shaders/test_vertex_shader.shader", "data/shaders/test_fragment_shader.shader");
+		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
 	}
 	catch(exception& e)
 	{
