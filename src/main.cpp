@@ -69,9 +69,10 @@ void init()
 	{
 		s1 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_1.fs");
 		s2 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_2.fs");
+
 		t1 = load_texture("data/textures/avatar.png", true);
 		t2 = load_texture("data/textures/cpp.png", true);
-		t3 = load_texture("data/textures/mask.png", true);
+		t3 = load_texture("data/textures/mask.png", false);
 
 		s1->use();
 		s1->bind_texture("ourTexture1", 0);
@@ -121,10 +122,6 @@ void reshape(GLFWwindow* window, int w, int h)
 	glViewport(0, 0, w, h);
 	camera.set_width(w);
 	camera.set_height(h);
-	s1->use();
-	s1->load_matrix("Projection", camera.projection_matrix());
-	s2->use();
-	s2->load_matrix("Projection", camera.projection_matrix());
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -170,10 +167,6 @@ void mouse(GLFWwindow* window, double x, double y)
 void scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.set_fov(camera.get_fov() - yoffset);
-	s1->use();
-	s1->load_matrix("Projection", camera.projection_matrix());
-	s2->use();
-	s2->load_matrix("Projection", camera.projection_matrix());
 }
 
 void draw()
@@ -184,6 +177,7 @@ void draw()
 	glBindVertexArray(VAO);
 
 	s2->use();
+	s2->load_matrix("Projection", camera.projection_matrix());
 	t1->bind(0);
 
 	static float rotation{};
@@ -206,6 +200,7 @@ void draw()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	s1->use();
+	s1->load_matrix("Projection", camera.projection_matrix());
 	t2->bind(0);
 	t3->bind(1);
 
