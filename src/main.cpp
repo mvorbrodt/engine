@@ -1,6 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "opengl.hpp"
 #include "types.hpp"
 #include "vector.hpp"
 #include "point.hpp"
@@ -10,6 +11,7 @@
 #include "system.hpp"
 #include "pov.hpp"
 #include "transforms.hpp"
+#include "shader.hpp"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -44,31 +46,7 @@ unsigned int indices[] =
 unsigned int VBO_V, VBO_C, VBO_I;
 unsigned int VAO;
 
-const GLchar * const vs =
-	"#version 330 core\n"
-	"layout (location = 0) in vec3 aPos;\n"
-	"layout (location = 1) in vec3 aColor;\n"
-	"out vec3 ourColor;\n"
-	"uniform mat4 Projection;\n"
-	"uniform mat4 ModelView;\n"
-	"void main()\n"
-	"{\n"
-	"	gl_Position = Projection * ModelView * vec4(aPos, 1.0);\n"
-	"	ourColor = aColor;\n"
-	"}\n";
-
-const GLchar * const fs =
-	"#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"in vec3 ourColor;\n"
-	"void main()\n"
-	"{\n"
-	"	FragColor = vec4(ourColor, 1.0);\n"
-	"}\n";
-
-unsigned int vertexShader;
-unsigned int fragmentShader;
-unsigned int shaderProgram;
+engine::shader_ptr s;
 
 void error(int error, const char* description)
 {
@@ -77,60 +55,15 @@ void error(int error, const char* description)
 
 void init()
 {
-	cout << "VENDOR   : " << glGetString(GL_VENDOR) << endl;
-	cout << "RENDERED : " << glGetString(GL_RENDERER) << endl;
-	cout << "VERSION  : " << glGetString(GL_VERSION) << endl;
-	cout << "GLSL     : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
-
-	glEnable(GL_DEPTH_TEST);
-
-	int  success;
-
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vs, NULL);
-	glCompileShader(vertexShader);
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if(!success)
+	try
 	{
-		GLint length{};
-		glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
-		string infoLog;
-		infoLog.resize(length + 1);
-		glGetShaderInfoLog(vertexShader, length, NULL, infoLog.data());
-		cout << infoLog << endl;
+		s = load_shader("data/shaders/test_vertex_shader.shader", "data/shaders/test_fragment_shader.shader");
 	}
-
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fs, NULL);
-	glCompileShader(fragmentShader);
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if(!success)
+	catch(exception& e)
 	{
-		GLint length{};
-		glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
-		string infoLog;
-		infoLog.resize(length + 1);
-		glGetShaderInfoLog(fragmentShader, length, NULL, infoLog.data());
-		cout << infoLog << endl;
+		cerr << e.what() << endl;
+		exit(-1);
 	}
-
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if(!success)
-	{
-		GLint length{};
-		glGetShaderiv(shaderProgram, GL_INFO_LOG_LENGTH, &length);
-		string infoLog;
-		infoLog.resize(length);
-		glGetShaderInfoLog(shaderProgram, length, NULL, infoLog.data());
-		cout << infoLog << endl;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
 
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -159,10 +92,9 @@ void init()
 void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
-	glUseProgram(shaderProgram);
+	s->use();
 	auto p = projection(60, (real)w / (real)h, 1, 100);
-	auto id = glGetUniformLocation(shaderProgram, "Projection");
-	glUniformMatrix4fv(id, 1, GL_FALSE, p.data());
+	s->load_matrix("Projection", p);
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -212,7 +144,7 @@ void draw()
 	glColor3f(0.0, 0.0, 0.0);
 	glMatrixMode(GL_MODELVIEW);
 
-	glUseProgram(shaderProgram);
+	s->use();
 	glBindVertexArray(VAO);
 
 	static float rotation{};
@@ -230,28 +162,27 @@ void draw()
 	l5.translate(5 *  UNIT_Z);
 
 	auto mv = camera.view_matrix() * l1.to_global();
-	auto id = glGetUniformLocation(shaderProgram, "ModelView");
-	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	s->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l2.to_global();
-	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	s->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l3.to_global();
-	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	s->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l4.to_global();
-	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	s->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
 	mv = camera.view_matrix() * l5.to_global();
-	glUniformMatrix4fv(id, 1, GL_FALSE, mv.data());
+	s->load_matrix("ModelView", mv);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
@@ -281,6 +212,7 @@ int main(int argc, char** argv)
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glfwSwapInterval(1);
 
+	init_opengl();
 	init();
 	reshape(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
