@@ -150,7 +150,7 @@ void draw()
 	engine::system l1;
 	quaternion q(++rotation, UNIT_Y);
 	l1.rotate(-90, UNIT_X);
-	//l1.rotate(q);
+	l1.rotate(q);
 
 	s->set_matrix("Model", l1.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
