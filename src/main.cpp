@@ -22,8 +22,8 @@
 using namespace std;
 using namespace engine;
 
-engine::point eye{0.0, 20.0, 45.0};
-engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, point(0.0, 12.0, 0.0) - eye, UNIT_Y);
+engine::point eye{0.0, 1.0, 3.0};
+engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, point{0.0, 0.5, 0.0} - eye, UNIT_Y);
 
 engine::shader_ptr s;
 engine::texture_ptr t;
@@ -39,8 +39,8 @@ void init()
 	try
 	{
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
-		t = load_texture("data/textures/skull.jpg", false, false);
-		auto data = load_model("data/models/skull.obj");
+		t = load_texture("data/textures/chalet.jpg", false, false);
+		auto data = load_model("data/models/chalet.obj");
 		for(auto& d : data) v.push_back(make_vertex_array(d));
 	}
 	catch(exception& e)
