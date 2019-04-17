@@ -6,7 +6,7 @@ using namespace std;
 
 namespace
 {
-	void GLAPIENTRY OpgnGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+	void GLAPIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
 		cerr << "OpenGL:" << (type == GL_DEBUG_TYPE_ERROR ? " ERROR " : " ") << "type = " << type << ", severity = " << severity << ", message = " << message << endl;
 	}
@@ -24,14 +24,14 @@ namespace engine
 		if(glDebugMessageCallback != nullptr)
 		{
 			glEnable(GL_DEBUG_OUTPUT);
-			glDebugMessageCallback(OpgnGLDebugMessageCallback, 0);
+			glDebugMessageCallback(OpenGLDebugMessageCallback, 0);
 		}
 
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_FRAMEBUFFER_SRGB);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_MULTISAMPLE);
+		//glEnable(GL_FRAMEBUFFER_SRGB);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}

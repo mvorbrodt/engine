@@ -22,11 +22,12 @@
 using namespace std;
 using namespace engine;
 
-engine::point eye{0.0, 1.0, 3.0};
-engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 45.0f, 1.0, 100.0, eye, point{0.0, 0.5, 0.0} - eye, UNIT_Y);
+engine::point light{0.0, 25.0, 45.0};
+engine::point eye{0.0, 25.0, 45.0};
+engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 100.0, eye, point{0.0, 11.0, 0.0} - eye, UNIT_Y);
 
 engine::shader_ptr s;
-engine::texture_ptr t;
+engine::texture_map_ptr t, n;
 engine::vertex_arrays v;
 engine::system l;
 
@@ -40,14 +41,15 @@ void init()
 	try
 	{
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
-		t = load_texture("data/textures/chalet.jpg", true, true);
-		auto data = load_model("data/models/chalet.obj");
+		t = load_texture_map("data/textures/skull.jpg", false, false);
+		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
+		auto data = load_model("data/models/skull.obj");
 		for(auto& d : data) v.push_back(make_vertex_array(d));
 
 		s->use();
 		s->set_float("brightness", 1.0);
 		l.rotate(-90, UNIT_X);
-		l.rotate( 90, UNIT_Y);
+		//l.rotate( 90, UNIT_Y);
 	}
 	catch(exception& e)
 	{
@@ -69,12 +71,8 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		switch(key)
 		{
-			case GLFW_KEY_1: s->use(); s->set_bool("show_normal", false); break;
-			case GLFW_KEY_2: s->use(); s->set_bool("show_normal", true); break;
-			case GLFW_KEY_3: s->use(); s->set_float("brightness", 1.00); break;
-			case GLFW_KEY_4: s->use(); s->set_float("brightness", 0.75); break;
-			case GLFW_KEY_5: s->use(); s->set_float("brightness", 0.50); break;
-			case GLFW_KEY_6: s->use(); s->set_float("brightness", 0.25); break;
+			case GLFW_KEY_1: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
+			case GLFW_KEY_2: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
 			case GLFW_KEY_Q: l.rotate( 10, UNIT_Y); break;
 			case GLFW_KEY_E: l.rotate(-10, UNIT_Y); break;
 			case GLFW_KEY_A: camera.move( 0,  0.5); break;
@@ -123,8 +121,15 @@ void draw()
 	s->set_mat4("Projection", camera.projection_matrix().data());
 	s->set_mat4("Camera", camera.view_matrix().data());
 	s->set_mat4("Model", l.to_global().data());
+	light *= rotate(1, UNIT_Y);
+	light *= rotate(1.33, UNIT_X);
+	light *= rotate(1.66, UNIT_Z);
+	l.rotate(-0.25, UNIT_Y);
+	s->set_vec3("Light", light.data());
 	s->bind_texture("texture1", 0);
+	s->bind_texture("texture2", 1);
 	t->bind(0);
+	n->bind(1);
 
 	for(auto& m : v) m->draw();
 }

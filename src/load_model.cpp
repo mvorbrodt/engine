@@ -68,21 +68,27 @@ namespace engine
 				" (channels: " << mesh->GetNumUVChannels() << ")" << endl;
 
 			point_buffer position_buffer;
+			texcoord_buffer texcoord_buffer;
 			vector_buffer normal_buffer;
 			vector_buffer tangent_buffer;
 			vector_buffer bitangent_buffer;
-			texcoord_buffer texcoord_buffer;
 
 			position_buffer.reserve(mesh->mNumVertices);
+			if(mesh->HasTextureCoords(0)) texcoord_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasNormals()) normal_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasTangentsAndBitangents()) tangent_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasTangentsAndBitangents()) bitangent_buffer.reserve(mesh->mNumVertices);
-			if(mesh->HasTextureCoords(0)) texcoord_buffer.reserve(mesh->mNumVertices);
 
 			for (unsigned int i = 0 ; i < mesh->mNumVertices ; ++i)
 			{
 				const aiVector3D* position = &(mesh->mVertices[i]);
 				position_buffer.push_back(point(position->x, position->y, position->z));
+
+				if(mesh->HasTextureCoords(0))
+				{
+					const aiVector3D* texture_coord = &(mesh->mTextureCoords[0][i]);
+					texcoord_buffer.push_back(texcoord(texture_coord->x, texture_coord->y));
+				}
 
 				if(mesh->HasNormals())
 				{
@@ -96,12 +102,6 @@ namespace engine
 					const aiVector3D* bitangent = &(mesh->mBitangents[i]);
 					tangent_buffer.push_back(vector(tangent->x, tangent->y, tangent->z));
 					bitangent_buffer.push_back(vector(bitangent->x, bitangent->y, bitangent->z));
-				}
-
-				if(mesh->HasTextureCoords(0))
-				{
-					const aiVector3D* texture_coord = &(mesh->mTextureCoords[0][i]);
-					texcoord_buffer.push_back(texcoord(texture_coord->x, texture_coord->y));
 				}
 			}
 
@@ -117,7 +117,7 @@ namespace engine
 				index_buffer.push_back(face.mIndices[2]);
 			}
 
-			result.push_back(make_shared<model_data>(position_buffer, normal_buffer, tangent_buffer, bitangent_buffer, texcoord_buffer, index_buffer));
+			result.push_back(make_shared<model_data>(position_buffer, texcoord_buffer, normal_buffer, tangent_buffer, bitangent_buffer, index_buffer));
 		}
 
 		return result;

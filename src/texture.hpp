@@ -4,16 +4,16 @@
 
 namespace engine
 {
-	class texture
+	class texture_map
 	{
 	public:
-		texture(int width, int height, int channels, const unsigned char* data, bool gamma_correction, bool mipmaps);
-		texture(int width, int height, int channels, const float* data, bool mipmaps);
-		texture(const texture&) = delete;
-		texture(texture&&) = delete;
-		texture& operator = (const texture&) = delete;
-		texture& operator = (texture&&) = delete;
-		~texture();
+		texture_map(int width, int height, int channels, const unsigned char* data, bool gamma_correction, bool mipmaps);
+		texture_map(int width, int height, int channels, const float* data, bool mipmaps);
+		texture_map(const texture_map&) = delete;
+		texture_map(texture_map&&) = delete;
+		texture_map& operator = (const texture_map&) = delete;
+		texture_map& operator = (texture_map&&) = delete;
+		~texture_map();
 
 		void bind(int unit) const;
 
@@ -22,7 +22,7 @@ namespace engine
 		unsigned int m_texture_handle = 0;
 	};
 
-	using texture_ptr = std::shared_ptr<texture>;
+	using texture_map_ptr = std::shared_ptr<texture_map>;
 
-	texture_ptr load_texture(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels = 0, bool always_load_as_hdr = false);
+	texture_map_ptr load_texture_map(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels = 0, bool always_load_as_hdr = false);
 }

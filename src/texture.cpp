@@ -16,7 +16,7 @@ using namespace std;
 
 namespace engine
 {
-	texture::texture(int width, int height, int channels, const unsigned char* data, bool gamma_correction, bool mipmaps)
+	texture_map::texture_map(int width, int height, int channels, const unsigned char* data, bool gamma_correction, bool mipmaps)
 	{
 		assert(width > 0 && height > 0 && (channels == 3 || channels == 4));
 
@@ -37,7 +37,7 @@ namespace engine
 		build_texture(internal_format, width, height, channels, data_format, GL_UNSIGNED_BYTE, data, mipmaps);
 	}
 
-	texture::texture(int width, int height, int channels, const float* data, bool mipmaps)
+	texture_map::texture_map(int width, int height, int channels, const float* data, bool mipmaps)
 	{
 		assert(width > 0 && height > 0 && (channels == 3 || channels == 4));
 
@@ -58,7 +58,7 @@ namespace engine
 		build_texture(internal_format, width, height, channels, data_format, GL_FLOAT, data, mipmaps);
 	}
 
-	void texture::build_texture(GLenum internal_format, int width, int height, int channels, GLenum data_format, GLenum data_type, const void* data, bool mipmaps)
+	void texture_map::build_texture(GLenum internal_format, int width, int height, int channels, GLenum data_format, GLenum data_type, const void* data, bool mipmaps)
 	{
 		glGenTextures(1, &m_texture_handle);
 		glBindTexture(GL_TEXTURE_2D, m_texture_handle);
@@ -82,18 +82,18 @@ namespace engine
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	texture::~texture()
+	texture_map::~texture_map()
 	{
 		glDeleteTextures(1, &m_texture_handle);
 	}
 
-	void texture::bind(int unit) const
+	void texture_map::bind(int unit) const
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, m_texture_handle);
 	}
 
-	texture_ptr load_texture_ldr(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels)
+	texture_map_ptr load_texture_map_ldr(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels)
 	{
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
@@ -104,10 +104,10 @@ namespace engine
 
 		cout << "\twidth: " << width << ", height: " << height << ", input channels: " << channels << ", output channels: " << desired_channels << endl;
 
-		return make_shared<texture>(width, height, desired_channels, data, gamma_correction, mipmaps);
+		return make_shared<texture_map>(width, height, desired_channels, data, gamma_correction, mipmaps);
 	}
 
-	texture_ptr load_texture_hdr(const char* texture_file, bool mipmaps, int desired_channels)
+	texture_map_ptr load_texture_map_hdr(const char* texture_file, bool mipmaps, int desired_channels)
 	{
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
@@ -118,13 +118,13 @@ namespace engine
 
 		cout << "\twidth: " << width << ", height: " << height << ", input channels: " << channels << ", output channels: " << desired_channels << endl;
 
-		return make_shared<texture>(width, height, desired_channels, data, mipmaps);
+		return make_shared<texture_map>(width, height, desired_channels, data, mipmaps);
 	}
 
-	texture_ptr load_texture(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels, bool always_load_as_hdr)
+	texture_map_ptr load_texture_map(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels, bool always_load_as_hdr)
 	{
 		bool hdr = always_load_as_hdr ? true : stbi_is_hdr(texture_file);
-		if(hdr) return load_texture_hdr(texture_file, mipmaps, desired_channels);
-		else return load_texture_ldr(texture_file, gamma_correction, mipmaps, desired_channels);
+		if(hdr) return load_texture_map_hdr(texture_file, mipmaps, desired_channels);
+		else return load_texture_map_ldr(texture_file, gamma_correction, mipmaps, desired_channels);
 	}
 }
