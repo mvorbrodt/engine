@@ -25,12 +25,9 @@ using namespace engine;
 engine::point eye{0.0, 1.0, 3.0};
 engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, ORIGIN - eye, UNIT_Y);
 
-unsigned int VBO_V, VBO_N, VBO_T, VBO_I;
-unsigned int VAO;
-unsigned int triangles{};
-
 engine::shader_ptr s;
 engine::texture_ptr t;
+engine::vertex_array_ptr v;
 
 void error(int error, const char* description)
 {
@@ -43,37 +40,7 @@ void init()
 	{
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
 		t = load_texture("data/textures/chalet.jpg", false, false);
-		auto [pb, nb, tb, ib] = load_model_file("data/models/chalet.obj");
-		triangles = ib.size();
-
-		glGenVertexArrays(1, &VAO);
-		glBindVertexArray(VAO);
-
-		glGenBuffers(1, &VBO_V);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_V);
-		glBufferData(GL_ARRAY_BUFFER, pb.size() * sizeof(real), pb.data(), GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glGenBuffers(1, &VBO_N);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_N);
-		glBufferData(GL_ARRAY_BUFFER, nb.size() * sizeof(real), nb.data(), GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-
-		glGenBuffers(1, &VBO_T);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_T);
-		glBufferData(GL_ARRAY_BUFFER, tb.size() * sizeof(real), tb.data(), GL_STATIC_DRAW);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(2);
-
-		glGenBuffers(1, &VBO_I);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_I);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ib.size() * sizeof(int), ib.data(), GL_STATIC_DRAW);
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		v = make_vertex_array(load_model_file("data/models/chalet.obj"));
 	}
 	catch(exception& e)
 	{
@@ -139,23 +106,19 @@ void draw()
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glBindVertexArray(VAO);
-
-	s->use();
-	s->set_matrix("Projection", camera.projection_matrix());
-	s->set_matrix("Camera", camera.view_matrix());
-	s->bind_texture("ourTexture", 0);
-	t->bind(0);
-
 	static float rotation{};
 	engine::system l1;
 	quaternion q(++rotation, UNIT_Y);
 	l1.rotate(-90, UNIT_X);
 	l1.rotate(q);
 
+	s->use();
+	s->set_matrix("Projection", camera.projection_matrix());
+	s->set_matrix("Camera", camera.view_matrix());
 	s->set_matrix("Model", l1.to_global());
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, triangles, GL_UNSIGNED_INT, (void*)0);
+	s->bind_texture("ourTexture", 0);
+	t->bind(0);
+	v->draw();
 }
 
 int main(int argc, char** argv)
@@ -194,12 +157,6 @@ int main(int argc, char** argv)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO_V);
-	glDeleteBuffers(1, &VBO_T);
-	glDeleteBuffers(1, &VBO_N);
-	glDeleteBuffers(1, &VBO_I);
 
 	glfwTerminate();
 }
