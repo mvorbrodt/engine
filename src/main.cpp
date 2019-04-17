@@ -41,10 +41,7 @@ void init()
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
 		t = load_texture("data/textures/skull.jpg", false, false);
 		auto data = load_model("data/models/skull.obj");
-		for(auto& d : data)
-		{
-			v.push_back(make_vertex_array(d));
-		}
+		for(auto& d : data) v.push_back(make_vertex_array(d));
 	}
 	catch(exception& e)
 	{
