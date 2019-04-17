@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <assimp/Importer.hpp>
+#include <assimp/ProgressHandler.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/mesh.h>
@@ -10,19 +11,45 @@
 
 using namespace std;
 
+namespace
+{
+	class AssimpProgress : public Assimp::ProgressHandler
+	{
+	public:
+		AssimpProgress(const char* model_file)
+		: m_model_file{ model_file } {}
+
+		virtual bool Update(float percentage)
+		{
+			if(percentage - m_last_percentage >= 0.1f)
+			{
+				cout << "Loading " << m_model_file << ", " << (int)(100 * percentage) << "% done..." << endl;
+				m_last_percentage = percentage;
+			}
+			return true;
+		}
+	private:
+		const char* m_model_file;
+		float m_last_percentage = 0.0;
+	};
+}
 namespace engine
 {
 	model_data_array load_model(const char* model_file)
 	{
 		Assimp::Importer importer;
+		importer.SetProgressHandler(new AssimpProgress(model_file));
 		const aiScene* scene = importer.ReadFile(model_file,
 			aiProcess_Triangulate |
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |
-			aiProcess_JoinIdenticalVertices);
+			aiProcess_JoinIdenticalVertices |
+			aiProcess_ImproveCacheLocality);
 		if(scene == nullptr) throw runtime_error(string("Assimp::Importer::ReadFile failed! ") + importer.GetErrorString());
 
 		assert(scene->mNumMeshes > 0);
+
+		cout << "Processing " << model_file << "..." << endl;
 
 		model_data_array result;
 
@@ -32,8 +59,13 @@ namespace engine
 			assert(mesh->mNumVertices > 0 && mesh->mNumFaces > 0);
 			assert(mesh->HasPositions());
 
-			cout << model_file << ", mesh #" << (m + 1) << ", vertices: " << mesh->mNumVertices << ", faces: " << mesh->mNumFaces << endl;
-			cout << "\tnormals: " << mesh->HasNormals() << ", tan/bi: " << mesh->HasTangentsAndBitangents() << ", texcoords: " << mesh->HasTextureCoords(0) << endl;
+			cout << "\tmesh #" << (m + 1) <<
+				", vertices: " << mesh->mNumVertices <<
+				", faces: " << mesh->mNumFaces <<  endl;
+			cout << "\tnormals: " << mesh->HasNormals() <<
+				", tan/bi: " << mesh->HasTangentsAndBitangents() <<
+				", texcoords: " << mesh->HasTextureCoords(0) <<
+				" (channels: " << mesh->GetNumUVChannels() << ")" << endl;
 
 			point_buffer position_buffer;
 			vector_buffer normal_buffer;

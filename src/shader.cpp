@@ -71,10 +71,76 @@ namespace engine
 		glUseProgram(m_program_handle);
 	}
 
-	void shader::set_matrix(const char* name, const matrix& m) const
+	void shader::set_bool(const char* name, bool value) const
 	{
 		auto id = glGetUniformLocation(m_program_handle, name);
-		glUniformMatrix4fv(id, 1, GL_FALSE, m.data());
+		glUniform1i(id, value);
+	}
+
+	void shader::set_int(const char* name, int value) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform1i(id, value);
+	}
+
+	void shader::set_float(const char* name, float value) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform1f(id, value);
+	}
+
+	void shader::set_vec2(const char* name, real x, real y) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform2f(id, x, y);
+	}
+
+	void shader::set_vec3(const char* name, real x, real y, real z) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform3f(id, x, y, z);
+	}
+
+	void shader::set_vec4(const char* name, real x, real y, real z, real w) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform4f(id, x, y, z, w);
+	}
+
+	void shader::set_vec2(const char* name, const real* vec) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform2fv(id, 1, vec);
+	}
+
+	void shader::set_vec3(const char* name, const real* vec) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform3fv(id, 1, vec);
+	}
+
+	void shader::set_vec4(const char* name, const real* vec) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniform4fv(id, 1, vec);
+	}
+
+	void shader::set_mat2(const char* name, const real* mat) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniformMatrix2fv(id, 1, GL_FALSE, mat);
+	}
+
+	void shader::set_mat3(const char* name, const real* mat) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniformMatrix3fv(id, 1, GL_FALSE, mat);
+	}
+
+	void shader::set_mat4(const char* name, const real* mat) const
+	{
+		auto id = glGetUniformLocation(m_program_handle, name);
+		glUniformMatrix4fv(id, 1, GL_FALSE, mat);
 	}
 
 	void shader::bind_texture(const char* name, int unit) const

@@ -16,8 +16,8 @@
 #include "vertex_array.hpp"
 #include "load_model.hpp"
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH  800
+#define WINDOW_HEIGHT 600
 
 using namespace std;
 using namespace engine;
@@ -28,6 +28,7 @@ engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 45.0f, 1.0, 100.0, eye, point{0.
 engine::shader_ptr s;
 engine::texture_ptr t;
 engine::vertex_arrays v;
+engine::system l;
 
 void error(int error, const char* description)
 {
@@ -42,6 +43,11 @@ void init()
 		t = load_texture("data/textures/chalet.jpg", true, true);
 		auto data = load_model("data/models/chalet.obj");
 		for(auto& d : data) v.push_back(make_vertex_array(d));
+
+		s->use();
+		s->set_float("brightness", 1.0);
+		l.rotate(-90, UNIT_X);
+		l.rotate( 90, UNIT_Y);
 	}
 	catch(exception& e)
 	{
@@ -59,16 +65,22 @@ void reshape(GLFWwindow* window, int w, int h)
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if(action == GLFW_PRESS)
+	if(action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		switch(key)
 		{
-			case GLFW_KEY_Q: camera.roll(-10); break;
-			case GLFW_KEY_E: camera.roll( 10); break;
-			case GLFW_KEY_A: camera.move( 0,  1); break;
-			case GLFW_KEY_D: camera.move( 0, -1); break;
-			case GLFW_KEY_W: camera.move( 1,  0); break;
-			case GLFW_KEY_S: camera.move(-1,  0); break;
+			case GLFW_KEY_1: s->use(); s->set_bool("show_normal", false); break;
+			case GLFW_KEY_2: s->use(); s->set_bool("show_normal", true); break;
+			case GLFW_KEY_3: s->use(); s->set_float("brightness", 1.00); break;
+			case GLFW_KEY_4: s->use(); s->set_float("brightness", 0.75); break;
+			case GLFW_KEY_5: s->use(); s->set_float("brightness", 0.50); break;
+			case GLFW_KEY_6: s->use(); s->set_float("brightness", 0.25); break;
+			case GLFW_KEY_Q: l.rotate( 10, UNIT_Y); break;
+			case GLFW_KEY_E: l.rotate(-10, UNIT_Y); break;
+			case GLFW_KEY_A: camera.move( 0,  0.5); break;
+			case GLFW_KEY_D: camera.move( 0, -0.5); break;
+			case GLFW_KEY_W: camera.move( 0.5,  0); break;
+			case GLFW_KEY_S: camera.move(-0.5,  0); break;
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 		}
 	}
@@ -104,20 +116,14 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
 
 void draw()
 {
-	glClearColor(0.5, 0.5, 0.5, 1.0);
+	glClearColor(0.25, 0.25, 0.25, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	static float rotation{};
-	engine::system l1;
-	quaternion q(++rotation, UNIT_Y);
-	l1.rotate(-90, UNIT_X);
-	l1.rotate(q);
-
 	s->use();
-	s->set_matrix("Projection", camera.projection_matrix());
-	s->set_matrix("Camera", camera.view_matrix());
-	s->set_matrix("Model", l1.to_global());
-	s->bind_texture("ourTexture", 0);
+	s->set_mat4("Projection", camera.projection_matrix().data());
+	s->set_mat4("Camera", camera.view_matrix().data());
+	s->set_mat4("Model", l.to_global().data());
+	s->bind_texture("texture1", 0);
 	t->bind(0);
 
 	for(auto& m : v) m->draw();

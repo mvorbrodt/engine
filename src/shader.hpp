@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "matrix.hpp"
+#include "types.hpp"
 
 namespace engine
 {
@@ -17,7 +17,22 @@ namespace engine
 
 		void use() const;
 
-		void set_matrix(const char* name, const matrix& m) const;
+		void set_bool(const char* name, bool value) const;
+		void set_int(const char* name, int value) const;
+		void set_float(const char* name, float value) const;
+
+		void set_vec2(const char* name, real x, real y) const;
+		void set_vec3(const char* name, real x, real y, real z) const;
+		void set_vec4(const char* name, real x, real y, real z, real w) const;
+
+		void set_vec2(const char* name, const real* vec) const;
+		void set_vec3(const char* name, const real* vec) const;
+		void set_vec4(const char* name, const real* vec) const;
+
+		void set_mat2(const char* name, const real* mat) const;
+		void set_mat3(const char* name, const real* mat) const;
+		void set_mat4(const char* name, const real* mat) const;
+
 		void bind_texture(const char* name, int unit) const;
 
 	private:
