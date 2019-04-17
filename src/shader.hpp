@@ -21,9 +21,9 @@ namespace engine
 		void bind_texture(const char* name, int unit) const;
 
 	private:
-		int m_vertex_shader_handle;
-		int m_fragment_shader_handle;
-		int m_program_handle;
+		int m_vertex_shader_handle = 0;
+		int m_fragment_shader_handle = 0;
+		int m_program_handle = 0;
 	};
 
 	using shader_ptr = std::shared_ptr<shader>;

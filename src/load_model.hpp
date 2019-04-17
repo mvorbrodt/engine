@@ -10,8 +10,8 @@
 
 namespace engine
 {
-	// <vertex, normal, tangent, texture, index>
-	using model_data = std::tuple<point_buffer, vector_buffer, vector_buffer, texcoord_buffer, int_buffer>;
+	// <vertex, normal, tangent, bitangent, texture, index>
+	using model_data = std::tuple<point_buffer, vector_buffer, vector_buffer, vector_buffer, texcoord_buffer, int_buffer>;
 	using model_data_ptr = std::shared_ptr<model_data>;
 	using model_data_array = std::vector<model_data_ptr>;
 

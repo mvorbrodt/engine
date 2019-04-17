@@ -19,13 +19,14 @@ namespace engine
 		void draw() const;
 
 	private:
-		unsigned int m_triangles;
-		unsigned int m_position_buffer_handle;
-		unsigned int m_normal_buffer_handle;
-		unsigned int m_tangent_buffer_handle;
-		unsigned int m_texcoord_buffer_handle;
-		unsigned int m_index_buffer_handle;
-		unsigned int m_vertex_array_handle;
+		unsigned int m_triangles = 0;
+		unsigned int m_position_buffer_handle = 0;
+		unsigned int m_normal_buffer_handle = 0;
+		unsigned int m_tangent_buffer_handle = 0;
+		unsigned int m_bitangent_buffer_handle = 0;
+		unsigned int m_texcoord_buffer_handle = 0;
+		unsigned int m_index_buffer_handle = 0;
+		unsigned int m_vertex_array_handle = 0;
 	};
 
 	using vertex_array_ptr = std::shared_ptr<vertex_array>;

@@ -30,30 +30,47 @@ namespace engine
 		{
 			const aiMesh* mesh = scene->mMeshes[m];
 			assert(mesh->mNumVertices > 0 && mesh->mNumFaces > 0);
+			assert(mesh->HasPositions());
 
-			cout << model_file << ", vertices: " << mesh->mNumVertices << ", faces: " << mesh->mNumFaces << endl;
+			cout << model_file << ", mesh #" << (m + 1) << ", vertices: " << mesh->mNumVertices << ", faces: " << mesh->mNumFaces << endl;
+			cout << "\tnormals: " << mesh->HasNormals() << ", tan/bi: " << mesh->HasTangentsAndBitangents() << ", texcoords: " << mesh->HasTextureCoords(0) << endl;
 
 			point_buffer position_buffer;
 			vector_buffer normal_buffer;
 			vector_buffer tangent_buffer;
+			vector_buffer bitangent_buffer;
 			texcoord_buffer texcoord_buffer;
 
 			position_buffer.reserve(mesh->mNumVertices);
-			normal_buffer.reserve(mesh->mNumVertices);
-			tangent_buffer.reserve(mesh->mNumVertices);
-			texcoord_buffer.reserve(mesh->mNumVertices);
+			if(mesh->HasNormals()) normal_buffer.reserve(mesh->mNumVertices);
+			if(mesh->HasTangentsAndBitangents()) tangent_buffer.reserve(mesh->mNumVertices);
+			if(mesh->HasTangentsAndBitangents()) bitangent_buffer.reserve(mesh->mNumVertices);
+			if(mesh->HasTextureCoords(0)) texcoord_buffer.reserve(mesh->mNumVertices);
 
 			for (unsigned int i = 0 ; i < mesh->mNumVertices ; ++i)
 			{
 				const aiVector3D* position = &(mesh->mVertices[i]);
-				const aiVector3D* normal = &(mesh->mNormals[i]);
-				const aiVector3D* tangent = &(mesh->mTangents[i]);
-				const aiVector3D* texture_coord = &(mesh->mTextureCoords[0][i]);
-
 				position_buffer.push_back(point(position->x, position->y, position->z));
-				normal_buffer.push_back(vector(normal->x, normal->y, normal->z));
-				tangent_buffer.push_back(vector(tangent->x, tangent->y, tangent->z));
-				texcoord_buffer.push_back(texcoord(texture_coord->x, texture_coord->y));
+
+				if(mesh->HasNormals())
+				{
+					const aiVector3D* normal = &(mesh->mNormals[i]);
+					normal_buffer.push_back(vector(normal->x, normal->y, normal->z));
+				}
+
+				if(mesh->HasTangentsAndBitangents())
+				{
+					const aiVector3D* tangent = &(mesh->mTangents[i]);
+					const aiVector3D* bitangent = &(mesh->mBitangents[i]);
+					tangent_buffer.push_back(vector(tangent->x, tangent->y, tangent->z));
+					bitangent_buffer.push_back(vector(bitangent->x, bitangent->y, bitangent->z));
+				}
+
+				if(mesh->HasTextureCoords(0))
+				{
+					const aiVector3D* texture_coord = &(mesh->mTextureCoords[0][i]);
+					texcoord_buffer.push_back(texcoord(texture_coord->x, texture_coord->y));
+				}
 			}
 
 			int_buffer index_buffer;
@@ -68,7 +85,7 @@ namespace engine
 				index_buffer.push_back(face.mIndices[2]);
 			}
 
-			result.push_back(make_shared<model_data>(position_buffer, normal_buffer, tangent_buffer, texcoord_buffer, index_buffer));
+			result.push_back(make_shared<model_data>(position_buffer, normal_buffer, tangent_buffer, bitangent_buffer, texcoord_buffer, index_buffer));
 		}
 
 		return result;
