@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include <string>
 #include <stdexcept>
 #include <glad/glad.h>
@@ -31,8 +32,8 @@ namespace engine
 				break;
 		}
 
-		glGenTextures(1, &m_handle);
-		glBindTexture(GL_TEXTURE_2D, m_handle);
+		glGenTextures(1, &m_texture_handle);
+		glBindTexture(GL_TEXTURE_2D, m_texture_handle);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -51,17 +52,19 @@ namespace engine
 			glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		}
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	texture::~texture()
 	{
-		glDeleteTextures(1, &m_handle);
+		glDeleteTextures(1, &m_texture_handle);
 	}
 
 	void texture::bind(int unit) const
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D, m_handle);
+		glBindTexture(GL_TEXTURE_2D, m_texture_handle);
 	}
 
 	texture_ptr load_texture(const char* texture_file, bool gamma_correction, bool mipmaps)
@@ -73,6 +76,8 @@ namespace engine
 		{
 			throw runtime_error((string("Error loading texture ") + texture_file).c_str());
 		}
+
+		cout << texture_file << ", width: " << width << ", height: " << height << ", channels: " << channels << endl;
 
 		return make_shared<texture>(width, height, channels, data, gamma_correction, mipmaps);
 	}

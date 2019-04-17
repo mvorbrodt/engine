@@ -17,7 +17,7 @@ namespace engine
 		void bind(int unit) const;
 
 	private:
-		unsigned int m_handle;
+		unsigned int m_texture_handle;
 	};
 
 	using texture_ptr = std::shared_ptr<texture>;

@@ -1,8 +1,13 @@
 #pragma once
 
+#include <vector>
+
 namespace engine
 {
 	using real = float;
+	using real_buffer = std::vector<real>;
+	using byte_buffer = std::vector<unsigned char>;
+	using int_buffer = std::vector<int>;
 
 	enum VC
 	{

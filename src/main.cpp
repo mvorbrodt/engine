@@ -13,6 +13,7 @@
 #include "transforms.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+#include "vertex_array.hpp"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -20,43 +21,15 @@
 using namespace std;
 using namespace engine;
 
-engine::point eye{0.0, 5.0, 10.0};
+engine::point eye{0.0, 2.0, 5.0};
 engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, ORIGIN - eye, UNIT_Y);
 
-real i_vertices[] =
-{
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.5f,  0.5f, 0.0f,
-	-0.5f,  0.5f, 0.0f,
-};
-
-unsigned char i_colors[] =
-{
-	255, 0, 0,
-	0, 255, 0,
-	0, 0, 255,
-	255, 255, 255
-};
-
-real i_texture_coords[] =
-{
-	0.0, 0.0,
-	1.0, 0.0,
-	1.0, 1.0,
-	0.0, 1.0
-};
-
-unsigned int indices[] =
-{
-	0, 1, 2, 2, 3, 0
-};
-
-unsigned int VBO_V, VBO_T, VBO_C, VBO_I;
+unsigned int VBO_V, VBO_N, VBO_T, VBO_I;
 unsigned int VAO;
+unsigned int triangles{};
 
-engine::shader_ptr s1, s2;
-engine::texture_ptr t1, t2, t3;
+engine::shader_ptr s;
+engine::texture_ptr t;
 
 void error(int error, const char* description)
 {
@@ -67,54 +40,45 @@ void init()
 {
 	try
 	{
-		s1 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_1.fs");
-		s2 = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader_2.fs");
+		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
+		t = load_texture("data/textures/chalet.jpg", false, false);
+		auto [pb, nb, tb, ib] = load_model_file("data/models/chalet.obj");
+		triangles = ib.size();
 
-		t1 = load_texture("data/textures/avatar.png", true, true);
-		t2 = load_texture("data/textures/cpp.png", true, true);
-		t3 = load_texture("data/textures/mask.png", false, false);
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
 
-		s1->use();
-		s1->bind_texture("ourTexture1", 0);
-		s1->bind_texture("ourTexture2", 1);
+		glGenBuffers(1, &VBO_V);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_V);
+		glBufferData(GL_ARRAY_BUFFER, pb.size() * sizeof(real), pb.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
 
-		s2->use();
-		s2->bind_texture("ourTexture1", 0);
+		glGenBuffers(1, &VBO_N);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_N);
+		glBufferData(GL_ARRAY_BUFFER, nb.size() * sizeof(real), nb.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+
+		glGenBuffers(1, &VBO_T);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_T);
+		glBufferData(GL_ARRAY_BUFFER, tb.size() * sizeof(real), tb.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(2);
+
+		glGenBuffers(1, &VBO_I);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_I);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ib.size() * sizeof(int), ib.data(), GL_STATIC_DRAW);
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	catch(exception& e)
 	{
 		cerr << e.what() << endl;
 		exit(-1);
 	}
-
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	glGenBuffers(1, &VBO_V);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_V);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(i_vertices), i_vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glGenBuffers(1, &VBO_T);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_T);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(i_texture_coords), i_texture_coords, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-
-	glGenBuffers(1, &VBO_C);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_C);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(i_colors), i_colors, GL_STATIC_DRAW);
-	glVertexAttribPointer(2, 3, GL_UNSIGNED_BYTE, GL_TRUE, 3 * sizeof(unsigned char), (void*)0);
-	glEnableVertexAttribArray(2);
-
-	glGenBuffers(1, &VBO_I);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBO_I);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void reshape(GLFWwindow* window, int w, int h)
@@ -176,51 +140,21 @@ void draw()
 
 	glBindVertexArray(VAO);
 
-	s2->use();
-	s2->set_matrix("Projection", camera.projection_matrix());
-	s2->set_matrix("Camera", camera.view_matrix());
-	t1->bind(0);
+	s->use();
+	s->set_matrix("Projection", camera.projection_matrix());
+	s->set_matrix("Camera", camera.view_matrix());
+	s->bind_texture("ourTexture", 0);
+	t->bind(0);
 
 	static float rotation{};
-	engine::system l1, l2, l3, l4, l5;
+	engine::system l1;
 	quaternion q(++rotation, UNIT_Y);
-	l1.rotate(q);
-	l2.rotate(q);
-	l3.rotate(q);
-	l4.rotate(q);
-	l5.rotate(q);
+	l1.rotate(-90, UNIT_X);
+	//l1.rotate(q);
 
-	l2.translate(5 *  UNIT_X);
-	l3.translate(5 * -UNIT_X);
-	l4.translate(5 * -UNIT_Z);
-	l5.translate(5 *  UNIT_Z);
-
-	s2->set_matrix("Model", l1.to_global());
+	s->set_matrix("Model", l1.to_global());
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-
-	s1->use();
-	s1->set_matrix("Projection", camera.projection_matrix());
-	s2->set_matrix("Camera", camera.view_matrix());
-	t2->bind(0);
-	t3->bind(1);
-
-	s1->set_matrix("Model", l2.to_global());
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-
-	s1->set_matrix("Model", l3.to_global());
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-
-	s1->set_matrix("Model", l4.to_global());
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-
-	s1->set_matrix("Model", l5.to_global());
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
-
+	glDrawElements(GL_TRIANGLES, triangles, GL_UNSIGNED_INT, (void*)0);
 }
 
 int main(int argc, char** argv)
@@ -262,7 +196,9 @@ int main(int argc, char** argv)
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO_V);
-	glDeleteBuffers(1, &VBO_C);
+	glDeleteBuffers(1, &VBO_T);
+	glDeleteBuffers(1, &VBO_N);
+	glDeleteBuffers(1, &VBO_I);
 
 	glfwTerminate();
 }

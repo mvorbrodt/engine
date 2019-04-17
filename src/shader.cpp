@@ -12,72 +12,73 @@ namespace engine
 	shader::shader(const char* vertex_shader_source, const char* fragment_shader_source)
 	{
 		int success{};
-		int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
-		glCompileShader(vertex_shader);
-		glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
+		m_vertex_shader_handle = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(m_vertex_shader_handle, 1, &vertex_shader_source, NULL);
+		glCompileShader(m_vertex_shader_handle);
+		glGetShaderiv(m_vertex_shader_handle, GL_COMPILE_STATUS, &success);
 		if(!success)
 		{
 			GLint length{};
-			glGetShaderiv(vertex_shader, GL_INFO_LOG_LENGTH, &length);
+			glGetShaderiv(m_vertex_shader_handle, GL_INFO_LOG_LENGTH, &length);
 			string error;
 			error.resize(length + 1);
-			glGetShaderInfoLog(vertex_shader, length, NULL, error.data());
+			glGetShaderInfoLog(m_vertex_shader_handle, length, NULL, error.data());
 			throw runtime_error("OpenGL Vertex Shader: " + error);
 		}
 
-		int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
-		glCompileShader(fragment_shader);
-		glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
+		m_fragment_shader_handle = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(m_fragment_shader_handle, 1, &fragment_shader_source, NULL);
+		glCompileShader(m_fragment_shader_handle);
+		glGetShaderiv(m_fragment_shader_handle, GL_COMPILE_STATUS, &success);
 		if(!success)
 		{
 			GLint length{};
-			glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &length);
+			glGetShaderiv(m_fragment_shader_handle, GL_INFO_LOG_LENGTH, &length);
 			string error;
 			error.resize(length + 1);
-			glGetShaderInfoLog(fragment_shader, length, NULL, error.data());
+			glGetShaderInfoLog(m_fragment_shader_handle, length, NULL, error.data());
 			throw runtime_error("OpenGL Fragment Shader: " + error);
 		}
 
-		m_handle = glCreateProgram();
-		glAttachShader(m_handle, vertex_shader);
-		glAttachShader(m_handle, fragment_shader);
-		glLinkProgram(m_handle);
-		glGetProgramiv(m_handle, GL_LINK_STATUS, &success);
+		m_program_handle = glCreateProgram();
+		glAttachShader(m_program_handle, m_vertex_shader_handle);
+		glAttachShader(m_program_handle, m_fragment_shader_handle);
+		glLinkProgram(m_program_handle);
+		glGetProgramiv(m_program_handle, GL_LINK_STATUS, &success);
 		if(!success)
 		{
 			GLint length{};
-			glGetShaderiv(m_handle, GL_INFO_LOG_LENGTH, &length);
+			glGetShaderiv(m_program_handle, GL_INFO_LOG_LENGTH, &length);
 			string error;
 			error.resize(length);
-			glGetShaderInfoLog(m_handle, length, NULL, error.data());
+			glGetShaderInfoLog(m_program_handle, length, NULL, error.data());
 			throw runtime_error("OpenGL Program: " + error);
 		}
-
-		glDeleteShader(vertex_shader);
-		glDeleteShader(fragment_shader);
 	}
 
 	shader::~shader()
 	{
-		glDeleteProgram(m_handle);
+		glDetachShader(m_program_handle, m_vertex_shader_handle);
+		glDetachShader(m_program_handle, m_fragment_shader_handle);
+		glDeleteShader(m_vertex_shader_handle);
+		glDeleteShader(m_fragment_shader_handle);
+		glDeleteProgram(m_program_handle);
 	}
 
 	void shader::use() const
 	{
-		glUseProgram(m_handle);
+		glUseProgram(m_program_handle);
 	}
 
 	void shader::set_matrix(const char* name, const matrix& m) const
 	{
-		auto id = glGetUniformLocation(m_handle, name);
+		auto id = glGetUniformLocation(m_program_handle, name);
 		glUniformMatrix4fv(id, 1, GL_FALSE, m.data());
 	}
 
 	void shader::bind_texture(const char* name, int unit) const
 	{
-		auto id = glGetUniformLocation(m_handle, name);
+		auto id = glGetUniformLocation(m_program_handle, name);
 		glUniform1i(id, unit);
 	}
 
