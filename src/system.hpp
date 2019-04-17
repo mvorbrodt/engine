@@ -50,25 +50,11 @@ namespace engine
 			return t * r;
 		}
 
-		class axis& axis()
-		{
-			return m_axis;
-		}
+		class axis& axis() { return m_axis; }
+		const class axis& axis() const { return m_axis; }
 
-		const class axis& axis() const
-		{
-			return m_axis;
-		}
-
-		point& origin()
-		{
-			return m_origin;
-		}
-
-		const point& origin() const
-		{
-			return m_origin;
-		}
+		point& origin() { return m_origin; }
+		const point& origin() const { return m_origin; }
 
 	private:
 		class axis m_axis;

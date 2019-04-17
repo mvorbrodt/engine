@@ -29,11 +29,7 @@ namespace engine
 			m_data[W] = c;
 		}
 
-		real length() const
-		{
-			return std::sqrt(lengthSq());
-		}
-
+		real length() const { return std::sqrt(lengthSq()); }
 		real lengthSq() const
 		{
 			return m_data[X] * m_data[X] + m_data[Y] * m_data[Y] + m_data[Z] * m_data[Z] + m_data[W] * m_data[W];
@@ -54,25 +50,11 @@ namespace engine
 			m_data[W] *= len;
 		}
 
-		real* data()
-		{
-			return m_data;
-		}
+		real* data() { return m_data; }
+		const real* data() const { return m_data; }
 
-		const real* data() const
-		{
-			return m_data;
-		}
-
-		real& operator[](VC c)
-		{
-			return m_data[c];
-		}
-
-		const real& operator[](VC c) const
-		{
-			return m_data[c];
-		}
+		real& operator[](VC c) { return m_data[c]; }
+		const real& operator[](VC c) const { return m_data[c]; }
 
 	private:
 		real m_data[4];

@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <glad/glad.h>
 #include <stb/stb_image.h>
+#include "opengl.hpp"
 #include "handle.hpp"
 #include "texture.hpp"
 
@@ -42,10 +43,8 @@ namespace engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, data_format, GL_UNSIGNED_BYTE, data);
-		if(glGetError() != GL_NO_ERROR)
-		{
-			throw runtime_error("glTexImage2D failed!");
-		}
+		GLenum error_code = glGetError();
+		if(error_code != GL_NO_ERROR) throw opengl_exception("glTexImage2D failed!", error_code);
 
 		if(mipmaps)
 		{
@@ -72,10 +71,7 @@ namespace engine
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
 		stbi_handle_t data{ stbi_load(texture_file, &width, &height, &channels, 0) };
-		if(data == nullptr)
-		{
-			throw runtime_error((string("Error loading texture ") + texture_file).c_str());
-		}
+		if(data == nullptr) throw runtime_error((string("Error loading texture ") + texture_file).c_str());
 
 		cout << texture_file << ", width: " << width << ", height: " << height << ", channels: " << channels << endl;
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <ostream>
 #include "types.hpp"
 #include "vector.hpp"
@@ -12,29 +13,17 @@ namespace engine
 		point(real x = 0.0, real y = 0.0, real z = 0.0)
 		: m_data{ x, y, z } {}
 
-		real* data()
-		{
-			return m_data;
-		}
+		real* data() { return m_data; }
+		const real* data() const { return m_data; }
 
-		const real* data() const
-		{
-			return m_data;
-		}
-
-		real& operator[](VC c)
-		{
-			return m_data[c];
-		}
-
-		const real& operator[](VC c) const
-		{
-			return m_data[c];
-		}
+		real& operator[](VC c) { return m_data[c]; }
+		const real& operator[](VC c) const { return m_data[c]; }
 
 	private:
 		real m_data[3];
 	};
+
+	using point_buffer = std::vector<point>;
 
 	inline static const point ORIGIN = { 0.0, 0.0, 0.0 };
 

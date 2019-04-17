@@ -40,7 +40,7 @@ void init()
 	{
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
 		t = load_texture("data/textures/chalet.jpg", false, false);
-		v = make_vertex_array(load_model_file("data/models/chalet.obj"));
+		v = make_vertex_array(load_model("data/models/chalet.obj"));
 	}
 	catch(exception& e)
 	{

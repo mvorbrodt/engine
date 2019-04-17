@@ -24,33 +24,21 @@ namespace engine
 			m_up.normalize();
 		}
 
-		int get_width() const
-		{
-			return m_width;
-		}
-
+		int get_width() const { return m_width; }
 		void set_width(int width)
 		{
 			if(width < 1) width = 1;
 			m_width = width;
 		}
 
-		int get_height() const
-		{
-			return m_height;
-		}
-
+		int get_height() const { return m_height; }
 		void set_height(int height)
 		{
 			if(height < 1) height = 1;
 			m_height = height;
 		}
 
-		real get_fov() const
-		{
-			return m_fov;
-		}
-
+		real get_fov() const { return m_fov; }
 		void set_fov(real fov)
 		{
 			if(fov < MIN_FOV) fov = MIN_FOV;
@@ -58,11 +46,7 @@ namespace engine
 			m_fov = fov;
 		}
 
-		real get_near() const
-		{
-			return m_near;
-		}
-
+		real get_near() const { return m_near; }
 		void set_near(real near)
 		{
 			if(near < 1.0) near = 1.0;
@@ -70,11 +54,7 @@ namespace engine
 			m_near = near;
 		}
 
-		real get_far() const
-		{
-			return m_far;
-		}
-
+		real get_far() const { return m_far; }
 		void set_far(real far)
 		{
 			if(far < 1.0) far = 1.0;

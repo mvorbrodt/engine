@@ -11,14 +11,11 @@ using namespace std;
 
 namespace engine
 {
-	model_data load_model_file(const char* model_file)
+	model_data_ptr load_model(const char* model_file)
 	{
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(model_file, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
-		if(scene == nullptr)
-		{
-			throw runtime_error("Assimp::Importer::ReadFile failed!");
-		}
+		if(scene == nullptr) throw runtime_error("Assimp::Importer::ReadFile failed!");
 
 		assert(scene->mNumMeshes == 1);
 		const aiMesh* mesh = scene->mMeshes[0];
@@ -26,27 +23,23 @@ namespace engine
 
 		cout << model_file << ", vertices: " << mesh->mNumVertices << ", faces: " << mesh->mNumFaces << endl;
 
-		real_buffer position_buffer, normal_buffer, texcoord_buffer;
-		position_buffer.reserve(mesh->mNumVertices * 3);
-		normal_buffer.reserve(mesh->mNumVertices * 3);
-		texcoord_buffer.reserve(mesh->mNumVertices * 2);
+		point_buffer position_buffer;
+		vector_buffer normal_buffer;
+		texcoord_buffer texcoord_buffer;
+
+		position_buffer.reserve(mesh->mNumVertices);
+		normal_buffer.reserve(mesh->mNumVertices);
+		texcoord_buffer.reserve(mesh->mNumVertices);
 
 		for (unsigned int i = 0 ; i < mesh->mNumVertices ; ++i)
 		{
 			const aiVector3D* position = &(mesh->mVertices[i]);
 			const aiVector3D* normal = &(mesh->mNormals[i]);
-			const aiVector3D* texcoord = &(mesh->mTextureCoords[0][i]);
+			const aiVector3D* texture_coord = &(mesh->mTextureCoords[0][i]);
 
-			position_buffer.push_back(position->x);
-			position_buffer.push_back(position->y);
-			position_buffer.push_back(position->z);
-
-			normal_buffer.push_back(normal->x);
-			normal_buffer.push_back(normal->y);
-			normal_buffer.push_back(normal->z);
-
-			texcoord_buffer.push_back(texcoord->x);
-			texcoord_buffer.push_back(texcoord->y);
+			position_buffer.push_back(point(position->x, position->y, position->z));
+			normal_buffer.push_back(vector(normal->x, normal->y, normal->z));
+			texcoord_buffer.push_back(texcoord(texture_coord->x, texture_coord->y));
 		}
 
 		int_buffer index_buffer;
@@ -61,6 +54,6 @@ namespace engine
 			index_buffer.push_back(face.mIndices[2]);
 		}
 
-		return model_data{ position_buffer, normal_buffer, texcoord_buffer, index_buffer };
+		return make_shared<model_data>(position_buffer, normal_buffer, texcoord_buffer, index_buffer);
 	}
 }

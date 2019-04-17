@@ -3,6 +3,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <glad/glad.h>
+#include "opengl.hpp"
 #include "shader.hpp"
 
 using namespace std;
@@ -23,7 +24,7 @@ namespace engine
 			string error;
 			error.resize(length + 1);
 			glGetShaderInfoLog(m_vertex_shader_handle, length, NULL, error.data());
-			throw runtime_error("OpenGL Vertex Shader: " + error);
+			throw opengl_exception(("OpenGL Vertex Shader: " + error).c_str(), glGetError());
 		}
 
 		m_fragment_shader_handle = glCreateShader(GL_FRAGMENT_SHADER);
@@ -37,7 +38,7 @@ namespace engine
 			string error;
 			error.resize(length + 1);
 			glGetShaderInfoLog(m_fragment_shader_handle, length, NULL, error.data());
-			throw runtime_error("OpenGL Fragment Shader: " + error);
+			throw opengl_exception(("OpenGL Fragment Shader: " + error).c_str(), glGetError());
 		}
 
 		m_program_handle = glCreateProgram();
@@ -52,7 +53,7 @@ namespace engine
 			string error;
 			error.resize(length);
 			glGetShaderInfoLog(m_program_handle, length, NULL, error.data());
-			throw runtime_error("OpenGL Program: " + error);
+			throw opengl_exception(("OpenGL Program: " + error).c_str(), glGetError());
 		}
 	}
 

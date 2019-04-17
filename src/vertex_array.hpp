@@ -9,7 +9,7 @@ namespace engine
 	class vertex_array
 	{
 	public:
-		vertex_array(const model_data& data);
+		vertex_array(const model_data_ptr& data);
 		vertex_array(const vertex_array&) = delete;
 		vertex_array(vertex_array&&) = delete;
 		vertex_array& operator = (const vertex_array&) = delete;
@@ -30,5 +30,5 @@ namespace engine
 	using vertex_array_ptr = std::shared_ptr<vertex_array>;
 	using vertex_arrays = std::vector<vertex_array_ptr>;
 
-	vertex_array_ptr make_vertex_array(const model_data& data);
+	vertex_array_ptr make_vertex_array(const model_data_ptr& data);
 }
