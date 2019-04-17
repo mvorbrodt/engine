@@ -8,10 +8,12 @@ uniform mat4 Projection;
 uniform mat4 Camera;
 uniform mat4 Model;
 
+out vec3 normal;
 out vec2 texCoord;
 
 void main()
 {
 	gl_Position = Projection * Camera * Model * vec4(aPos, 1.0);
 	texCoord = aTex;
+	normal = aNor;
 }
