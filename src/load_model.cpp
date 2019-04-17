@@ -26,41 +26,41 @@ namespace engine
 
 		cout << model_file << ", vertices: " << mesh->mNumVertices << ", faces: " << mesh->mNumFaces << endl;
 
-		real_buffer pb, nb, tb;
-		pb.reserve(mesh->mNumVertices * 3);
-		nb.reserve(mesh->mNumVertices * 3);
-		tb.reserve(mesh->mNumVertices * 2);
+		real_buffer position_buffer, normal_buffer, texcoord_buffer;
+		position_buffer.reserve(mesh->mNumVertices * 3);
+		normal_buffer.reserve(mesh->mNumVertices * 3);
+		texcoord_buffer.reserve(mesh->mNumVertices * 2);
 
 		for (unsigned int i = 0 ; i < mesh->mNumVertices ; ++i)
 		{
-			const aiVector3D* pos = &(mesh->mVertices[i]);
+			const aiVector3D* position = &(mesh->mVertices[i]);
 			const aiVector3D* normal = &(mesh->mNormals[i]);
 			const aiVector3D* texcoord = &(mesh->mTextureCoords[0][i]);
 
-			pb.push_back(pos->x);
-			pb.push_back(pos->y);
-			pb.push_back(pos->z);
+			position_buffer.push_back(position->x);
+			position_buffer.push_back(position->y);
+			position_buffer.push_back(position->z);
 
-			nb.push_back(normal->x);
-			nb.push_back(normal->y);
-			nb.push_back(normal->z);
+			normal_buffer.push_back(normal->x);
+			normal_buffer.push_back(normal->y);
+			normal_buffer.push_back(normal->z);
 
-			tb.push_back(texcoord->x);
-			tb.push_back(texcoord->y);
+			texcoord_buffer.push_back(texcoord->x);
+			texcoord_buffer.push_back(texcoord->y);
 		}
 
-		int_buffer ib;
-		ib.reserve(mesh->mNumFaces * 3);
+		int_buffer index_buffer;
+		index_buffer.reserve(mesh->mNumFaces * 3);
 
 		for (unsigned int i = 0 ; i < mesh->mNumFaces ; ++i)
 		{
 			const aiFace& face = mesh->mFaces[i];
 
-			ib.push_back(face.mIndices[0]);
-			ib.push_back(face.mIndices[1]);
-			ib.push_back(face.mIndices[2]);
+			index_buffer.push_back(face.mIndices[0]);
+			index_buffer.push_back(face.mIndices[1]);
+			index_buffer.push_back(face.mIndices[2]);
 		}
 
-		return model_data{ pb, nb, tb, ib };
+		return model_data{ position_buffer, normal_buffer, texcoord_buffer, index_buffer };
 	}
 }
