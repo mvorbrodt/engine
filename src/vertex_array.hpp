@@ -22,6 +22,7 @@ namespace engine
 		unsigned int m_triangles;
 		unsigned int m_position_buffer_handle;
 		unsigned int m_normal_buffer_handle;
+		unsigned int m_tangent_buffer_handle;
 		unsigned int m_texcoord_buffer_handle;
 		unsigned int m_index_buffer_handle;
 		unsigned int m_vertex_array_handle;

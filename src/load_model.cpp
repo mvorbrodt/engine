@@ -14,7 +14,7 @@ namespace engine
 	model_data_ptr load_model(const char* model_file)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(model_file, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
+		const aiScene* scene = importer.ReadFile(model_file, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace | aiProcess_JoinIdenticalVertices);
 		if(scene == nullptr) throw runtime_error("Assimp::Importer::ReadFile failed!");
 
 		assert(scene->mNumMeshes == 1);
@@ -25,20 +25,24 @@ namespace engine
 
 		point_buffer position_buffer;
 		vector_buffer normal_buffer;
+		vector_buffer tangent_buffer;
 		texcoord_buffer texcoord_buffer;
 
 		position_buffer.reserve(mesh->mNumVertices);
 		normal_buffer.reserve(mesh->mNumVertices);
+		tangent_buffer.reserve(mesh->mNumVertices);
 		texcoord_buffer.reserve(mesh->mNumVertices);
 
 		for (unsigned int i = 0 ; i < mesh->mNumVertices ; ++i)
 		{
 			const aiVector3D* position = &(mesh->mVertices[i]);
 			const aiVector3D* normal = &(mesh->mNormals[i]);
+			const aiVector3D* tangent = &(mesh->mTangents[i]);
 			const aiVector3D* texture_coord = &(mesh->mTextureCoords[0][i]);
 
 			position_buffer.push_back(point(position->x, position->y, position->z));
 			normal_buffer.push_back(vector(normal->x, normal->y, normal->z));
+			tangent_buffer.push_back(vector(tangent->x, tangent->y, tangent->z));
 			texcoord_buffer.push_back(texcoord(texture_coord->x, texture_coord->y));
 		}
 
@@ -54,6 +58,6 @@ namespace engine
 			index_buffer.push_back(face.mIndices[2]);
 		}
 
-		return make_shared<model_data>(position_buffer, normal_buffer, texcoord_buffer, index_buffer);
+		return make_shared<model_data>(position_buffer, normal_buffer, tangent_buffer, texcoord_buffer, index_buffer);
 	}
 }
