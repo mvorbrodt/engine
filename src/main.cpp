@@ -14,6 +14,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertex_array.hpp"
+#include "load_model.hpp"
 
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -21,7 +22,7 @@
 using namespace std;
 using namespace engine;
 
-engine::point eye{0.0, 2.0, 5.0};
+engine::point eye{0.0, 1.0, 3.0};
 engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 60.0f, 1.0, 100.0, eye, ORIGIN - eye, UNIT_Y);
 
 unsigned int VBO_V, VBO_N, VBO_T, VBO_I;

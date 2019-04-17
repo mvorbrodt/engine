@@ -2,8 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include <tuple>
-#include "types.hpp"
 
 namespace engine
 {
@@ -26,7 +24,4 @@ namespace engine
 
 	using vertex_array_ptr = std::shared_ptr<vertex_array>;
 	using vertex_arrays = std::vector<vertex_array_ptr>;
-
-	using model_data = std::tuple<real_buffer, real_buffer, real_buffer, int_buffer>;
-	model_data load_model_file(const char* model_file);
 }
