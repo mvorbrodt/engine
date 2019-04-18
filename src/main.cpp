@@ -136,7 +136,7 @@ void draw()
 	cube_shader->set_mat4("Projection", camera.projection_matrix().data());
 	cube_shader->set_mat4("Camera", camera.view_matrix().data());
 	cube_shader->set_mat4("Model", light_system.to_global().data());
-	cube_shader->bind_texture("texture1", 0);
+	cube_shader->set_int("texture1", 0);
 	cube_texture->bind(0);
 	cube->draw();
 
@@ -145,8 +145,8 @@ void draw()
 	s->set_mat4("Camera", camera.view_matrix().data());
 	s->set_mat4("Model", l.to_global().data());
 	s->set_vec3("Light", light.data());
-	s->bind_texture("texture1", 0);
-	s->bind_texture("texture2", 1);
+	s->set_int("texture1", 0);
+	s->set_int("texture2", 1);
 	t->bind(0);
 	n->bind(1);
 

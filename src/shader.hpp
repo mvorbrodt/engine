@@ -11,8 +11,6 @@ namespace engine
 	public:
 		shader(const char* vertex_shader_source, const char* fragment_shader_source);;
 
-		void use() const;
-
 		void set_bool(const char* name, bool value) const;
 		void set_int(const char* name, int value) const;
 		void set_float(const char* name, float value) const;
@@ -29,7 +27,7 @@ namespace engine
 		void set_mat3(const char* name, const real* mat) const;
 		void set_mat4(const char* name, const real* mat) const;
 
-		void bind_texture(const char* name, int unit) const;
+		void use() const;
 
 	private:
 		opengl_shader_handle m_vertex_shader_handle;

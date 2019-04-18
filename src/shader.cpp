@@ -54,11 +54,6 @@ namespace engine
 		}
 	}
 
-	void shader::use() const
-	{
-		glUseProgram(m_program_handle);
-	}
-
 	void shader::set_bool(const char* name, bool value) const
 	{
 		auto id = glGetUniformLocation(m_program_handle, name);
@@ -131,10 +126,9 @@ namespace engine
 		glUniformMatrix4fv(id, 1, GL_FALSE, mat);
 	}
 
-	void shader::bind_texture(const char* name, int unit) const
+	void shader::use() const
 	{
-		auto id = glGetUniformLocation(m_program_handle, name);
-		glUniform1i(id, unit);
+		glUseProgram(m_program_handle);
 	}
 
 	shader_ptr load_shader(const char* vertex_shader_file, const char* fragment_shader_file)
