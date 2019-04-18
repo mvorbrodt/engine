@@ -9,6 +9,8 @@ namespace engine
 	class buffer
 	{
 	public:
+		virtual ~buffer() {}
+
 		virtual std::size_t element_size() const = 0;
 		virtual std::size_t component_count() const = 0;
 

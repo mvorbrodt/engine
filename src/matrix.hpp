@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <ostream>
 #include "types.hpp"
 #include "vector.hpp"
@@ -10,12 +11,34 @@ namespace engine
 	class matrix
 	{
 	public:
+		matrix()
+		{
+			std::memset(m_data, 0, sizeof(m_data));
+			m_data[R1C1] = 1.0;
+			m_data[R2C2] = 1.0;
+			m_data[R3C3] = 1.0;
+			m_data[R4C4] = 1.0;
+		}
+
 		matrix
 		(
-			real r1c1 = 1.0, real r1c2 = 0.0, real r1c3 = 0.0, real r1c4 = 0.0,
-			real r2c1 = 0.0, real r2c2 = 1.0, real r2c3 = 0.0, real r2c4 = 0.0,
-			real r3c1 = 0.0, real r3c2 = 0.0, real r3c3 = 1.0, real r3c4 = 0.0,
-			real r4c1 = 0.0, real r4c2 = 0.0, real r4c3 = 0.0, real r4c4 = 1.0
+			real r1c1, real r1c2, real r1c3,
+			real r2c1, real r2c2, real r2c3,
+			real r3c1, real r3c2, real r3c3
+		) : m_data
+		{
+			r1c1, r2c1, r3c1, 0.0,
+			r1c2, r2c2, r3c2, 0.0,
+			r1c3, r2c3, r3c3, 0.0,
+			 0.0,  0.0,  0.0, 1.0
+		} {}
+
+		matrix
+		(
+			real r1c1, real r1c2, real r1c3, real r1c4,
+			real r2c1, real r2c2, real r2c3, real r2c4,
+			real r3c1, real r3c2, real r3c3, real r3c4,
+			real r4c1, real r4c2, real r4c3, real r4c4
 		) : m_data
 		{
 			r1c1, r2c1, r3c1, r4c1,
@@ -23,6 +46,61 @@ namespace engine
 			r1c3, r2c3, r3c3, r4c3,
 			r1c4, r2c4, r3c4, r4c4
 		} {}
+
+		matrix(const vector& v) : matrix
+		(
+			1.0, 0.0, 0.0, v[X],
+			0.0, 1.0, 0.0, v[Y],
+			0.0, 0.0, 1.0, v[Z],
+			0.0, 0.0, 0.0, 1.0
+		) {}
+
+		matrix(const point& w) : matrix
+		(
+			1.0, 0.0, 0.0, w[X],
+			0.0, 1.0, 0.0, w[Y],
+			0.0, 0.0, 1.0, w[Z],
+			0.0, 0.0, 0.0, 1.0
+		) {}
+
+		matrix(const vector& x, const vector& y, const vector& z) : matrix
+		(
+			x[X], y[X], z[X],
+			x[Y], y[Y], z[Y],
+			x[Z], y[Z], z[Z]
+		) {}
+
+		matrix(const vector& x, const vector& y, const vector& z, const point& w) : matrix
+		(
+			x[X], y[X], z[X], w[X],
+			x[Y], y[Y], z[Y], w[Y],
+			x[Z], y[Z], z[Z], w[Z],
+			 0.0,  0.0,  0.0,  1.0
+		) {}
+
+		matrix(real s) : matrix
+		(
+			  s, 0.0, 0.0,
+			0.0,   s, 0.0,
+			0.0, 0.0,   s
+		) {}
+
+		matrix(real xs, real ys, real zs) : matrix
+		(
+			 xs, 0.0, 0.0,
+			0.0,  ys, 0.0,
+			0.0, 0.0,  zs
+		) {}
+
+		matrix normal() const
+		{
+			return matrix
+			(
+				m_data[R1C1], m_data[R1C2], m_data[R1C3],
+				m_data[R2C1], m_data[R2C2], m_data[R2C3],
+				m_data[R3C1], m_data[R3C2], m_data[R3C3]
+			);
+		}
 
 		matrix transpose() const
 		{
@@ -41,8 +119,11 @@ namespace engine
 		real& operator[](MatrixCoordinate c) { return m_data[c]; }
 		const real& operator[](MatrixCoordinate c) const { return m_data[c]; }
 
+		inline static const std::size_t k_component_count = 16;
+		inline static std::size_t component_count() { return k_component_count; }
+
 	private:
-		real m_data[16];
+		real m_data[k_component_count];
 	};
 
 	inline static const matrix IDENTITY_MATRIX =

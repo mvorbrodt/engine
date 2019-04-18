@@ -39,14 +39,14 @@ namespace engine
 		matrix to_local() const
 		{
 			auto r = m_axis.to_local();
-			auto t = engine::translate({ -m_origin[X], -m_origin[Y], -m_origin[Z] });
+			auto t = matrix(-m_origin);
 			return r * t;
 		}
 
 		matrix to_global() const
 		{
 			auto r = m_axis.to_global();
-			auto t = engine::translate({ m_origin[X], m_origin[Y], m_origin[Z] });
+			auto t = matrix(m_origin);
 			return t * r;
 		}
 

@@ -53,6 +53,27 @@ namespace engine
 		return p;
 	}
 
+	inline point operator - (const point& p)
+	{
+		return point(-p[X], -p[Y], -p[Z]);
+	}
+
+	inline point operator * (real r, const point& p)
+	{
+		return point(r * p[X], r * p[Y], r * p[Z]);
+	}
+
+	inline point operator * (const point& p, real r)
+	{
+		return point(p[X] * r, p[Y] * r, p[Z] * r);
+	}
+
+	inline point& operator *= (point& p, real r)
+	{
+		p = p * r;
+		return p;
+	}
+
 	inline vector operator - (const point& lhs, const point& rhs)
 	{
 		return vector(lhs[X] - rhs[X], lhs[Y] - rhs[Y], lhs[Z] - rhs[Z]);

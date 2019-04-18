@@ -35,27 +35,8 @@ namespace engine
 			m_axis[Z] *= m;
 		}
 
-		matrix to_local() const
-		{
-			return matrix
-			(
-				m_axis[X][X], m_axis[X][Y], m_axis[X][Z], 0.0,
-				m_axis[Y][X], m_axis[Y][Y], m_axis[Y][Z], 0.0,
-				m_axis[Z][X], m_axis[Z][Y], m_axis[Z][Z], 0.0,
-				0.0, 0.0, 0.0, 1.0
-			);
-		}
-
-		matrix to_global() const
-		{
-			return matrix
-			(
-				m_axis[X][X], m_axis[Y][X], m_axis[Z][X], 0.0,
-				m_axis[X][Y], m_axis[Y][Y], m_axis[Z][Y], 0.0,
-				m_axis[X][Z], m_axis[Y][Z], m_axis[Z][Z], 0.0,
-				0.0, 0.0, 0.0, 1.0
-			);
-		}
+		matrix to_local() const { return to_global().transpose(); }
+		matrix to_global() const { return matrix(m_axis[X], m_axis[Y], m_axis[Z]); }
 
 		vector& operator[](Coordinate c) { return m_axis[c]; }
 		const vector& operator[](Coordinate c) const { return m_axis[c]; }

@@ -18,13 +18,7 @@ namespace engine
 
 	inline matrix translate(const vector& v)
 	{
-		return matrix
-		(
-			1.0, 0.0, 0.0, v[X],
-			0.0, 1.0, 0.0, v[Y],
-			0.0, 0.0, 1.0, v[Z],
-			0.0, 0.0, 0.0, 1.0
-		);
+		return matrix(v);
 	}
 
 	inline matrix rotate(real angle, const vector& axis)
@@ -38,10 +32,9 @@ namespace engine
 
 		return matrix
 		(
-			c + x * x * (1.0 - c), x * y * (1.0 - c) - z * s, x * z * (1.0 - c) + y * s, 0.0,
-			y * x * (1.0 - c) + z * s, c + y * y * (1.0 - c), y * z * (1.0 - c) - x * s, 0.0,
-			z * x * (1.0 - c) - y * s, z * y * (1.0 - c) + x * s, c + z * z * (1.0 - c), 0.0,
-			0.0, 0.0, 0.0, 1.0
+			c + x * x * (1.0 - c), x * y * (1.0 - c) - z * s, x * z * (1.0 - c) + y * s,
+			y * x * (1.0 - c) + z * s, c + y * y * (1.0 - c), y * z * (1.0 - c) - x * s,
+			z * x * (1.0 - c) - y * s, z * y * (1.0 - c) + x * s, c + z * z * (1.0 - c)
 		);
 	}
 
@@ -55,27 +48,20 @@ namespace engine
 
 		return matrix
 		(
-			1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - w * z), 2.0 * (x * z + w * y), 0.0,
-			2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x), 0.0,
-			2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y), 0.0,
-			0.0, 0.0, 0.0, 1.0
+			1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y - w * z), 2.0 * (x * z + w * y),
+			2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x),
+			2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)
 		);
 	}
 
 	inline matrix scale(real xs, real ys, real zs)
 	{
-		return matrix
-		(
-			 xs, 0.0, 0.0, 0.0,
-			0.0,  ys, 0.0, 0.0,
-			0.0, 0.0,  zs, 0.0,
-			0.0, 0.0, 0.0, 1.0
-		);
+		return matrix(xs, ys, zs);
 	}
 
 	inline matrix scale(real s)
 	{
-		return scale(s, s, s);
+		return matrix(s);
 	}
 
 	inline matrix projection(real l, real r, real t, real b, real n, real f)
@@ -105,21 +91,8 @@ namespace engine
 		auto x = (up ^ z).normal();
 		auto y = (z ^ x).normal();
 
-		matrix r =
-		{
-			x[X], x[Y], x[Z], 0.0,
-			y[X], y[Y], y[Z], 0.0,
-			z[X], z[Y], z[Z], 0.0,
-			 0.0,  0.0,  0.0, 1.0
-		};
-
-		matrix t =
-		{
-			1.0, 0.0, 0.0, -eye[X],
-			0.0, 1.0, 0.0, -eye[Y],
-			0.0, 0.0, 1.0, -eye[Z],
-			0.0, 0.0, 0.0, 1.0
-		};
+		matrix r = matrix(x, y, z).transpose();
+		matrix t = matrix(-eye);
 
 		return r * t;
 	}

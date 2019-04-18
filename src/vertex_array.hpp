@@ -7,21 +7,21 @@
 
 namespace engine
 {
-	class i_vertex_array
+	class vertex_array
 	{
 	public:
-		virtual ~i_vertex_array() {}
+		virtual ~vertex_array() {}
 
 		virtual void draw() const = 0;
 	};
 
-	using vertex_array_ptr = std::shared_ptr<i_vertex_array>;
+	using vertex_array_ptr = std::shared_ptr<vertex_array>;
 	using vertex_arrays = std::vector<vertex_array_ptr>;
 
 	vertex_array_ptr make_flat_vertex_array(const flat_model_data_ptr& data);
 	vertex_array_ptr make_indexed_vertex_array(const indexed_model_data_ptr& data);
 
-	class flat_vertex_array : public i_vertex_array
+	class flat_vertex_array : public vertex_array
 	{
 	public:
 		flat_vertex_array(const flat_model_data_ptr& data);
@@ -35,7 +35,7 @@ namespace engine
 		opengl_vertex_array_handle m_vertex_array_handle;
 	};
 
-	class indexed_vertex_array : public i_vertex_array
+	class indexed_vertex_array : public vertex_array
 	{
 	public:
 		indexed_vertex_array(const indexed_model_data_ptr& data);
