@@ -2,17 +2,10 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include <glad/glad.h>
 #include <stb/stb_image.h>
-#include "opengl.hpp"
-#include "handle.hpp"
 #include "texture.hpp"
 
 using namespace std;
-
-template<typename T> struct STBIReleasePolicy { static void Execute(T ptr) noexcept { stbi_image_free(ptr); } };
-template<typename T>
-using stbi_handle_t = handle<T, NoOpPolicy, STBIReleasePolicy>;
 
 namespace engine
 {
@@ -82,23 +75,21 @@ namespace engine
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	texture_map::~texture_map()
-	{
-		glDeleteTextures(1, &m_texture_handle);
-	}
-
 	void texture_map::bind(int unit) const
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, m_texture_handle);
 	}
 
+	template<typename T> struct STBIReleasePolicy { static void Execute(T ptr) noexcept { stbi_image_free(ptr); } };
+	template<typename T> using stbi_handle = handle<T, NoOpPolicy, STBIReleasePolicy>;
+
 	texture_map_ptr load_texture_map_ldr(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels)
 	{
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
 		cout << "Loading LDR " << texture_file << "..." << endl;
-		stbi_handle_t<unsigned char*> data{ stbi_load(texture_file, &width, &height, &channels, desired_channels) };
+		stbi_handle<unsigned char*> data{ stbi_load(texture_file, &width, &height, &channels, desired_channels) };
 		if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
 		if(desired_channels == 0) desired_channels = channels;
 
@@ -115,7 +106,7 @@ namespace engine
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
 		cout << "Loading HDR " << texture_file << "..." << endl;
-		stbi_handle_t<float*> data{ stbi_loadf(texture_file, &width, &height, &channels, desired_channels) };
+		stbi_handle<float*> data{ stbi_loadf(texture_file, &width, &height, &channels, desired_channels) };
 		if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
 		if(desired_channels == 0) desired_channels = channels;
 

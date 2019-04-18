@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include "opengl.hpp"
 #include "load_model.hpp"
 
 namespace engine
@@ -10,24 +11,14 @@ namespace engine
 	{
 	public:
 		vertex_array(const model_data_ptr& data);
-		vertex_array(const vertex_array&) = delete;
-		vertex_array(vertex_array&&) = delete;
-		vertex_array& operator = (const vertex_array&) = delete;
-		vertex_array& operator = (vertex_array&&) = delete;
-		~vertex_array();
 
 		void draw() const;
 
 	private:
-		unsigned int m_indices = 0;
-		unsigned int m_position_buffer_handle = 0;
-		unsigned int m_color_buffer_handle = 0;
-		unsigned int m_texcoord_buffer_handle = 0;
-		unsigned int m_normal_buffer_handle = 0;
-		unsigned int m_tangent_buffer_handle = 0;
-		unsigned int m_bitangent_buffer_handle = 0;
-		unsigned int m_index_buffer_handle = 0;
-		unsigned int m_vertex_array_handle = 0;
+		std::size_t m_indices = 0;
+
+		opengl_buffer_handles m_buffer_handles;
+		opengl_vertex_array_handle m_vertex_array_handle;
 	};
 
 	using vertex_array_ptr = std::shared_ptr<vertex_array>;

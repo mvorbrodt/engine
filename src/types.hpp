@@ -1,15 +1,9 @@
 #pragma once
 
-#include <vector>
-
 namespace engine
 {
-	using real = float;
 	using byte = unsigned char;
-
-	using real_buffer = std::vector<real>;
-	using byte_buffer = std::vector<byte>;
-	using int_buffer = std::vector<int>;
+	using real = float;
 
 	enum Coordinate
 	{

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <glad/glad.h>
 #include "opengl.hpp"
 
 using namespace std;

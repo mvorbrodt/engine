@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
 #include <ostream>
 #include "types.hpp"
+#include "buffer.hpp"
+#include "opengl.hpp"
 
 namespace engine
 {
@@ -18,11 +19,14 @@ namespace engine
 		real& operator[](ColorComponent c) { return m_data[c]; }
 		const real& operator[](ColorComponent c) const { return m_data[c]; }
 
+		inline static const std::size_t k_component_count = 4;
+		inline static std::size_t component_count() { return k_component_count; }
+
 	private:
-		real m_data[4];
+		real m_data[k_component_count];
 	};
 
-	using color_buffer = std::vector<color>;
+	using color_buffer = buffer_t<color, color::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline std::ostream& operator << (std::ostream& os, const color& c)
 	{

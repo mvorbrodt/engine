@@ -2,8 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include <glad/glad.h>
-#include "opengl.hpp"
 #include "shader.hpp"
 
 using namespace std;
@@ -13,7 +11,7 @@ namespace engine
 	shader::shader(const char* vertex_shader_source, const char* fragment_shader_source)
 	{
 		int success{};
-		m_vertex_shader_handle = glCreateShader(GL_VERTEX_SHADER);
+		m_vertex_shader_handle = opengl_shader_handle{ glCreateShader(GL_VERTEX_SHADER) };
 		glShaderSource(m_vertex_shader_handle, 1, &vertex_shader_source, NULL);
 		glCompileShader(m_vertex_shader_handle);
 		glGetShaderiv(m_vertex_shader_handle, GL_COMPILE_STATUS, &success);
@@ -27,7 +25,7 @@ namespace engine
 			throw opengl_exception(("OpenGL Vertex Shader: " + error).c_str(), glGetError());
 		}
 
-		m_fragment_shader_handle = glCreateShader(GL_FRAGMENT_SHADER);
+		m_fragment_shader_handle = opengl_shader_handle{ glCreateShader(GL_FRAGMENT_SHADER) };
 		glShaderSource(m_fragment_shader_handle, 1, &fragment_shader_source, NULL);
 		glCompileShader(m_fragment_shader_handle);
 		glGetShaderiv(m_fragment_shader_handle, GL_COMPILE_STATUS, &success);
@@ -41,7 +39,7 @@ namespace engine
 			throw opengl_exception(("OpenGL Fragment Shader: " + error).c_str(), glGetError());
 		}
 
-		m_program_handle = glCreateProgram();
+		m_program_handle = opengl_program_handle{ glCreateProgram() };
 		glAttachShader(m_program_handle, m_vertex_shader_handle);
 		glAttachShader(m_program_handle, m_fragment_shader_handle);
 		glLinkProgram(m_program_handle);
@@ -55,15 +53,6 @@ namespace engine
 			glGetShaderInfoLog(m_program_handle, length, NULL, error.data());
 			throw opengl_exception(("OpenGL Program: " + error).c_str(), glGetError());
 		}
-	}
-
-	shader::~shader()
-	{
-		glDetachShader(m_program_handle, m_vertex_shader_handle);
-		glDetachShader(m_program_handle, m_fragment_shader_handle);
-		glDeleteShader(m_vertex_shader_handle);
-		glDeleteShader(m_fragment_shader_handle);
-		glDeleteProgram(m_program_handle);
 	}
 
 	void shader::use() const

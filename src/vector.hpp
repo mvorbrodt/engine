@@ -1,9 +1,10 @@
 #pragma once
 
-#include <vector>
 #include <ostream>
 #include <cmath>
 #include "types.hpp"
+#include "buffer.hpp"
+#include "opengl.hpp"
 
 namespace engine
 {
@@ -39,11 +40,14 @@ namespace engine
 		real& operator[](Coordinate c) { return m_data[c]; }
 		const real& operator[](Coordinate c) const { return m_data[c]; }
 
+		inline static const std::size_t k_component_count = 3;
+		inline static std::size_t component_count() { return k_component_count; }
+
 	private:
-		real m_data[3];
+		real m_data[k_component_count];
 	};
 
-	using vector_buffer = std::vector<vector>;
+	using vector_buffer = buffer_t<vector, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline static const vector UNIT_X = { 1.0, 0.0, 0.0 };
 	inline static const vector UNIT_Y = { 0.0, 1.0, 0.0 };

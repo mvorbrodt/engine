@@ -42,7 +42,7 @@ namespace engine
 		const vector_buffer& normal_buffer,
 		const vector_buffer& tangent_buffer,
 		const vector_buffer& bitangent_buffer,
-		const int_buffer& index_buffer)
+		const index_buffer& index_buffer)
 	{
 		return make_shared<model_data>(
 			point_buffer,
@@ -131,7 +131,7 @@ namespace engine
 				}
 			}
 
-			int_buffer index_buffer;
+			index_buffer index_buffer;
 			index_buffer.reserve(mesh->mNumFaces * 3);
 
 			for (unsigned int i = 0 ; i < mesh->mNumFaces ; ++i)

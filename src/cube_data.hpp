@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.hpp"
+#include "buffer.hpp"
 #include "point.hpp"
 #include "color.hpp"
 #include "texcoord.hpp"
@@ -142,7 +142,7 @@ namespace engine
 		{ 0.0f, 1.0f }
 	};
 
-	int_buffer cube_indices =
+	index_buffer cube_indices =
 	{
 		0, 1, 2,
 		3, 4, 5,

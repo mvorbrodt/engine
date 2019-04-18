@@ -2,18 +2,14 @@
 
 #include <memory>
 #include "types.hpp"
+#include "opengl.hpp"
 
 namespace engine
 {
 	class shader
 	{
 	public:
-		shader(const char* vertex_shader_source, const char* fragment_shader_source);
-		shader(const shader&) = delete;
-		shader(shader&&) = delete;
-		shader& operator = (const shader&) = delete;
-		shader& operator = (shader&&) = delete;
-		~shader();
+		shader(const char* vertex_shader_source, const char* fragment_shader_source);;
 
 		void use() const;
 
@@ -36,9 +32,9 @@ namespace engine
 		void bind_texture(const char* name, int unit) const;
 
 	private:
-		int m_vertex_shader_handle = 0;
-		int m_fragment_shader_handle = 0;
-		int m_program_handle = 0;
+		opengl_shader_handle m_vertex_shader_handle;
+		opengl_shader_handle m_fragment_shader_handle;
+		opengl_program_handle m_program_handle;
 	};
 
 	using shader_ptr = std::shared_ptr<shader>;
