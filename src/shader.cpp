@@ -1,7 +1,6 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
 #include "shader.hpp"
 
 using namespace std;

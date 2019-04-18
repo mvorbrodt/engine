@@ -82,7 +82,7 @@ namespace engine
 	}
 
 	template<typename T> struct STBIReleasePolicy { static void Execute(T ptr) noexcept { stbi_image_free(ptr); } };
-	template<typename T> using stbi_handle = handle<T, NoOpPolicy, STBIReleasePolicy>;
+	template<typename T> using stbi_handle = handle<T, STBIReleasePolicy>;
 
 	texture_map_ptr load_texture_map_ldr(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels)
 	{

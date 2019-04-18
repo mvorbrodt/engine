@@ -44,20 +44,19 @@ void init()
 {
 	try
 	{
-		cube = make_vertex_array(make_model_data(
+		cube = make_flat_vertex_array(make_flat_model_data(
 			cube_vertices,
 			cube_colors,
 			cube_texcoords,
-			{}, {}, {},
-			cube_indices));
+			{}, {}, {}));
 		cube_shader = load_shader("data/shaders/cube.vs", "data/shaders/cube.fs");
 		cube_texture = load_texture_map("data/textures/cpp.png", false, false);
 
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
 		t = load_texture_map("data/textures/skull.jpg", false, false);
 		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
-		auto data = load_model("data/models/skull.obj");
-		for(auto& d : data) v.push_back(make_vertex_array(d));
+		auto data = load_indexed_model_data("data/models/skull.obj");
+		for(auto& d : data) v.push_back(make_indexed_vertex_array(d));
 
 		l.rotate(-90, UNIT_X);
 		l.translate(10 * -UNIT_Y);

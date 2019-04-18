@@ -35,7 +35,24 @@ namespace
 }
 namespace engine
 {
-	model_data_ptr make_model_data(
+	flat_model_data_ptr make_flat_model_data(
+		const point_buffer& point_buffer,
+		const color_buffer& color_buffer,
+		const texcoord_buffer& texcoord_buffer,
+		const vector_buffer& normal_buffer,
+		const vector_buffer& tangent_buffer,
+		const vector_buffer& bitangent_buffer)
+	{
+		return make_shared<flat_model_data>(
+			point_buffer,
+			color_buffer,
+			texcoord_buffer,
+			normal_buffer,
+			tangent_buffer,
+			bitangent_buffer);
+	}
+
+	indexed_model_data_ptr make_indexed_model_data(
 		const point_buffer& point_buffer,
 		const color_buffer& color_buffer,
 		const texcoord_buffer& texcoord_buffer,
@@ -44,7 +61,7 @@ namespace engine
 		const vector_buffer& bitangent_buffer,
 		const index_buffer& index_buffer)
 	{
-		return make_shared<model_data>(
+		return make_shared<indexed_model_data>(
 			point_buffer,
 			color_buffer,
 			texcoord_buffer,
@@ -54,7 +71,7 @@ namespace engine
 			index_buffer);
 	}
 
-	model_data_array load_model(const char* model_file)
+	indexed_model_data_array load_indexed_model_data(const char* model_file)
 	{
 		Assimp::Importer importer;
 		importer.SetProgressHandler(new AssimpProgress(model_file));
@@ -70,7 +87,7 @@ namespace engine
 
 		cout << "Processing " << model_file << "..." << endl;
 
-		model_data_array result;
+		indexed_model_data_array result;
 
 		for(unsigned int m = 0; m < scene->mNumMeshes; ++m)
 		{
@@ -143,7 +160,7 @@ namespace engine
 				index_buffer.push_back(face.mIndices[2]);
 			}
 
-			result.push_back(make_model_data(
+			result.push_back(make_indexed_model_data(
 				position_buffer,
 				color_buffer,
 				texcoord_buffer,
