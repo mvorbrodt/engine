@@ -152,7 +152,6 @@ void draw()
 	n->bind(1);
 
 	for(auto& m : v) m->draw();
-
 }
 
 int main(int argc, char** argv)
