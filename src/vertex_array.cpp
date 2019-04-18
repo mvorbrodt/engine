@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include <glad/glad.h>
 #include "opengl.hpp"
 #include "vertex_array.hpp"
@@ -13,15 +14,25 @@ namespace engine
 		glBindVertexArray(m_vertex_array_handle);
 
 		const auto& position_buffer  = get<0>(*data);
-		const auto& texcoord_buffer  = get<1>(*data);
-		const auto& normal_buffer    = get<2>(*data);
-		const auto& tangent_buffer   = get<3>(*data);
-		const auto& bitangent_buffer = get<4>(*data);
-		const auto& index_buffer     = get<5>(*data);
+		const auto& color_buffer     = get<1>(*data);
+		const auto& texcoord_buffer  = get<2>(*data);
+		const auto& normal_buffer    = get<3>(*data);
+		const auto& tangent_buffer   = get<4>(*data);
+		const auto& bitangent_buffer = get<5>(*data);
+		const auto& index_buffer     = get<6>(*data);
 
 		assert(position_buffer.size() > 0 && index_buffer.size() > 0);
 
-		m_triangles = index_buffer.size();
+		cout << "Loading vertex array..." << endl;
+		cout << "\tvertices: " << position_buffer.size() << endl <<
+			"\tcolors: " << color_buffer.size() << endl <<
+			"\ttexcoords: " << texcoord_buffer.size() << endl <<
+			"\tnormals: " << normal_buffer.size() << endl <<
+			"\ttangents: " << tangent_buffer.size() << endl <<
+			"\tbitangents: " << bitangent_buffer.size() << endl <<
+			"\tindices: " << index_buffer.size() << endl;
+
+		m_indices = index_buffer.size();
 
 		unsigned int next_attribute = 0;
 
@@ -33,6 +44,18 @@ namespace engine
 		glVertexAttribPointer(next_attribute, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(next_attribute);
 		++next_attribute;
+
+		if(color_buffer.size() > 0)
+		{
+			glGenBuffers(1, &m_color_buffer_handle);
+			glBindBuffer(GL_ARRAY_BUFFER, m_color_buffer_handle);
+			glBufferData(GL_ARRAY_BUFFER, color_buffer.size() * sizeof(color), color_buffer.data(), GL_STATIC_DRAW);
+			error_code = glGetError();
+			if(error_code != GL_NO_ERROR) throw opengl_exception("glBufferData failed!", error_code);
+			glVertexAttribPointer(next_attribute, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(next_attribute);
+			++next_attribute;
+		}
 
 		if(texcoord_buffer.size() > 0)
 		{
@@ -93,6 +116,7 @@ namespace engine
 	vertex_array::~vertex_array()
 	{
 		glDeleteBuffers(1, &m_position_buffer_handle);
+		glDeleteBuffers(1, &m_color_buffer_handle);
 		glDeleteBuffers(1, &m_texcoord_buffer_handle);
 		glDeleteBuffers(1, &m_normal_buffer_handle);
 		glDeleteBuffers(1, &m_tangent_buffer_handle);
@@ -104,7 +128,7 @@ namespace engine
 	void vertex_array::draw() const
 	{
 		glBindVertexArray(m_vertex_array_handle);
-		glDrawElements(GL_TRIANGLES, m_triangles, GL_UNSIGNED_INT, (void*)0);
+		glDrawElements(GL_TRIANGLES, m_indices, GL_UNSIGNED_INT, (void*)0);
 		glBindVertexArray(0);
 	}
 

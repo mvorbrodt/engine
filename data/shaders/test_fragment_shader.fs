@@ -11,8 +11,6 @@ in mat4 model_cam;
 
 uniform sampler2D texture1;
 uniform sampler2D texture2;
-uniform bool show_normal;
-uniform float brightness;
 
 out vec4 FragColor;
 

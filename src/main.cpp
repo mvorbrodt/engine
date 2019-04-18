@@ -5,6 +5,8 @@
 #include "types.hpp"
 #include "vector.hpp"
 #include "point.hpp"
+#include "color.hpp"
+#include "texcoord.hpp"
 #include "quaternion.hpp"
 #include "matrix.hpp"
 #include "axis.hpp"
@@ -15,21 +17,23 @@
 #include "texture.hpp"
 #include "vertex_array.hpp"
 #include "load_model.hpp"
+#include "cube_data.hpp"
 
-#define WINDOW_WIDTH  800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH  640
+#define WINDOW_HEIGHT 480
 
 using namespace std;
 using namespace engine;
 
-engine::point light{0.0, 25.0, 45.0};
+engine::point light{0.0, 0.0, 45.0};
 engine::point eye{0.0, 25.0, 45.0};
-engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 100.0, eye, point{0.0, 11.0, 0.0} - eye, UNIT_Y);
+engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 1000.0, eye, point{0.0, 0/*11.0*/, 0.0} - eye, UNIT_Y);
 
-engine::shader_ptr s;
+engine::shader_ptr s, cube_shader;
 engine::texture_map_ptr t, n;
 engine::vertex_arrays v;
-engine::system l;
+engine::vertex_array_ptr cube;
+engine::system l, light_system;
 
 void error(int error, const char* description)
 {
@@ -40,14 +44,20 @@ void init()
 {
 	try
 	{
+		cube = make_vertex_array(make_model_data(
+			cube_vertices,
+			cube_colors,
+			cube_texcoords,
+			{}, {}, {},
+			cube_indices));
+		cube_shader = load_shader("data/shaders/cube.vs", "data/shaders/cube.fs");
+
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
 		t = load_texture_map("data/textures/skull.jpg", false, false);
 		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
 		auto data = load_model("data/models/skull.obj");
 		for(auto& d : data) v.push_back(make_vertex_array(d));
 
-		s->use();
-		s->set_float("brightness", 1.0);
 		l.rotate(-90, UNIT_X);
 		//l.rotate( 90, UNIT_Y);
 	}
@@ -117,14 +127,23 @@ void draw()
 	glClearColor(0.25, 0.25, 0.25, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	light *= rotate(1, UNIT_Y);
+	light *= rotate(1.33, UNIT_X);
+	light *= rotate(1.66, UNIT_Z);
+	light_system = engine::system(IDENTITY_AXIS, light);
+	l.rotate(-0.25, UNIT_Y);
+
+	cube_shader->use();
+	cube_shader->set_mat4("Projection", camera.projection_matrix().data());
+	cube_shader->set_mat4("Camera", camera.view_matrix().data());
+	cube_shader->set_mat4("Model", IDENTITY_MATRIX.data());//light_system.to_global().data());
+	cube_shader->set_mat4("Model", light_system.to_global().data());
+	cube->draw();
+
 	s->use();
 	s->set_mat4("Projection", camera.projection_matrix().data());
 	s->set_mat4("Camera", camera.view_matrix().data());
 	s->set_mat4("Model", l.to_global().data());
-	light *= rotate(1, UNIT_Y);
-	light *= rotate(1.33, UNIT_X);
-	light *= rotate(1.66, UNIT_Z);
-	l.rotate(-0.25, UNIT_Y);
 	s->set_vec3("Light", light.data());
 	s->bind_texture("texture1", 0);
 	s->bind_texture("texture2", 1);
@@ -132,6 +151,7 @@ void draw()
 	n->bind(1);
 
 	for(auto& m : v) m->draw();
+
 }
 
 int main(int argc, char** argv)

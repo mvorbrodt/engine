@@ -8,11 +8,11 @@
 #include "handle.hpp"
 #include "texture.hpp"
 
+using namespace std;
+
 template<typename T> struct STBIReleasePolicy { static void Execute(T ptr) noexcept { stbi_image_free(ptr); } };
 template<typename T>
 using stbi_handle_t = handle<T, NoOpPolicy, STBIReleasePolicy>;
-
-using namespace std;
 
 namespace engine
 {
@@ -97,12 +97,15 @@ namespace engine
 	{
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
-		cout << "Loading LDR " << texture_file << endl;
+		cout << "Loading LDR " << texture_file << "..." << endl;
 		stbi_handle_t<unsigned char*> data{ stbi_load(texture_file, &width, &height, &channels, desired_channels) };
 		if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
 		if(desired_channels == 0) desired_channels = channels;
 
-		cout << "\twidth: " << width << ", height: " << height << ", input channels: " << channels << ", output channels: " << desired_channels << endl;
+		cout << "\twidth: " << width << endl <<
+			"\theight: " << height << endl <<
+			"\tinput channels: " << channels << endl <<
+			"\toutput channels: " << desired_channels << endl;
 
 		return make_shared<texture_map>(width, height, desired_channels, data, gamma_correction, mipmaps);
 	}
@@ -111,12 +114,15 @@ namespace engine
 	{
 		int width{}, height{}, channels{};
 		stbi_set_flip_vertically_on_load(true);
-		cout << "Loading HDR " << texture_file << endl;
+		cout << "Loading HDR " << texture_file << "..." << endl;
 		stbi_handle_t<float*> data{ stbi_loadf(texture_file, &width, &height, &channels, desired_channels) };
 		if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
 		if(desired_channels == 0) desired_channels = channels;
 
-		cout << "\twidth: " << width << ", height: " << height << ", input channels: " << channels << ", output channels: " << desired_channels << endl;
+		cout << "\twidth: " << width << endl <<
+			"\theight: " << height << endl <<
+			"\tinput channels: " << channels << endl <<
+			"\toutput channels: " << desired_channels << endl;
 
 		return make_shared<texture_map>(width, height, desired_channels, data, mipmaps);
 	}

@@ -38,8 +38,8 @@ namespace engine
 		real* data() { return m_data; }
 		const real* data() const { return m_data; }
 
-		real& operator[](MC c) { return m_data[c]; }
-		const real& operator[](MC c) const { return m_data[c]; }
+		real& operator[](MatrixCoordinate c) { return m_data[c]; }
+		const real& operator[](MatrixCoordinate c) const { return m_data[c]; }
 
 	private:
 		real m_data[16];

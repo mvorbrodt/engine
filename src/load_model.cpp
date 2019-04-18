@@ -35,6 +35,25 @@ namespace
 }
 namespace engine
 {
+	model_data_ptr make_model_data(
+		const point_buffer& point_buffer,
+		const color_buffer& color_buffer,
+		const texcoord_buffer& texcoord_buffer,
+		const vector_buffer& normal_buffer,
+		const vector_buffer& tangent_buffer,
+		const vector_buffer& bitangent_buffer,
+		const int_buffer& index_buffer)
+	{
+		return make_shared<model_data>(
+			point_buffer,
+			color_buffer,
+			texcoord_buffer,
+			normal_buffer,
+			tangent_buffer,
+			bitangent_buffer,
+			index_buffer);
+	}
+
 	model_data_array load_model(const char* model_file)
 	{
 		Assimp::Importer importer;
@@ -59,21 +78,22 @@ namespace engine
 			assert(mesh->mNumVertices > 0 && mesh->mNumFaces > 0);
 			assert(mesh->HasPositions());
 
-			cout << "\tmesh #" << (m + 1) <<
-				", vertices: " << mesh->mNumVertices <<
-				", faces: " << mesh->mNumFaces <<  endl;
-			cout << "\tnormals: " << mesh->HasNormals() <<
-				", tan/bi: " << mesh->HasTangentsAndBitangents() <<
-				", texcoords: " << mesh->HasTextureCoords(0) <<
-				" (channels: " << mesh->GetNumUVChannels() << ")" << endl;
+			cout << "\tmesh #" << (m + 1) << endl <<
+				"\t\tvertices: " << mesh->mNumVertices << endl <<
+				"\t\tfaces: " << mesh->mNumFaces <<  endl <<
+				"\t\tnormals: " << mesh->HasNormals() << endl <<
+				"\t\ttan/bi: " << mesh->HasTangentsAndBitangents() << endl <<
+				"\t\ttexcoords: " << mesh->HasTextureCoords(0) << " (channels: " << mesh->GetNumUVChannels() << ")" << endl;
 
 			point_buffer position_buffer;
+			color_buffer color_buffer;
 			texcoord_buffer texcoord_buffer;
 			vector_buffer normal_buffer;
 			vector_buffer tangent_buffer;
 			vector_buffer bitangent_buffer;
 
 			position_buffer.reserve(mesh->mNumVertices);
+			if(mesh->HasVertexColors(0)) color_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasTextureCoords(0)) texcoord_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasNormals()) normal_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasTangentsAndBitangents()) tangent_buffer.reserve(mesh->mNumVertices);
@@ -83,6 +103,12 @@ namespace engine
 			{
 				const aiVector3D* position = &(mesh->mVertices[i]);
 				position_buffer.push_back(point(position->x, position->y, position->z));
+
+				if(mesh->HasVertexColors(0))
+				{
+					const aiColor4D* c = &(mesh->mColors[0][i]);
+					color_buffer.push_back(color(c->r, c->g, c->b, c->a));
+				}
 
 				if(mesh->HasTextureCoords(0))
 				{
@@ -117,7 +143,14 @@ namespace engine
 				index_buffer.push_back(face.mIndices[2]);
 			}
 
-			result.push_back(make_shared<model_data>(position_buffer, texcoord_buffer, normal_buffer, tangent_buffer, bitangent_buffer, index_buffer));
+			result.push_back(make_model_data(
+				position_buffer,
+				color_buffer,
+				texcoord_buffer,
+				normal_buffer,
+				tangent_buffer,
+				bitangent_buffer,
+				index_buffer));
 		}
 
 		return result;

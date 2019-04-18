@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <ostream>
+#include "types.hpp"
 
 namespace engine
 {
@@ -14,8 +15,8 @@ namespace engine
 		real* data() { return m_data; }
 		const real* data() const { return m_data; }
 
-		real& operator[](VC c) { return m_data[c]; }
-		const real& operator[](VC c) const { return m_data[c]; }
+		real& operator[](Coordinate c) { return m_data[c]; }
+		const real& operator[](Coordinate c) const { return m_data[c]; }
 
 	private:
 		real m_data[2];

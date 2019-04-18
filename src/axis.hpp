@@ -57,8 +57,8 @@ namespace engine
 			);
 		}
 
-		vector& operator[](VC c) { return m_axis[c]; }
-		const vector& operator[](VC c) const { return m_axis[c]; }
+		vector& operator[](Coordinate c) { return m_axis[c]; }
+		const vector& operator[](Coordinate c) const { return m_axis[c]; }
 
 	private:
 		vector m_axis[3];

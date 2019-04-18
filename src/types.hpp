@@ -5,11 +5,13 @@
 namespace engine
 {
 	using real = float;
+	using byte = unsigned char;
+
 	using real_buffer = std::vector<real>;
-	using byte_buffer = std::vector<unsigned char>;
+	using byte_buffer = std::vector<byte>;
 	using int_buffer = std::vector<int>;
 
-	enum VC
+	enum Coordinate
 	{
 		X = 0,
 		Y = 1,
@@ -17,7 +19,15 @@ namespace engine
 		W = 3
 	};
 
-	enum MC
+	enum ColorComponent
+	{
+		R = 0,
+		G = 1,
+		B = 2,
+		A = 3
+	};
+
+	enum MatrixCoordinate
 	{
 		R1C1 = 0,
 		R2C1 = 1,

@@ -19,8 +19,9 @@ namespace engine
 		void draw() const;
 
 	private:
-		unsigned int m_triangles = 0;
+		unsigned int m_indices = 0;
 		unsigned int m_position_buffer_handle = 0;
+		unsigned int m_color_buffer_handle = 0;
 		unsigned int m_texcoord_buffer_handle = 0;
 		unsigned int m_normal_buffer_handle = 0;
 		unsigned int m_tangent_buffer_handle = 0;
