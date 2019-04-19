@@ -232,7 +232,7 @@ namespace engine
 
 			stbi_set_flip_vertically_on_load(false);
 			auto data = make_shared<handle>(stbi_load(texture_file, &width, &height, &channels, desired_channels));
-			if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
+			if(*data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
 			stbi_handles.push_back(data);
 
 			if(desired_channels == 0) desired_channels = channels;
@@ -268,7 +268,7 @@ namespace engine
 
 			stbi_set_flip_vertically_on_load(false);
 			auto data = make_shared<handle>(stbi_loadf(texture_file, &width, &height, &channels, desired_channels));
-			if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
+			if(*data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
 			stbi_handles.push_back(data);
 
 			if(desired_channels == 0) desired_channels = channels;

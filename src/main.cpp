@@ -57,12 +57,12 @@ void init()
 		cube_map = load_texture_cube_map
 		(
 			{
-				"data/textures/skybox_right.jpg",
-				"data/textures/skybox_left.jpg",
-				"data/textures/skybox_top.jpg",
-				"data/textures/skybox_bottom.jpg",
-				"data/textures/skybox_back.jpg",
-				"data/textures/skybox_front.jpg"
+				"data/textures/skybox2/skybox_right.jpg",
+				"data/textures/skybox2/skybox_left.jpg",
+				"data/textures/skybox2/skybox_top.jpg",
+				"data/textures/skybox2/skybox_bottom.jpg",
+				"data/textures/skybox2/skybox_back.jpg",
+				"data/textures/skybox2/skybox_front.jpg"
 			}, true
 		);
 
