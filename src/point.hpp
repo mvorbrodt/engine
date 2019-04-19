@@ -20,14 +20,11 @@ namespace engine
 		real& operator[](Coordinate c) { return m_data[c]; }
 		const real& operator[](Coordinate c) const { return m_data[c]; }
 
-		inline static const std::size_t k_component_count = 3;
-		inline static std::size_t component_count() { return k_component_count; }
-
 	private:
-		real m_data[k_component_count];
+		real m_data[3];
 	};
 
-	using point_buffer = buffer_t<point, k_point_buffer_name, point::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using point_buffer = buffer_t<point, real, 3, k_point_attribute_name, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline static const point ORIGIN = { 0.0f, 0.0f, 0.0f };
 

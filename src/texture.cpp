@@ -71,8 +71,6 @@ namespace engine
 			glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		}
-
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void texture_map::bind(int unit) const
@@ -110,8 +108,6 @@ namespace engine
 		}
 
 		apply_common_parameters();
-
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	texture_cube_map::texture_cube_map(const texture_cube_map_data_array<float>& data_array)
@@ -143,8 +139,6 @@ namespace engine
 		}
 
 		apply_common_parameters();
-
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
 	void texture_cube_map::apply_common_parameters() const

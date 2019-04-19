@@ -10,6 +10,8 @@ in vec3 lpos;
 in mat3 model;
 in mat4 model_cam;
 
+uniform bool Reflect;
+
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform samplerCube texture3;
@@ -23,5 +25,6 @@ void main()
 	n = normalize(mat3(model_cam) * TBN * n);
 	vec3 d = normalize(lpos - pos);
 
-	FragColor = texture(texture3, model * normal);// * (texture(texture1, texcoord) * clamp(dot(n, d), 0.75, 1.0));
+	if(Reflect == true) FragColor = texture(texture3, model * normal);
+	else FragColor = texture(texture1, texcoord) * clamp(dot(n, d), 0.0, 1.0);
 }

@@ -1,11 +1,35 @@
 #pragma once
 
+#include <cstddef>
+#include <string>
 #include <memory>
 #include "types.hpp"
 #include "opengl.hpp"
 
 namespace engine
 {
+	class uniform_buffer
+	{
+	public:
+		uniform_buffer(const char* name, std::size_t size, unsigned int binding_point);
+
+		const char* get_name() const { return m_buffer_name.c_str(); }
+		std::size_t get_size() const { return m_buffer_size; }
+		unsigned int get_binding_point() const { return m_binding_point; }
+
+		void copy_data(std::size_t offset, std::size_t length, void* data) const;
+
+	private:
+		std::string m_buffer_name;
+		std::size_t m_buffer_size;
+		unsigned int m_binding_point;
+		opengl_buffer_handle m_buffer_handle;
+	};
+
+	using uniform_buffer_ptr = std::shared_ptr<uniform_buffer>;
+
+	uniform_buffer_ptr make_uniform_buffer(const char* name, std::size_t size, unsigned int binding_point);
+
 	class shader
 	{
 	public:
@@ -27,7 +51,11 @@ namespace engine
 		void set_mat3(const char* name, const real* mat) const;
 		void set_mat4(const char* name, const real* mat) const;
 
-		void use() const;
+		void bind_uniform_block(const char* name, unsigned int binding_point) const;
+
+		void connect_uniform_block(const uniform_buffer_ptr& uniform_buffer) const;
+
+		void make_current() const;
 
 	private:
 		opengl_shader_handle m_vertex_shader_handle;

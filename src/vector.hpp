@@ -40,16 +40,13 @@ namespace engine
 		real& operator[](Coordinate c) { return m_data[c]; }
 		const real& operator[](Coordinate c) const { return m_data[c]; }
 
-		inline static const std::size_t k_component_count = 3;
-		inline static std::size_t component_count() { return k_component_count; }
-
 	private:
-		real m_data[k_component_count];
+		real m_data[3];
 	};
 
-	using normal_buffer = buffer_t<vector, k_normal_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
-	using tangent_buffer = buffer_t<vector, k_tangent_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
-	using bitangent_buffer = buffer_t<vector, k_bitangent_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using normal_buffer = buffer_t<vector, real, 3, k_normal_attribute_name, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using tangent_buffer = buffer_t<vector, real, 3, k_tangent_attribute_name, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using bitangent_buffer = buffer_t<vector, real, 3, k_bitangent_attribute_name, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline static const vector UNIT_X = { 1.0f, 0.0f, 0.0f };
 	inline static const vector UNIT_Y = { 0.0f, 1.0f, 0.0f };

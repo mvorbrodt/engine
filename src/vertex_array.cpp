@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <array>
 #include <utility>
@@ -32,8 +33,6 @@ namespace engine
 			&get<5>(*data)
 		};
 
-		unsigned int next_attribute = 0;
-
 		cout << "Building flat vertex array..." << endl;
 
 		for(auto buffer : buffers)
@@ -42,32 +41,28 @@ namespace engine
 			{
 				cout << "\telement: " << buffer->element_name() << ", count: " << buffer->size() << endl;
 
+				assert(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER);
+
 				opengl_buffer_handle handle;
 				glGenBuffers(1, &handle);
 				glBindBuffer(buffer->opengl_buffer_type(), handle);
 				glBufferData(buffer->opengl_buffer_type(), buffer->size() * buffer->element_size(), buffer->data(), GL_STATIC_DRAW);
 
-				if(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER)
-				{
-					glVertexAttribPointer(next_attribute, buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, buffer->element_size(), (void*)0);
-					glEnableVertexAttribArray(next_attribute);
-					++next_attribute;
-				}
+				auto location = k_attribute_name_to_location_map.at(buffer->element_name());
+				glVertexAttribPointer(location, buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, buffer->element_size(), (void*)0);
+				glEnableVertexAttribArray(location);
 
 				m_elements = buffer->size();
 
 				m_buffer_handles.push_back(move(handle));
 			}
 		}
-
-		glBindVertexArray(0);
 	}
 
 	void flat_vertex_array::draw(GLenum primitive) const
 	{
 		glBindVertexArray(m_vertex_array_handle);
 		glDrawArrays(primitive, 0, m_elements);
-		glBindVertexArray(0);
 	}
 
 	indexed_vertex_array::indexed_vertex_array(const indexed_model_data_ptr& data)
@@ -86,8 +81,6 @@ namespace engine
 			&get<6>(*data)
 		};
 
-		unsigned int next_attribute = 0;
-
 		cout << "Building indexed vertex array..." << endl;
 
 		for(auto buffer : buffers)
@@ -96,6 +89,8 @@ namespace engine
 			{
 				cout << "\telement: " << buffer->element_name() << ", count: " << buffer->size() << endl;
 
+				assert(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER || buffer->opengl_buffer_type() == GL_ELEMENT_ARRAY_BUFFER);
+
 				opengl_buffer_handle handle;
 				glGenBuffers(1, &handle);
 				glBindBuffer(buffer->opengl_buffer_type(), handle);
@@ -103,9 +98,9 @@ namespace engine
 
 				if(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER)
 				{
-					glVertexAttribPointer(next_attribute, buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, buffer->element_size(), (void*)0);
-					glEnableVertexAttribArray(next_attribute);
-					++next_attribute;
+					auto location = k_attribute_name_to_location_map.at(buffer->element_name());
+					glVertexAttribPointer(location, buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, buffer->element_size(), (void*)0);
+					glEnableVertexAttribArray(location);
 				}
 
 				if(buffer->opengl_buffer_type() == GL_ELEMENT_ARRAY_BUFFER) m_indices = buffer->size();
@@ -113,14 +108,11 @@ namespace engine
 				m_buffer_handles.push_back(move(handle));
 			}
 		}
-
-		glBindVertexArray(0);
 	}
 
 	void indexed_vertex_array::draw(GLenum primitive) const
 	{
 		glBindVertexArray(m_vertex_array_handle);
 		glDrawElements(primitive, m_indices, GL_UNSIGNED_INT, (void*)0);
-		glBindVertexArray(0);
 	}
 }

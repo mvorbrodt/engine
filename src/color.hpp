@@ -19,14 +19,11 @@ namespace engine
 		real& operator[](ColorComponent c) { return m_data[c]; }
 		const real& operator[](ColorComponent c) const { return m_data[c]; }
 
-		inline static const std::size_t k_component_count = 4;
-		inline static std::size_t component_count() { return k_component_count; }
-
 	private:
-		real m_data[k_component_count];
+		real m_data[4];
 	};
 
-	using color_buffer = buffer_t<color, k_color_buffer_name, color::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using color_buffer = buffer_t<color, real, 4, k_color_attribute_name, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline std::ostream& operator << (std::ostream& os, const color& c)
 	{

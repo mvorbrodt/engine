@@ -31,6 +31,7 @@ engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point
 
 bool points = false;
 
+engine::uniform_buffer_ptr ub1, ub2;
 engine::shader_ptr s, cube_shader;
 engine::texture_ptr t, n, cube_texture, cube_map;
 engine::vertex_arrays v;
@@ -46,12 +47,18 @@ void init()
 {
 	try
 	{
+		ub1 = make_uniform_buffer("Matrices", 2 * sizeof(matrix), 0);
+		ub2 = make_uniform_buffer("Lights", sizeof(point), 1);
+
 		cube = make_flat_vertex_array(make_flat_model_data(
 			cube_vertices,
 			cube_colors,
 			cube_texcoords,
 			{}, {}, {}));
 		cube_shader = load_shader("data/shaders/cube.vs", "data/shaders/cube.fs");
+		cube_shader->set_int("texture1", 0);
+		cube_shader->connect_uniform_block(ub1);
+
 		cube_texture = load_texture_map("data/textures/cpp.png");
 
 		cube_map = load_texture_cube_map
@@ -67,6 +74,13 @@ void init()
 		);
 
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
+		s->set_bool("Reflect", false);
+		s->set_int("texture1", 0);
+		s->set_int("texture2", 1);
+		s->set_int("texture3", 2);
+		s->connect_uniform_block(ub1);
+		s->connect_uniform_block(ub2);
+
 		t = load_texture_map("data/textures/skull.jpg", true, true);
 		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
 		auto data = load_indexed_model_data("data/models/skull.obj");
@@ -100,6 +114,8 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_2: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
 			case GLFW_KEY_3: points = true; break;
 			case GLFW_KEY_4: points = false; break;
+			case GLFW_KEY_5: s->set_bool("Reflect", false); break;
+			case GLFW_KEY_6: s->set_bool("Reflect", true); break;
 			case GLFW_KEY_Q: l.rotate( 10, UNIT_Y); break;
 			case GLFW_KEY_E: l.rotate(-10, UNIT_Y); break;
 			case GLFW_KEY_A: camera.move( 0,  0.5f); break;
@@ -144,27 +160,22 @@ void draw()
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	ub1->copy_data(0, sizeof(matrix), camera.projection_matrix().data());
+	ub1->copy_data(sizeof(matrix), sizeof(matrix), camera.view_matrix().data());
+	ub2->copy_data(0, sizeof(point), light.data());
+
 	light *= rotate(1, UNIT_Y);
 	light_system = engine::system(IDENTITY_AXIS, light);
 	//light_system.scale(5.0f);
 	l.rotate(-0.25, UNIT_Y);
 
-	cube_shader->use();
-	cube_shader->set_mat4("Projection", camera.projection_matrix().data());
-	cube_shader->set_mat4("Camera", camera.view_matrix().data());
 	cube_shader->set_mat4("Model", light_system.to_global().data());
-	cube_shader->set_int("texture1", 0);
+	cube_shader->make_current();
 	cube_texture->bind(0);
-	//cube->draw(GL_TRIANGLES);
+	cube->draw(GL_TRIANGLES);
 
-	s->use();
-	s->set_mat4("Projection", camera.projection_matrix().data());
-	s->set_mat4("Camera", camera.view_matrix().data());
 	s->set_mat4("Model", l.to_global().data());
-	s->set_vec3("Light", light.data());
-	s->set_int("texture1", 0);
-	s->set_int("texture2", 1);
-	s->set_int("texture3", 2);
+	s->make_current();
 	t->bind(0);
 	n->bind(1);
 	cube_map->bind(2);

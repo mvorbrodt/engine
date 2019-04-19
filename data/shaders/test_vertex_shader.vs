@@ -1,15 +1,24 @@
 #version 410 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTex;
-layout (location = 2) in vec3 aNor;
-layout (location = 3) in vec3 aTan;
-layout (location = 4) in vec3 aBiTan;
+layout (location = 0) in vec3 Point;
+layout (location = 1) in vec4 Color;
+layout (location = 2) in vec2 Texcoord;
+layout (location = 3) in vec3 Normal;
+layout (location = 4) in vec3 Tangent;
+layout (location = 5) in vec3 Bitangent;
 
-uniform mat4 Projection;
-uniform mat4 Camera;
+layout (std140) uniform Matrices
+{
+	mat4 Projection;
+	mat4 Camera;
+};
+
+layout (std140) uniform Lights
+{
+	vec3 Light;
+};
+
 uniform mat4 Model;
-uniform vec3 Light;
 
 out vec3 pos;
 out vec2 texcoord;
@@ -25,13 +34,13 @@ void main()
 {
 	model = mat3(Model);
 	model_cam = Camera * Model;
-	pos = (Camera * Model * vec4(aPos, 1.0)).xyz;
+	pos = (Camera * Model * vec4(Point, 1.0)).xyz;
 	lpos = (Camera * vec4(Light, 1.0)).xyz;
-	gl_Position = Projection * Camera * Model * vec4(aPos, 1.0);
+	gl_Position = Projection * Camera * Model * vec4(Point, 1.0);
 	gl_PointSize = gl_Position.z / 5;
 
-	normal = aNor;
-	tangent = aTan;
-	bitangent = aBiTan;
-	texcoord = aTex;
+	normal = Normal;
+	tangent = Tangent;
+	bitangent = Bitangent;
+	texcoord = Texcoord;
 }
