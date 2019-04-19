@@ -10,7 +10,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include_directories("${PROJECT_SOURCE_DIR}/3rd_party")
+include_directories("${PROJECT_SOURCE_DIR}/3rd_party/stb/include")
 include_directories("/usr/local/include")
 link_directories("/usr/local/lib")
 
