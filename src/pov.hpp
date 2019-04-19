@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "vector.hpp"
 #include "point.hpp"
+#include "matrix.hpp"
 #include "transforms.hpp"
 
 #define MIN_FOV 10.0f
