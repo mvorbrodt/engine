@@ -19,7 +19,7 @@ namespace engine
 		{
 			assert(m_width > 1 && m_height > 1);
 			assert(m_fov >= MIN_FOV && m_fov <= MAX_FOV);
-			assert(m_near >= 1.0 && m_far >= 1.0 && m_near < m_far);
+			//assert(m_near >= 1.0 && m_far >= 1.0 && m_near < m_far);
 			m_direction.normalize();
 			m_up.normalize();
 		}
@@ -47,19 +47,19 @@ namespace engine
 		}
 
 		real get_near() const { return m_near; }
-		void set_near(real near)
+		void set_near(real _near)
 		{
-			if(near < 1.0) near = 1.0;
-			if(near > m_far) near = m_far - 1.0;
-			m_near = near;
+			if(_near < 1.0) _near = 1.0;
+			if(_near > m_far) _near = m_far - 1.0;
+			m_near = _near;
 		}
 
 		real get_far() const { return m_far; }
-		void set_far(real far)
+		void set_far(real _far)
 		{
-			if(far < 1.0) far = 1.0;
-			if(far < m_near) far = m_near + 1.0;
-			m_far = far;
+			if(_far < 1.0) _far = 1.0;
+			if(_far < m_near) _far = m_near + 1.0;
+			m_far = _far;
 		}
 
 		void move(real forward, real side)

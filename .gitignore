@@ -9,3 +9,7 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 bin/
+.vs/
+x64/
+3rd_party/glad/
+3rd_party/glfw/

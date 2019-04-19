@@ -70,14 +70,14 @@ namespace engine
 		);
 	}
 
-	inline matrix projection(real fov, real aspect, real near, real far)
+	inline matrix projection(real fov, real aspect, real _near, real _far)
 	{
-		auto top = std::tan(fov * PI / 360.0) * near;
+		auto top = std::tan(fov * PI / 360.0) * _near;
 		auto bottom = -top;
 		auto right = top * aspect;
 		auto left = -top * aspect;
 
-		return projection(left, right, top, bottom, near, far);
+		return projection(left, right, top, bottom, _near, _far);
 	}
 
 	inline matrix look_at(const point& eye, const point& at, const vector& up)
