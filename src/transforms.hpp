@@ -54,11 +54,6 @@ namespace engine
 		);
 	}
 
-	inline matrix scale(real xs, real ys, real zs)
-	{
-		return matrix(xs, ys, zs);
-	}
-
 	inline matrix scale(real s)
 	{
 		return matrix(s);

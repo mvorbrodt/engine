@@ -26,11 +26,11 @@ using namespace std;
 using namespace engine;
 
 engine::point light{0.0, 0.0, 25.0};
-engine::point eye{0.0, 25.0, 45.0};
-engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 1000.0, eye, ORIGIN - eye, UNIT_Y);
+engine::point eye{0.0, 10.0, 45.0};
+engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 1000.0, eye, point(0.0, 2.0, 0.0) - eye, UNIT_Y);
 
 engine::shader_ptr s, cube_shader;
-engine::texture_map_ptr t, n, cube_texture;
+engine::texture_ptr t, n, cube_texture, cube_map;
 engine::vertex_arrays v;
 engine::vertex_array_ptr cube;
 engine::system l, light_system;
@@ -50,10 +50,22 @@ void init()
 			cube_texcoords,
 			{}, {}, {}));
 		cube_shader = load_shader("data/shaders/cube.vs", "data/shaders/cube.fs");
-		cube_texture = load_texture_map("data/textures/cpp.png", false, false);
+		cube_texture = load_texture_map("data/textures/cpp.png");
+
+		cube_map = load_texture_cube_map
+		(
+			{
+				"data/textures/skybox_right.jpg",
+				"data/textures/skybox_left.jpg",
+				"data/textures/skybox_top.jpg",
+				"data/textures/skybox_bottom.jpg",
+				"data/textures/skybox_back.jpg",
+				"data/textures/skybox_front.jpg"
+			}, true
+		);
 
 		s = load_shader("data/shaders/test_vertex_shader.vs", "data/shaders/test_fragment_shader.fs");
-		t = load_texture_map("data/textures/skull.jpg", false, false);
+		t = load_texture_map("data/textures/skull.jpg", true, true);
 		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
 		auto data = load_indexed_model_data("data/models/skull.obj");
 		for(auto& d : data) v.push_back(make_indexed_vertex_array(d));
@@ -130,6 +142,7 @@ void draw()
 
 	light *= rotate(1, UNIT_Y);
 	light_system = engine::system(IDENTITY_AXIS, light);
+	//light_system.scale(5.0);
 	l.rotate(-0.25, UNIT_Y);
 
 	cube_shader->use();
@@ -138,7 +151,7 @@ void draw()
 	cube_shader->set_mat4("Model", light_system.to_global().data());
 	cube_shader->set_int("texture1", 0);
 	cube_texture->bind(0);
-	cube->draw();
+	//cube->draw();
 
 	s->use();
 	s->set_mat4("Projection", camera.projection_matrix().data());
@@ -147,8 +160,10 @@ void draw()
 	s->set_vec3("Light", light.data());
 	s->set_int("texture1", 0);
 	s->set_int("texture2", 1);
+	s->set_int("texture3", 2);
 	t->bind(0);
 	n->bind(1);
+	cube_map->bind(2);
 
 	for(auto& m : v) m->draw();
 }

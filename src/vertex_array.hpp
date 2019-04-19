@@ -26,7 +26,7 @@ namespace engine
 	public:
 		flat_vertex_array(const flat_model_data_ptr& data);
 
-		void draw() const;
+		void draw() const override;
 
 	private:
 		std::size_t m_elements = 0;
@@ -40,7 +40,7 @@ namespace engine
 	public:
 		indexed_vertex_array(const indexed_model_data_ptr& data);
 
-		void draw() const;
+		void draw() const override;
 
 	private:
 		std::size_t m_indices = 0;

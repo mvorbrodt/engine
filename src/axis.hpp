@@ -35,6 +35,14 @@ namespace engine
 			m_axis[Z] *= m;
 		}
 
+		void scale(real s)
+		{
+			auto m = engine::scale(s);
+			m_axis[X] *= m;
+			m_axis[Y] *= m;
+			m_axis[Z] *= m;
+		}
+
 		matrix to_local() const { return to_global().transpose(); }
 		matrix to_global() const { return matrix(m_axis[X], m_axis[Y], m_axis[Z]); }
 

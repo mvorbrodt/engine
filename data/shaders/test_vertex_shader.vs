@@ -18,10 +18,12 @@ out vec3 tangent;
 out vec3 bitangent;
 
 out vec3 lpos;
+out mat3 model;
 out mat4 model_cam;
 
 void main()
 {
+	model = mat3(Model);
 	model_cam = Camera * Model;
 	pos = (Camera * Model * vec4(aPos, 1.0)).xyz;
 	lpos = (Camera * vec4(Light, 1.0)).xyz;

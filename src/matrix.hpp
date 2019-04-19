@@ -85,13 +85,6 @@ namespace engine
 			0.0, 0.0,   s
 		) {}
 
-		matrix(real xs, real ys, real zs) : matrix
-		(
-			 xs, 0.0, 0.0,
-			0.0,  ys, 0.0,
-			0.0, 0.0,  zs
-		) {}
-
 		matrix normal() const
 		{
 			return matrix

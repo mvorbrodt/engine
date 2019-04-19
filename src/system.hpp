@@ -15,6 +15,11 @@ namespace engine
 		system(const axis& a = IDENTITY_AXIS, const point& o = ORIGIN)
 		: m_axis{ a }, m_origin{ o } {}
 
+		void translate(const vector& v)
+		{
+			m_origin += v;
+		}
+
 		void rotate(real angle, const vector& axis)
 		{
 			auto m = engine::rotate(angle, axis);
@@ -31,9 +36,9 @@ namespace engine
 			m_axis[Z] *= m;
 		}
 
-		void translate(const vector& v)
+		void scale(real s)
 		{
-			m_origin += v;
+			m_axis.scale(s);
 		}
 
 		matrix to_local() const
