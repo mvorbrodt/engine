@@ -11,5 +11,4 @@ CTestTestfile.cmake
 bin/
 .vs/
 x64/
-3rd_party/glad/
 3rd_party/glfw/
