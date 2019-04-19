@@ -10,7 +10,7 @@ namespace engine
 	class texcoord
 	{
 	public:
-		texcoord(real x = 0.0, real y = 0.0)
+		texcoord(real x = 0.0f, real y = 0.0f)
 		: m_data{ x, y } {}
 
 		real* data() { return m_data; }

@@ -4,5 +4,5 @@
 
 namespace engine
 {
-	const real PI = 3.14159265359;
+	const real PI = 3.14159265359f;
 }

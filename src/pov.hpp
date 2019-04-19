@@ -6,20 +6,20 @@
 #include "point.hpp"
 #include "transforms.hpp"
 
-#define MIN_FOV 10.0
-#define MAX_FOV 90.0
+#define MIN_FOV 10.0f
+#define MAX_FOV 90.0f
 
 namespace engine
 {
 	class pov
 	{
 	public:
-		pov(int width, int height, real fov = 60.0, real near = 1.0, real far = 100.0, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
-		: m_width{ width }, m_height{ height }, m_fov{ fov }, m_near{ near }, m_far{ far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
+		pov(int width, int height, real fov = 60.0f, real _near = 1.0f, real _far = 100.0f, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
+		: m_width{ width }, m_height{ height }, m_fov{ fov }, m_near{ _near }, m_far{ _far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
 		{
 			assert(m_width > 1 && m_height > 1);
 			assert(m_fov >= MIN_FOV && m_fov <= MAX_FOV);
-			//assert(m_near >= 1.0 && m_far >= 1.0 && m_near < m_far);
+			assert(m_near >= 1.0f && m_far >= 1.0f && m_near < m_far);
 			m_direction.normalize();
 			m_up.normalize();
 		}
@@ -49,16 +49,16 @@ namespace engine
 		real get_near() const { return m_near; }
 		void set_near(real _near)
 		{
-			if(_near < 1.0) _near = 1.0;
-			if(_near > m_far) _near = m_far - 1.0;
+			if(_near < 1.0f) _near = 1.0f;
+			if(_near > m_far) _near = m_far - 1.0f;
 			m_near = _near;
 		}
 
 		real get_far() const { return m_far; }
 		void set_far(real _far)
 		{
-			if(_far < 1.0) _far = 1.0;
-			if(_far < m_near) _far = m_near + 1.0;
+			if(_far < 1.0f) _far = 1.0f;
+			if(_far < m_near) _far = m_near + 1.0f;
 			m_far = _far;
 		}
 

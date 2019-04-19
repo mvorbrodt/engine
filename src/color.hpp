@@ -10,7 +10,7 @@ namespace engine
 	class color
 	{
 	public:
-		color(real r = 0.0, real g = 0.0, real b = 0.0, real a = 1.0)
+		color(real r = 0.0f, real g = 0.0f, real b = 0.0f, real a = 1.0f)
 		: m_data{ r, g, b, a } {}
 
 		real* data() { return m_data; }

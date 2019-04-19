@@ -30,7 +30,7 @@ namespace
 		}
 	private:
 		const char* m_model_file;
-		float m_last_percentage = 0.0;
+		float m_last_percentage = 0.0f;
 	};
 }
 namespace engine

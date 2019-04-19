@@ -11,7 +11,7 @@ namespace engine
 	class point
 	{
 	public:
-		point(real x = 0.0, real y = 0.0, real z = 0.0)
+		point(real x = 0.0f, real y = 0.0f, real z = 0.0f)
 		: m_data{ x, y, z } {}
 
 		real* data() { return m_data; }
@@ -29,7 +29,7 @@ namespace engine
 
 	using point_buffer = buffer_t<point, k_point_buffer_name, point::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
-	inline static const point ORIGIN = { 0.0, 0.0, 0.0 };
+	inline static const point ORIGIN = { 0.0f, 0.0f, 0.0f };
 
 	inline point operator + (const point& p, const vector& v)
 	{

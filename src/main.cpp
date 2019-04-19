@@ -25,9 +25,9 @@
 using namespace std;
 using namespace engine;
 
-engine::point light{0.0, 0.0, 25.0};
-engine::point eye{0.0, 10.0, 45.0};
-engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 1000.0, eye, point(0.0, 2.0, 0.0) - eye, UNIT_Y);
+engine::point light{0.0f, 0.0f, 25.0f};
+engine::point eye{0.0f, 10.0f, 45.0f};
+engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point(0.0f, 2.0f, 0.0f) - eye, UNIT_Y);
 
 bool points = false;
 
@@ -102,10 +102,10 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_4: points = false; break;
 			case GLFW_KEY_Q: l.rotate( 10, UNIT_Y); break;
 			case GLFW_KEY_E: l.rotate(-10, UNIT_Y); break;
-			case GLFW_KEY_A: camera.move( 0,  0.5); break;
-			case GLFW_KEY_D: camera.move( 0, -0.5); break;
-			case GLFW_KEY_W: camera.move( 0.5,  0); break;
-			case GLFW_KEY_S: camera.move(-0.5,  0); break;
+			case GLFW_KEY_A: camera.move( 0,  0.5f); break;
+			case GLFW_KEY_D: camera.move( 0, -0.5f); break;
+			case GLFW_KEY_W: camera.move( 0.5f,  0); break;
+			case GLFW_KEY_S: camera.move(-0.5f,  0); break;
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 		}
 	}
@@ -119,34 +119,34 @@ void mouse(GLFWwindow* window, double x, double y)
 
 	if(first)
 	{
-		last_x = x;
-		last_y = y;
+		last_x = (int)x;
+		last_y = (int)y;
 		first = false;
 	}
 
-	int dx = x - last_x;
-	int dy = y - last_y;
+	int dx = (int)x - last_x;
+	int dy = (int)y - last_y;
 
 	camera.turn(-dx / 5.0f);
 	camera.look(-dy / 5.0f);
 
-	last_x = x;
-	last_y = y;
+	last_x = (int)x;
+	last_y = (int)y;
 }
 
 void scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.set_fov(camera.get_fov() - yoffset);
+	camera.set_fov(camera.get_fov() - (real)yoffset);
 }
 
 void draw()
 {
-	glClearColor(0.25, 0.25, 0.25, 1.0);
+	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	light *= rotate(1, UNIT_Y);
 	light_system = engine::system(IDENTITY_AXIS, light);
-	//light_system.scale(5.0);
+	//light_system.scale(5.0f);
 	l.rotate(-0.25, UNIT_Y);
 
 	cube_shader->use();
@@ -177,7 +177,11 @@ int main(int argc, char** argv)
 	glfwSetErrorCallback(error);
 	if(!glfwInit()) return -1;
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#ifdef __APPLE__
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#else
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+#endif
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 16);

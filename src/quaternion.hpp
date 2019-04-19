@@ -11,7 +11,7 @@ namespace engine
 	class quaternion
 	{
 	public:
-		quaternion(real x = 0.0, real y = 0.0, real z = 0.0, real w = 1.0)
+		quaternion(real x = 0.0f, real y = 0.0f, real z = 0.0f, real w = 1.0f)
 		: m_data{ x, y, z, w } {}
 
 		quaternion(real angle, const vector& axis)
@@ -37,13 +37,13 @@ namespace engine
 
 		quaternion normal() const
 		{
-			real len = 1.0 / length();
+			real len = 1.0f / length();
 			return quaternion(m_data[X] * len, m_data[Y] * len, m_data[Z] * len, m_data[W] * len);
 		}
 
 		void normalize()
 		{
-			real len = 1.0 / length();
+			real len = 1.0f / length();
 			m_data[X] *= len;
 			m_data[Y] *= len;
 			m_data[Z] *= len;
@@ -60,7 +60,7 @@ namespace engine
 		real m_data[4];
 	};
 
-	inline static const quaternion IDENTITY_QUATERNION = { 0.0, 0.0, 0.0, 1.0 };
+	inline static const quaternion IDENTITY_QUATERNION = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	inline quaternion operator + (const quaternion& q, const quaternion& r)
 	{
@@ -113,7 +113,7 @@ namespace engine
 
 	inline vector operator * (const quaternion& q, const vector& v)
 	{
-		auto qv = quaternion{ v[X], v[Y], v[Z], 0.0 };
+		auto qv = quaternion{ v[X], v[Y], v[Z], 0.0f };
 		auto c = -q;
 		auto r = q * qv * c;
 		return vector(r[X], r[Y], r[Z]);
@@ -127,7 +127,7 @@ namespace engine
 
 	inline point operator * (const quaternion& q, const point& p)
 	{
-		auto qv = quaternion{ p[X], p[Y], p[Z], 0.0 };
+		auto qv = quaternion{ p[X], p[Y], p[Z], 0.0f };
 		auto c = -q;
 		auto r = q * qv * c;
 		return point(r[X], r[Y], r[Z]);

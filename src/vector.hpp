@@ -11,7 +11,7 @@ namespace engine
 	class vector
 	{
 	public:
-		vector(real x = 0.0, real y = 0.0, real z = 0.0)
+		vector(real x = 0.0f, real y = 0.0f, real z = 0.0f)
 		: m_data{ x, y, z } {}
 
 		real length() const { return std::sqrt(lengthSq()); }
@@ -22,13 +22,13 @@ namespace engine
 
 		vector normal() const
 		{
-			real len = 1.0 / length();
+			real len = 1.0f / length();
 			return vector(m_data[X] * len, m_data[Y] * len, m_data[Z] * len);
 		}
 
 		void normalize()
 		{
-			real len = 1.0 / length();
+			real len = 1.0f / length();
 			m_data[X] *= len;
 			m_data[Y] *= len;
 			m_data[Z] *= len;
@@ -51,9 +51,9 @@ namespace engine
 	using tangent_buffer = buffer_t<vector, k_tangent_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 	using bitangent_buffer = buffer_t<vector, k_bitangent_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
-	inline static const vector UNIT_X = { 1.0, 0.0, 0.0 };
-	inline static const vector UNIT_Y = { 0.0, 1.0, 0.0 };
-	inline static const vector UNIT_Z = { 0.0, 0.0, 1.0 };
+	inline static const vector UNIT_X = { 1.0f, 0.0f, 0.0f };
+	inline static const vector UNIT_Y = { 0.0f, 1.0f, 0.0f };
+	inline static const vector UNIT_Z = { 0.0f, 0.0f, 1.0f };
 
 	inline vector operator + (const vector& lhs, const vector& rhs)
 	{

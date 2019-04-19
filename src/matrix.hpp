@@ -14,10 +14,10 @@ namespace engine
 		matrix()
 		{
 			std::memset(m_data, 0, sizeof(m_data));
-			m_data[R1C1] = 1.0;
-			m_data[R2C2] = 1.0;
-			m_data[R3C3] = 1.0;
-			m_data[R4C4] = 1.0;
+			m_data[R1C1] = 1.0f;
+			m_data[R2C2] = 1.0f;
+			m_data[R3C3] = 1.0f;
+			m_data[R4C4] = 1.0f;
 		}
 
 		matrix
@@ -27,10 +27,10 @@ namespace engine
 			real r3c1, real r3c2, real r3c3
 		) : m_data
 		{
-			r1c1, r2c1, r3c1, 0.0,
-			r1c2, r2c2, r3c2, 0.0,
-			r1c3, r2c3, r3c3, 0.0,
-			 0.0,  0.0,  0.0, 1.0
+			r1c1, r2c1, r3c1, 0.0f,
+			r1c2, r2c2, r3c2, 0.0f,
+			r1c3, r2c3, r3c3, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
 		} {}
 
 		matrix
@@ -49,18 +49,18 @@ namespace engine
 
 		matrix(const vector& v) : matrix
 		(
-			1.0, 0.0, 0.0, v[X],
-			0.0, 1.0, 0.0, v[Y],
-			0.0, 0.0, 1.0, v[Z],
-			0.0, 0.0, 0.0, 1.0
+			1.0f, 0.0f, 0.0f, v[X],
+			0.0f, 1.0f, 0.0f, v[Y],
+			0.0f, 0.0f, 1.0f, v[Z],
+			0.0f, 0.0f, 0.0f, 1.0f
 		) {}
 
 		matrix(const point& w) : matrix
 		(
-			1.0, 0.0, 0.0, w[X],
-			0.0, 1.0, 0.0, w[Y],
-			0.0, 0.0, 1.0, w[Z],
-			0.0, 0.0, 0.0, 1.0
+			1.0f, 0.0f, 0.0f, w[X],
+			0.0f, 1.0f, 0.0f, w[Y],
+			0.0f, 0.0f, 1.0f, w[Z],
+			0.0f, 0.0f, 0.0f, 1.0f
 		) {}
 
 		matrix(const vector& x, const vector& y, const vector& z) : matrix
@@ -75,14 +75,14 @@ namespace engine
 			x[X], y[X], z[X], w[X],
 			x[Y], y[Y], z[Y], w[Y],
 			x[Z], y[Z], z[Z], w[Z],
-			 0.0,  0.0,  0.0,  1.0
+			0.0f, 0.0f, 0.0f, 1.0f
 		) {}
 
 		matrix(real s) : matrix
 		(
-			  s, 0.0, 0.0,
-			0.0,   s, 0.0,
-			0.0, 0.0,   s
+			   s, 0.0f, 0.0f,
+			0.0f,    s, 0.0f,
+			0.0f, 0.0f,    s
 		) {}
 
 		matrix normal() const
@@ -121,10 +121,10 @@ namespace engine
 
 	inline static const matrix IDENTITY_MATRIX =
 	{
-		1.0, 0.0, 0.0, 0.0,
-		0.0, 1.0, 0.0, 0.0,
-		0.0, 0.0, 1.0, 0.0,
-		0.0, 0.0, 0.0, 1.0
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
 	};
 
 	inline matrix operator * (const matrix& lhs, const matrix& rhs)
