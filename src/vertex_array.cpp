@@ -1,3 +1,4 @@
+#include <iostream>
 #include <array>
 #include <utility>
 #include "vertex_array.hpp"
@@ -33,17 +34,18 @@ namespace engine
 
 		unsigned int next_attribute = 0;
 
+		cout << "Building flat vertex array..." << endl;
+
 		for(auto buffer : buffers)
 		{
 			if(buffer->size() > 0)
 			{
+				cout << "\telement: " << buffer->element_name() << ", count: " << buffer->size() << endl;
+
 				opengl_buffer_handle handle;
 				glGenBuffers(1, &handle);
 				glBindBuffer(buffer->opengl_buffer_type(), handle);
 				glBufferData(buffer->opengl_buffer_type(), buffer->size() * buffer->element_size(), buffer->data(), GL_STATIC_DRAW);
-
-				GLenum error_code = glGetError();
-				if(error_code != GL_NO_ERROR) throw opengl_exception("glBufferData failed!", error_code);
 
 				if(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER)
 				{
@@ -86,17 +88,18 @@ namespace engine
 
 		unsigned int next_attribute = 0;
 
+		cout << "Building indexed vertex array..." << endl;
+
 		for(auto buffer : buffers)
 		{
 			if(buffer->size() > 0)
 			{
+				cout << "\telement: " << buffer->element_name() << ", count: " << buffer->size() << endl;
+
 				opengl_buffer_handle handle;
 				glGenBuffers(1, &handle);
 				glBindBuffer(buffer->opengl_buffer_type(), handle);
 				glBufferData(buffer->opengl_buffer_type(), buffer->size() * buffer->element_size(), buffer->data(), GL_STATIC_DRAW);
-
-				GLenum error_code = glGetError();
-				if(error_code != GL_NO_ERROR) throw opengl_exception("glBufferData failed!", error_code);
 
 				if(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER)
 				{

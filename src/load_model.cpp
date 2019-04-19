@@ -39,9 +39,9 @@ namespace engine
 		const point_buffer& point_buffer,
 		const color_buffer& color_buffer,
 		const texcoord_buffer& texcoord_buffer,
-		const vector_buffer& normal_buffer,
-		const vector_buffer& tangent_buffer,
-		const vector_buffer& bitangent_buffer)
+		const normal_buffer& normal_buffer,
+		const tangent_buffer& tangent_buffer,
+		const bitangent_buffer& bitangent_buffer)
 	{
 		return make_shared<flat_model_data>(
 			point_buffer,
@@ -56,9 +56,9 @@ namespace engine
 		const point_buffer& point_buffer,
 		const color_buffer& color_buffer,
 		const texcoord_buffer& texcoord_buffer,
-		const vector_buffer& normal_buffer,
-		const vector_buffer& tangent_buffer,
-		const vector_buffer& bitangent_buffer,
+		const normal_buffer& normal_buffer,
+		const tangent_buffer& tangent_buffer,
+		const bitangent_buffer& bitangent_buffer,
 		const index_buffer& index_buffer)
 	{
 		return make_shared<indexed_model_data>(
@@ -75,6 +75,7 @@ namespace engine
 	{
 		Assimp::Importer importer;
 		importer.SetProgressHandler(new AssimpProgress(model_file));
+
 		const aiScene* scene = importer.ReadFile(model_file,
 			aiProcess_Triangulate |
 			aiProcess_GenSmoothNormals |
@@ -105,9 +106,9 @@ namespace engine
 			point_buffer position_buffer;
 			color_buffer color_buffer;
 			texcoord_buffer texcoord_buffer;
-			vector_buffer normal_buffer;
-			vector_buffer tangent_buffer;
-			vector_buffer bitangent_buffer;
+			normal_buffer normal_buffer;
+			tangent_buffer tangent_buffer;
+			bitangent_buffer bitangent_buffer;
 
 			position_buffer.reserve(mesh->mNumVertices);
 			if(mesh->HasVertexColors(0)) color_buffer.reserve(mesh->mNumVertices);

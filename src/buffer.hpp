@@ -11,6 +11,7 @@ namespace engine
 	public:
 		virtual ~buffer() {}
 
+		virtual const char* element_name() const = 0;
 		virtual std::size_t element_size() const = 0;
 		virtual std::size_t component_count() const = 0;
 
@@ -24,13 +25,14 @@ namespace engine
 		virtual GLenum opengl_element_type() const = 0;
 	};
 
-	template<typename T, std::size_t T_component_count, GLenum buffer_type, GLenum element_type>
+	template<typename T, const char* T_name, std::size_t T_component_count, GLenum buffer_type, GLenum element_type>
 	class buffer_t : public buffer
 	{
 	public:
 		buffer_t() = default;
 		buffer_t(std::initializer_list<T> l) : m_buffer(l) {}
 
+		const char* element_name() const override { return T_name; }
 		std::size_t element_size() const override { return sizeof(T); }
 		std::size_t component_count() const override { return T_component_count; }
 
@@ -53,5 +55,13 @@ namespace engine
 		std::vector<T> m_buffer;
 	};
 
-	using index_buffer = buffer_t<int, 1, GL_ELEMENT_ARRAY_BUFFER, GL_INT>;
+	inline const char k_point_buffer_name[]     = "point";
+	inline const char k_color_buffer_name[]     = "color";
+	inline const char k_texcoord_buffer_name[]  = "texcoord";
+	inline const char k_normal_buffer_name[]    = "normal";
+	inline const char k_tangent_buffer_name[]   = "tangent";
+	inline const char k_bitangent_buffer_name[] = "bitangent";
+	inline const char k_index_buffer_name[]     = "index";
+
+	using index_buffer = buffer_t<int, k_index_buffer_name, 1, GL_ELEMENT_ARRAY_BUFFER, GL_INT>;
 }

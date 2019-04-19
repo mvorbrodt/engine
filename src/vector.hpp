@@ -47,7 +47,9 @@ namespace engine
 		real m_data[k_component_count];
 	};
 
-	using vector_buffer = buffer_t<vector, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using normal_buffer = buffer_t<vector, k_normal_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using tangent_buffer = buffer_t<vector, k_tangent_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using bitangent_buffer = buffer_t<vector, k_bitangent_buffer_name, vector::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline static const vector UNIT_X = { 1.0, 0.0, 0.0 };
 	inline static const vector UNIT_Y = { 0.0, 1.0, 0.0 };

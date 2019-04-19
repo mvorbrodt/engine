@@ -27,7 +27,7 @@ namespace engine
 		real m_data[k_component_count];
 	};
 
-	using point_buffer = buffer_t<point, point::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using point_buffer = buffer_t<point, k_point_buffer_name, point::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline static const point ORIGIN = { 0.0, 0.0, 0.0 };
 

@@ -63,8 +63,6 @@ namespace engine
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, data_format, data_type, data);
-		GLenum error_code = glGetError();
-		if(error_code != GL_NO_ERROR) throw opengl_exception("glTexImage2D failed!", error_code);
 
 		if(mipmaps)
 		{
@@ -87,10 +85,13 @@ namespace engine
 	texture_map_ptr load_texture_map_ldr(const char* texture_file, bool gamma_correction, bool mipmaps, int desired_channels)
 	{
 		int width{}, height{}, channels{};
-		stbi_set_flip_vertically_on_load(true);
+
 		cout << "Loading LDR " << texture_file << "..." << endl;
+
+		stbi_set_flip_vertically_on_load(true);
 		stbi_handle<unsigned char*> data{ stbi_load(texture_file, &width, &height, &channels, desired_channels) };
 		if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
+
 		if(desired_channels == 0) desired_channels = channels;
 
 		cout << "\twidth: " << width << endl <<
@@ -104,10 +105,13 @@ namespace engine
 	texture_map_ptr load_texture_map_hdr(const char* texture_file, bool mipmaps, int desired_channels)
 	{
 		int width{}, height{}, channels{};
-		stbi_set_flip_vertically_on_load(true);
+
 		cout << "Loading HDR " << texture_file << "..." << endl;
+
+		stbi_set_flip_vertically_on_load(true);
 		stbi_handle<float*> data{ stbi_loadf(texture_file, &width, &height, &channels, desired_channels) };
 		if(data == nullptr) throw runtime_error((string("Error loading texture! ") + stbi_failure_reason()).c_str());
+
 		if(desired_channels == 0) desired_channels = channels;
 
 		cout << "\twidth: " << width << endl <<

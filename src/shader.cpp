@@ -1,57 +1,45 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include "shader.hpp"
 
 using namespace std;
+
+#define CHECK_STATUS(getter, handle, status, logger) \
+	{ \
+		int success{}; \
+		getter(handle, status, &success); \
+		if(!success) \
+		{ \
+			GLint length{}; \
+			getter(handle, GL_INFO_LOG_LENGTH, &length); \
+			string error; \
+			error.resize(length + 1); \
+			logger(handle, length, NULL, error.data()); \
+			throw runtime_error(error.c_str()); \
+		} \
+	}
 
 namespace engine
 {
 	shader::shader(const char* vertex_shader_source, const char* fragment_shader_source)
 	{
-		int success{};
 		m_vertex_shader_handle = opengl_shader_handle{ glCreateShader(GL_VERTEX_SHADER) };
 		glShaderSource(m_vertex_shader_handle, 1, &vertex_shader_source, NULL);
 		glCompileShader(m_vertex_shader_handle);
-		glGetShaderiv(m_vertex_shader_handle, GL_COMPILE_STATUS, &success);
-		if(!success)
-		{
-			GLint length{};
-			glGetShaderiv(m_vertex_shader_handle, GL_INFO_LOG_LENGTH, &length);
-			string error;
-			error.resize(length + 1);
-			glGetShaderInfoLog(m_vertex_shader_handle, length, NULL, error.data());
-			throw opengl_exception(("OpenGL Vertex Shader: " + error).c_str(), glGetError());
-		}
+		CHECK_STATUS(glGetShaderiv, m_vertex_shader_handle, GL_COMPILE_STATUS, glGetShaderInfoLog)
 
 		m_fragment_shader_handle = opengl_shader_handle{ glCreateShader(GL_FRAGMENT_SHADER) };
 		glShaderSource(m_fragment_shader_handle, 1, &fragment_shader_source, NULL);
 		glCompileShader(m_fragment_shader_handle);
-		glGetShaderiv(m_fragment_shader_handle, GL_COMPILE_STATUS, &success);
-		if(!success)
-		{
-			GLint length{};
-			glGetShaderiv(m_fragment_shader_handle, GL_INFO_LOG_LENGTH, &length);
-			string error;
-			error.resize(length + 1);
-			glGetShaderInfoLog(m_fragment_shader_handle, length, NULL, error.data());
-			throw opengl_exception(("OpenGL Fragment Shader: " + error).c_str(), glGetError());
-		}
+		CHECK_STATUS(glGetShaderiv, m_fragment_shader_handle, GL_COMPILE_STATUS, glGetShaderInfoLog)
 
 		m_program_handle = opengl_program_handle{ glCreateProgram() };
 		glAttachShader(m_program_handle, m_vertex_shader_handle);
 		glAttachShader(m_program_handle, m_fragment_shader_handle);
 		glLinkProgram(m_program_handle);
-		glGetProgramiv(m_program_handle, GL_LINK_STATUS, &success);
-		if(!success)
-		{
-			GLint length{};
-			glGetShaderiv(m_program_handle, GL_INFO_LOG_LENGTH, &length);
-			string error;
-			error.resize(length);
-			glGetShaderInfoLog(m_program_handle, length, NULL, error.data());
-			throw opengl_exception(("OpenGL Program: " + error).c_str(), glGetError());
-		}
+		CHECK_STATUS(glGetProgramiv, m_program_handle, GL_LINK_STATUS, glGetProgramInfoLog)
 	}
 
 	void shader::set_bool(const char* name, bool value) const

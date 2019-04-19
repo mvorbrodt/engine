@@ -26,7 +26,7 @@ namespace engine
 		real m_data[k_component_count];
 	};
 
-	using texcoord_buffer = buffer_t<texcoord, texcoord::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using texcoord_buffer = buffer_t<texcoord, k_texcoord_buffer_name, texcoord::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline std::ostream& operator << (std::ostream& os, const texcoord& t)
 	{

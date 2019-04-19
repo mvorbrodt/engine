@@ -26,7 +26,7 @@ namespace engine
 		real m_data[k_component_count];
 	};
 
-	using color_buffer = buffer_t<color, color::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
+	using color_buffer = buffer_t<color, k_color_buffer_name, color::k_component_count, GL_ARRAY_BUFFER, GL_FLOAT>;
 
 	inline std::ostream& operator << (std::ostream& os, const color& c)
 	{

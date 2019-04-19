@@ -3,16 +3,16 @@
 
 using namespace std;
 
-namespace
+namespace engine
 {
 	void GLAPIENTRY OpenGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
-		cerr << "OpenGL:" << (type == GL_DEBUG_TYPE_ERROR ? " ERROR " : " ") << "type = " << type << ", severity = " << severity << ", message = " << message << endl;
+		cerr << "OpenGL:" << (type == GL_DEBUG_TYPE_ERROR ? " ERROR " : " ") <<
+			"type = " << type <<
+			", severity = " << severity <<
+			", message = " << message << endl;
 	}
-}
 
-namespace engine
-{
 	void opengl_defaults()
 	{
 		cout << "VENDOR   : " << glGetString(GL_VENDOR) << endl;
@@ -23,6 +23,7 @@ namespace engine
 		if(glDebugMessageCallback != nullptr)
 		{
 			glEnable(GL_DEBUG_OUTPUT);
+			//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(OpenGLDebugMessageCallback, 0);
 		}
 
