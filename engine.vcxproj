@@ -48,7 +48,7 @@
     <None Include="data\shaders\test_vertex_shader.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\Program Files\Assimp\lib\x64\assimp-vc140-mt.lib" />
+    <Library Include="..\Program Files\Assimp\lib\x64\assimp-vc140-mt.lib" />
     <Library Include="3rd_party\glfw\lib-vc2017\glfw3.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
