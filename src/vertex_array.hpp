@@ -12,7 +12,7 @@ namespace engine
 	public:
 		virtual ~vertex_array() {}
 
-		virtual void draw() const = 0;
+		virtual void draw(GLenum primitive) const = 0;
 	};
 
 	using vertex_array_ptr = std::shared_ptr<vertex_array>;
@@ -26,7 +26,7 @@ namespace engine
 	public:
 		flat_vertex_array(const flat_model_data_ptr& data);
 
-		void draw() const override;
+		void draw(GLenum primitive) const override;
 
 	private:
 		std::size_t m_elements = 0;
@@ -40,7 +40,7 @@ namespace engine
 	public:
 		indexed_vertex_array(const indexed_model_data_ptr& data);
 
-		void draw() const override;
+		void draw(GLenum primitive) const override;
 
 	private:
 		std::size_t m_indices = 0;

@@ -28,6 +28,7 @@ void main()
 	pos = (Camera * Model * vec4(aPos, 1.0)).xyz;
 	lpos = (Camera * vec4(Light, 1.0)).xyz;
 	gl_Position = Projection * Camera * Model * vec4(aPos, 1.0);
+	gl_PointSize = gl_Position.z / 5;
 
 	normal = aNor;
 	tangent = aTan;

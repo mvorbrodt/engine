@@ -63,10 +63,10 @@ namespace engine
 		glBindVertexArray(0);
 	}
 
-	void flat_vertex_array::draw() const
+	void flat_vertex_array::draw(GLenum primitive) const
 	{
 		glBindVertexArray(m_vertex_array_handle);
-		glDrawArrays(GL_TRIANGLES, 0, m_elements);
+		glDrawArrays(primitive, 0, m_elements);
 		glBindVertexArray(0);
 	}
 
@@ -117,10 +117,10 @@ namespace engine
 		glBindVertexArray(0);
 	}
 
-	void indexed_vertex_array::draw() const
+	void indexed_vertex_array::draw(GLenum primitive) const
 	{
 		glBindVertexArray(m_vertex_array_handle);
-		glDrawElements(GL_TRIANGLES, m_indices, GL_UNSIGNED_INT, (void*)0);
+		glDrawElements(primitive, m_indices, GL_UNSIGNED_INT, (void*)0);
 		glBindVertexArray(0);
 	}
 }

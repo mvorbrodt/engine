@@ -29,6 +29,8 @@ engine::point light{0.0, 0.0, 25.0};
 engine::point eye{0.0, 10.0, 45.0};
 engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0, 1000.0, eye, point(0.0, 2.0, 0.0) - eye, UNIT_Y);
 
+bool points = false;
+
 engine::shader_ptr s, cube_shader;
 engine::texture_ptr t, n, cube_texture, cube_map;
 engine::vertex_arrays v;
@@ -96,6 +98,8 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			case GLFW_KEY_1: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
 			case GLFW_KEY_2: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
+			case GLFW_KEY_3: points = true; break;
+			case GLFW_KEY_4: points = false; break;
 			case GLFW_KEY_Q: l.rotate( 10, UNIT_Y); break;
 			case GLFW_KEY_E: l.rotate(-10, UNIT_Y); break;
 			case GLFW_KEY_A: camera.move( 0,  0.5); break;
@@ -151,7 +155,7 @@ void draw()
 	cube_shader->set_mat4("Model", light_system.to_global().data());
 	cube_shader->set_int("texture1", 0);
 	cube_texture->bind(0);
-	//cube->draw();
+	//cube->draw(GL_TRIANGLES);
 
 	s->use();
 	s->set_mat4("Projection", camera.projection_matrix().data());
@@ -165,7 +169,7 @@ void draw()
 	n->bind(1);
 	cube_map->bind(2);
 
-	for(auto& m : v) m->draw();
+	for(auto& m : v) m->draw(points ? GL_POINTS : GL_TRIANGLES);
 }
 
 int main(int argc, char** argv)
