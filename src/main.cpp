@@ -195,11 +195,7 @@ int main(int argc, char** argv)
 	glfwSetErrorCallback(error);
 	if(!glfwInit()) return -1;
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#else
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-#endif
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_SAMPLES, 16);
