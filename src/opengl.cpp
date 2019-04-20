@@ -19,10 +19,10 @@ namespace engine
 		cout << "RENDERED : " << glGetString(GL_RENDERER) << endl;
 		cout << "VERSION  : " << glGetString(GL_VERSION) << endl;
 		cout << "GLSL     : " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
-#ifndef __APPLE__
+
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(OpenGLDebugMessageCallback, 0);
-#endif
+
 		glEnable(GL_DEPTH_TEST);
 		//glEnable(GL_CULL_FACE);
 		//glCullFace(GL_BACK);
