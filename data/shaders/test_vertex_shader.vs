@@ -1,4 +1,4 @@
-#version 410 core
+#version 450 core
 
 layout (location = 0) in vec3 Point;
 layout (location = 1) in vec4 Color;
@@ -16,6 +16,12 @@ layout (std140) uniform Matrices
 layout (std140) uniform Lights
 {
 	vec3 Light;
+};
+
+layout (std430) buffer MatricesV2
+{
+	mat4 ProjectionV2;
+	mat4 CameraV2;
 };
 
 uniform mat4 Model;
@@ -36,7 +42,7 @@ void main()
 	model_cam = Camera * Model;
 	pos = (Camera * Model * vec4(Point, 1.0)).xyz;
 	lpos = (Camera * vec4(Light, 1.0)).xyz;
-	gl_Position = Projection * Camera * Model * vec4(Point, 1.0);
+	gl_Position = ProjectionV2 * CameraV2 * Model * vec4(Point, 1.0);
 	gl_PointSize = gl_Position.z / 5;
 
 	normal = Normal;

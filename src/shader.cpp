@@ -32,6 +32,28 @@ namespace engine
 		return make_shared<uniform_buffer>(name, size, binding_point);
 	}
 
+	shader_buffer::shader_buffer(const char* name, std::size_t size, unsigned int binding_point)
+	: m_buffer_name{ name }, m_buffer_size{ size }, m_binding_point{ binding_point }
+	{
+		assert(name != nullptr && size > 0);
+
+		glGenBuffers(1, &m_buffer_handle);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_buffer_handle);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, NULL, GL_STATIC_DRAW);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding_point, m_buffer_handle);
+	}
+
+	void shader_buffer::copy_data(std::size_t offset, std::size_t length, void* data) const
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_buffer_handle);
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, length, data);
+	}
+
+	shader_buffer_ptr make_shader_buffer(const char* name, std::size_t size, unsigned int binding_point)
+	{
+		return make_shared<shader_buffer>(name, size, binding_point);
+	}
+
 	#define CHECK_SHADER_STATUS(getter, handle, status, logger) \
 	{ \
 		int success{}; \
@@ -57,7 +79,7 @@ namespace engine
 		for(GLint attribute = 0; attribute < count; ++attribute) \
 		{ \
 			string name(max_length, '\0'); \
-			glGetActiveAttrib(m_program_handle, attribute, name.length(), NULL, &size, &type, name.data()); \
+			glGetActiveAttrib(m_program_handle, attribute, (GLsizei)name.length(), NULL, &size, &type, name.data()); \
 			cout << "\tActive attribute: " << name << ", size: " << size << ", type: " << type << endl; \
 		} \
 		glGetProgramiv(m_program_handle, GL_ACTIVE_UNIFORMS, &count); \
@@ -65,7 +87,7 @@ namespace engine
 		for(GLint uniform = 0; uniform < count; ++uniform) \
 		{ \
 			string name(max_length, '\0'); \
-			glGetActiveUniform(m_program_handle, uniform, name.length(), NULL, &size, &type, name.data()); \
+			glGetActiveUniform(m_program_handle, uniform, (GLsizei)name.length(), NULL, &size, &type, name.data()); \
 			cout << "\tActive uniform: " << name << ", size: " << size << ", type: " << type << endl; \
 		} \
 		glGetProgramiv(m_program_handle, GL_ACTIVE_UNIFORM_BLOCKS, &count); \
@@ -73,9 +95,19 @@ namespace engine
 		for(GLint block = 0; block < count; ++block) \
 		{ \
 			string name(max_length, '\0'); \
-			glGetActiveUniformBlockName(m_program_handle, block, name.length(), NULL, name.data()); \
+			glGetActiveUniformBlockName(m_program_handle, block, (GLsizei)name.length(), NULL, name.data()); \
 			glGetActiveUniformBlockiv(m_program_handle, block, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &size); \
 			cout << "\tActive uniform block: " << name << ", active uniforms: " << size << endl; \
+		} \
+		glGetProgramInterfaceiv(m_program_handle, GL_SHADER_STORAGE_BLOCK, GL_ACTIVE_RESOURCES, &count); \
+		glGetProgramInterfaceiv(m_program_handle, GL_SHADER_STORAGE_BLOCK, GL_MAX_NAME_LENGTH, &max_length); \
+		for(GLint block = 0; block < count; ++block) \
+		{ \
+			string name(max_length, '\0'); \
+			glGetProgramResourceName(m_program_handle, GL_SHADER_STORAGE_BLOCK, block, (GLsizei)name.length(), NULL, name.data()); \
+			GLenum prop = GL_NUM_ACTIVE_VARIABLES; \
+			glGetProgramResourceiv(m_program_handle, GL_SHADER_STORAGE_BLOCK, block, 1, &prop, sizeof(size), NULL, &size); \
+			cout << "\tActive storage block: " << name << ", active variables: " << size << endl; \
 		} \
 	}
 
@@ -178,10 +210,22 @@ namespace engine
 		glUniformBlockBinding(m_program_handle, index, binding_point);
 	}
 
+	void shader::bind_shader_block(const char* name, unsigned int binding_point) const
+	{
+		unsigned int index = glGetProgramResourceIndex(m_program_handle, GL_SHADER_STORAGE_BLOCK, name);
+		glShaderStorageBlockBinding(m_program_handle, index, binding_point);
+	}
+
 	void shader::connect_uniform_block(const uniform_buffer_ptr& uniform_buffer) const
 	{
 		unsigned int index = glGetUniformBlockIndex(m_program_handle, uniform_buffer->get_name());
 		glUniformBlockBinding(m_program_handle, index, uniform_buffer->get_binding_point());
+	}
+
+	void shader::connect_shader_block(const shader_buffer_ptr& shader_buffer) const
+	{
+		unsigned int index = glGetProgramResourceIndex(m_program_handle, GL_SHADER_STORAGE_BLOCK, shader_buffer->get_name());
+		glShaderStorageBlockBinding(m_program_handle, index, shader_buffer->get_binding_point());
 	}
 
 	void shader::make_current() const

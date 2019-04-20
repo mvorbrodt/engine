@@ -49,7 +49,7 @@ namespace engine
 				glBufferData(buffer->opengl_buffer_type(), buffer->size() * buffer->element_size(), buffer->data(), GL_STATIC_DRAW);
 
 				auto location = k_attribute_name_to_location_map.at(buffer->element_name());
-				glVertexAttribPointer(location, buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, buffer->element_size(), (void*)0);
+				glVertexAttribPointer(location, (GLint)buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, (GLsizei)buffer->element_size(), (void*)0);
 				glEnableVertexAttribArray(location);
 
 				m_elements = buffer->size();
@@ -62,7 +62,7 @@ namespace engine
 	void flat_vertex_array::draw(GLenum primitive) const
 	{
 		glBindVertexArray(m_vertex_array_handle);
-		glDrawArrays(primitive, 0, m_elements);
+		glDrawArrays(primitive, 0, (GLsizei)m_elements);
 	}
 
 	indexed_vertex_array::indexed_vertex_array(const indexed_model_data_ptr& data)
@@ -99,7 +99,7 @@ namespace engine
 				if(buffer->opengl_buffer_type() == GL_ARRAY_BUFFER)
 				{
 					auto location = k_attribute_name_to_location_map.at(buffer->element_name());
-					glVertexAttribPointer(location, buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, buffer->element_size(), (void*)0);
+					glVertexAttribPointer(location, (GLint)buffer->component_count(), buffer->opengl_element_type(), GL_FALSE, (GLsizei)buffer->element_size(), (void*)0);
 					glEnableVertexAttribArray(location);
 				}
 
@@ -113,6 +113,6 @@ namespace engine
 	void indexed_vertex_array::draw(GLenum primitive) const
 	{
 		glBindVertexArray(m_vertex_array_handle);
-		glDrawElements(primitive, m_indices, GL_UNSIGNED_INT, (void*)0);
+		glDrawElements(primitive, (GLsizei)m_indices, GL_UNSIGNED_INT, (void*)0);
 	}
 }

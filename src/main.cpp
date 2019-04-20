@@ -32,6 +32,7 @@ engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point
 bool points = false;
 
 engine::uniform_buffer_ptr ub1, ub2;
+engine::shader_buffer_ptr sb1;
 engine::shader_ptr s, cube_shader;
 engine::texture_ptr t, n, cube_texture, cube_map;
 engine::vertex_arrays v;
@@ -49,6 +50,8 @@ void init()
 	{
 		ub1 = make_uniform_buffer("Matrices", 2 * sizeof(matrix), 0);
 		ub2 = make_uniform_buffer("Lights", sizeof(point), 1);
+
+		sb1 = make_shader_buffer("MatricesV2", 2 * sizeof(matrix), 2);
 
 		cube = make_flat_vertex_array(make_flat_model_data(
 			cube_vertices,
@@ -80,6 +83,7 @@ void init()
 		s->set_int("texture3", 2);
 		s->connect_uniform_block(ub1);
 		s->connect_uniform_block(ub2);
+		s->connect_shader_block(sb1);
 
 		t = load_texture_map("data/textures/skull.jpg", true, true);
 		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
@@ -163,6 +167,9 @@ void draw()
 	ub1->copy_data(0, sizeof(matrix), camera.projection_matrix().data());
 	ub1->copy_data(sizeof(matrix), sizeof(matrix), camera.view_matrix().data());
 	ub2->copy_data(0, sizeof(point), light.data());
+
+	sb1->copy_data(0, sizeof(matrix), camera.projection_matrix().data());
+	sb1->copy_data(sizeof(matrix), sizeof(matrix), camera.view_matrix().data());
 
 	light *= rotate(1, UNIT_Y);
 	light_system = engine::system(IDENTITY_AXIS, light);
