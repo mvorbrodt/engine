@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="3rd_party\glad\src\glad.c" />
-    <ClCompile Include="src\load_model.cpp" />
+    <ClCompile Include="src\loader.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\opengl.cpp" />
     <ClCompile Include="src\shader.cpp" />
@@ -26,7 +26,7 @@
     <ClInclude Include="src\consts.hpp" />
     <ClInclude Include="src\cube_data.hpp" />
     <ClInclude Include="src\handle.hpp" />
-    <ClInclude Include="src\load_model.hpp" />
+    <ClInclude Include="src\loader.hpp" />
     <ClInclude Include="src\matrix.hpp" />
     <ClInclude Include="src\opengl.hpp" />
     <ClInclude Include="src\point.hpp" />

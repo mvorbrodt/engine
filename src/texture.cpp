@@ -11,6 +11,26 @@ using namespace std;
 
 namespace engine
 {
+	texture_ptr make_texture_map(int width, int height, int channels, const unsigned char* data, bool mipmaps, bool gamma_correction)
+	{
+		return make_shared<texture_map>(width, height, channels, data, mipmaps, gamma_correction);
+	}
+
+	texture_ptr make_texture_map(int width, int height, int channels, const float* data, bool mipmaps)
+	{
+		return make_shared<texture_map>(width, height, channels, data, mipmaps);
+	}
+
+	texture_ptr make_texture_cube_map(const texture_cube_map_data_array<unsigned char>& data_array, bool gamma_correction)
+	{
+		return make_shared<texture_cube_map>(data_array, gamma_correction);
+	}
+
+	texture_ptr make_texture_cube_map(const texture_cube_map_data_array<float>& data_array)
+	{
+		return make_shared<texture_cube_map>(data_array);
+	}
+
 	texture_map::texture_map(int width, int height, int channels, const unsigned char* data, bool mipmaps, bool gamma_correction)
 	{
 		assert(width > 0 && height > 0 && (channels == 3 || channels == 4) && data != nullptr);
@@ -176,7 +196,7 @@ namespace engine
 			"\tinput channels: " << channels << endl <<
 			"\toutput channels: " << desired_channels << endl;
 
-		return make_shared<texture_map>(width, height, desired_channels, data, mipmaps, gamma_correction);
+		return make_texture_map(width, height, desired_channels, data, mipmaps, gamma_correction);
 	}
 
 	texture_ptr load_texture_map_hdr(const char* texture_file, bool mipmaps, int desired_channels)
@@ -196,7 +216,7 @@ namespace engine
 			"\tinput channels: " << channels << endl <<
 			"\toutput channels: " << desired_channels << endl;
 
-		return make_shared<texture_map>(width, height, desired_channels, data, mipmaps);
+		return make_texture_map(width, height, desired_channels, data, mipmaps);
 	}
 
 	texture_ptr load_texture_map(const char* texture_file, bool mipmaps, bool gamma_correction, int desired_channels, bool always_load_as_hdr)
@@ -239,7 +259,7 @@ namespace engine
 			data_array[array_index++] = texture_cube_map_data<unsigned char>{ width, height, desired_channels, *data };
 		}
 
-		return make_shared<texture_cube_map>(data_array, gamma_correction);
+		return make_texture_cube_map(data_array, gamma_correction);
 	}
 
 	texture_ptr load_texture_cube_map_hdr(const texture_cube_map_files& files, int desired_channels)
@@ -275,7 +295,7 @@ namespace engine
 			data_array[array_index++] = texture_cube_map_data<float>{ width, height, desired_channels, *data };
 		}
 
-		return make_shared<texture_cube_map>(data_array);
+		return make_texture_cube_map(data_array);
 	}
 
 	texture_ptr load_texture_cube_map(const texture_cube_map_files& files, bool gamma_correction, int desired_channels, bool always_load_as_hdr)

@@ -16,7 +16,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertex_array.hpp"
-#include "load_model.hpp"
+#include "loader.hpp"
 #include "cube_data.hpp"
 
 #define WINDOW_WIDTH  640
@@ -53,7 +53,7 @@ void init()
 
 		sb1 = make_shader_buffer("MatricesV2", 2 * sizeof(matrix), 2);
 
-		cube = make_flat_vertex_array(make_flat_model_data(
+		cube = make_flat_vertex_array(make_flat_vertex_array_data(
 			cube_vertices,
 			cube_colors,
 			cube_texcoords,

@@ -8,17 +8,53 @@ using namespace std;
 
 namespace engine
 {
-	vertex_array_ptr make_flat_vertex_array(const flat_model_data_ptr& data)
+	flat_vertex_array_data_ptr make_flat_vertex_array_data(
+		const point_buffer& point_buffer,
+		const color_buffer& color_buffer,
+		const texcoord_buffer& texcoord_buffer,
+		const normal_buffer& normal_buffer,
+		const tangent_buffer& tangent_buffer,
+		const bitangent_buffer& bitangent_buffer)
+	{
+		return make_shared<flat_vertex_array_data>(
+			point_buffer,
+			color_buffer,
+			texcoord_buffer,
+			normal_buffer,
+			tangent_buffer,
+			bitangent_buffer);
+	}
+
+	indexed_vertex_array_data_ptr make_indexed_vertex_array_data(
+		const point_buffer& point_buffer,
+		const color_buffer& color_buffer,
+		const texcoord_buffer& texcoord_buffer,
+		const normal_buffer& normal_buffer,
+		const tangent_buffer& tangent_buffer,
+		const bitangent_buffer& bitangent_buffer,
+		const index_buffer& index_buffer)
+	{
+		return make_shared<indexed_vertex_array_data>(
+			point_buffer,
+			color_buffer,
+			texcoord_buffer,
+			normal_buffer,
+			tangent_buffer,
+			bitangent_buffer,
+			index_buffer);
+	}
+
+	vertex_array_ptr make_flat_vertex_array(const flat_vertex_array_data_ptr& data)
 	{
 		return make_shared<flat_vertex_array>(data);
 	}
 
-	vertex_array_ptr make_indexed_vertex_array(const indexed_model_data_ptr& data)
+	vertex_array_ptr make_indexed_vertex_array(const indexed_vertex_array_data_ptr& data)
 	{
 		return make_shared<indexed_vertex_array>(data);
 	}
 
-	flat_vertex_array::flat_vertex_array(const flat_model_data_ptr& data)
+	flat_vertex_array::flat_vertex_array(const flat_vertex_array_data_ptr& data)
 	{
 		glGenVertexArrays(1, &m_vertex_array_handle);
 		glBindVertexArray(m_vertex_array_handle);
@@ -65,7 +101,7 @@ namespace engine
 		glDrawArrays(primitive, 0, (GLsizei)m_elements);
 	}
 
-	indexed_vertex_array::indexed_vertex_array(const indexed_model_data_ptr& data)
+	indexed_vertex_array::indexed_vertex_array(const indexed_vertex_array_data_ptr& data)
 	{
 		glGenVertexArrays(1, &m_vertex_array_handle);
 		glBindVertexArray(m_vertex_array_handle);

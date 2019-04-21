@@ -16,6 +16,25 @@ namespace engine
 
 	using texture_ptr = std::shared_ptr<texture>;
 
+	using texture_cube_map_files = std::array<const char*, 6>;
+
+	template<typename T>
+	struct texture_cube_map_data
+	{
+		int width;
+		int height;
+		int channels;
+		const T* data;
+	};
+
+	template<typename T> using texture_cube_map_data_array = std::array<texture_cube_map_data<T>, 6>;
+
+	texture_ptr make_texture_map(int width, int height, int channels, const unsigned char* data, bool mipmaps, bool gamma_correction);
+	texture_ptr make_texture_map(int width, int height, int channels, const float* data, bool mipmaps);
+
+	texture_ptr make_texture_cube_map(const texture_cube_map_data_array<unsigned char>& data_array, bool gamma_correction);
+	texture_ptr make_texture_cube_map(const texture_cube_map_data_array<float>& data_array);
+
 	class texture_map : public texture
 	{
 	public:
@@ -29,19 +48,6 @@ namespace engine
 
 		opengl_texture_handle m_texture_handle;
 	};
-
-	using texture_cube_map_files = std::array<const char*, 6>;
-
-	template<typename T>
-	struct texture_cube_map_data
-	{
-		int width;
-		int height;
-		int channels;
-		const T* data;
-	};
-
-	template<typename T> using texture_cube_map_data_array = std::array<texture_cube_map_data<T>, 6>;
 
 	class texture_cube_map : public texture
 	{

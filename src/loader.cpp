@@ -7,7 +7,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/mesh.h>
-#include "load_model.hpp"
+#include "loader.hpp"
 
 using namespace std;
 
@@ -35,43 +35,7 @@ namespace
 }
 namespace engine
 {
-	flat_model_data_ptr make_flat_model_data(
-		const point_buffer& point_buffer,
-		const color_buffer& color_buffer,
-		const texcoord_buffer& texcoord_buffer,
-		const normal_buffer& normal_buffer,
-		const tangent_buffer& tangent_buffer,
-		const bitangent_buffer& bitangent_buffer)
-	{
-		return make_shared<flat_model_data>(
-			point_buffer,
-			color_buffer,
-			texcoord_buffer,
-			normal_buffer,
-			tangent_buffer,
-			bitangent_buffer);
-	}
-
-	indexed_model_data_ptr make_indexed_model_data(
-		const point_buffer& point_buffer,
-		const color_buffer& color_buffer,
-		const texcoord_buffer& texcoord_buffer,
-		const normal_buffer& normal_buffer,
-		const tangent_buffer& tangent_buffer,
-		const bitangent_buffer& bitangent_buffer,
-		const index_buffer& index_buffer)
-	{
-		return make_shared<indexed_model_data>(
-			point_buffer,
-			color_buffer,
-			texcoord_buffer,
-			normal_buffer,
-			tangent_buffer,
-			bitangent_buffer,
-			index_buffer);
-	}
-
-	indexed_model_data_array load_indexed_model_data(const char* model_file)
+	indexed_vertex_array_data_array load_indexed_model_data(const char* model_file)
 	{
 		Assimp::Importer importer;
 		importer.SetProgressHandler(new AssimpProgress(model_file));
@@ -88,7 +52,7 @@ namespace engine
 
 		cout << "Processing " << model_file << "..." << endl;
 
-		indexed_model_data_array result;
+		indexed_vertex_array_data_array result;
 
 		for(unsigned int m = 0; m < scene->mNumMeshes; ++m)
 		{
@@ -161,7 +125,7 @@ namespace engine
 				index_buffer.push_back(face.mIndices[2]);
 			}
 
-			result.push_back(make_indexed_model_data(
+			result.push_back(make_indexed_vertex_array_data(
 				position_buffer,
 				color_buffer,
 				texcoord_buffer,

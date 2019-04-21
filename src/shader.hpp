@@ -55,7 +55,7 @@ namespace engine
 	class shader
 	{
 	public:
-		shader(const char* vertex_shader_source, const char* fragment_shader_source);;
+		shader(const char* vertex_shader_source, const char* fragment_shader_source);
 
 		void set_bool(const char* name, bool value) const;
 		void set_int(const char* name, int value) const;
@@ -88,6 +88,8 @@ namespace engine
 	};
 
 	using shader_ptr = std::shared_ptr<shader>;
+
+	shader_ptr make_shader(const char* vertex_shader_source, const char* fragment_shader_source);
 
 	shader_ptr load_shader(const char* vertex_shader_file, const char* fragment_shader_file);
 }

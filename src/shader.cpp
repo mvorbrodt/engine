@@ -233,6 +233,11 @@ namespace engine
 		glUseProgram(m_program_handle);
 	}
 
+	shader_ptr make_shader(const char* vertex_shader_source, const char* fragment_shader_source)
+	{
+		return make_shared<shader>(vertex_shader_source, fragment_shader_source);
+	}
+
 	shader_ptr load_shader(const char* vertex_shader_file, const char* fragment_shader_file)
 	{
 		ifstream vsf;
@@ -249,6 +254,6 @@ namespace engine
 		fsbuffer << fsf.rdbuf();
 		string fragment_shader_source = fsbuffer.str();
 
-		return make_shared<shader>(vertex_shader_source.c_str(), fragment_shader_source.c_str());
+		return make_shader(vertex_shader_source.c_str(), fragment_shader_source.c_str());
 	}
 }
