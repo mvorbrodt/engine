@@ -59,6 +59,11 @@ namespace engine
 		return matrix(s);
 	}
 
+	inline matrix scale(real sx, real sy, real sz)
+	{
+		return matrix(sx, sy, sz);
+	}
+
 	inline matrix projection(real l, real r, real t, real b, real n, real f)
 	{
 		return matrix

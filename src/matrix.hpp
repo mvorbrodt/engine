@@ -85,6 +85,13 @@ namespace engine
 			0.0f, 0.0f,    s
 		) {}
 
+		matrix(real sx, real sy, real sz) : matrix
+		(
+			  sx, 0.0f, 0.0f,
+			0.0f,   sy, 0.0f,
+			0.0f, 0.0f,   sz
+		) {}
+
 		matrix normal() const
 		{
 			return matrix
