@@ -15,29 +15,18 @@ namespace engine
 	class pov
 	{
 	public:
-		pov(int width, int height, real fov = 60.0f, real _near = 1.0f, real _far = 100.0f, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
-		: m_width{ width }, m_height{ height }, m_fov{ fov }, m_near{ _near }, m_far{ _far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
+		pov(real aspect, real fov = 60.0f, real _near = 1.0f, real _far = 100.0f, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
+		: m_aspect{ aspect }, m_fov{ fov }, m_near{ _near }, m_far{ _far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
 		{
-			assert(m_width > 1 && m_height > 1);
+			assert(aspect != 0.0f && aspect > 0.0f);
 			assert(m_fov >= MIN_FOV && m_fov <= MAX_FOV);
 			assert(m_near >= 1.0f && m_far >= 1.0f && m_near < m_far);
 			m_direction.normalize();
 			m_up.normalize();
 		}
 
-		int get_width() const { return m_width; }
-		void set_width(int width)
-		{
-			if(width < 1) width = 1;
-			m_width = width;
-		}
-
-		int get_height() const { return m_height; }
-		void set_height(int height)
-		{
-			if(height < 1) height = 1;
-			m_height = height;
-		}
+		real get_aspect() const { return m_aspect; }
+		void set_aspect(real aspect) { m_aspect = aspect; }
 
 		real get_fov() const { return m_fov; }
 		void set_fov(real fov)
@@ -96,12 +85,11 @@ namespace engine
 
 		matrix projection_matrix()
 		{
-			return projection(m_fov, (real)m_width / (real)m_height, m_near, m_far);
+			return projection(m_fov, m_aspect, m_near, m_far);
 		}
 
 	private:
-		int m_width;
-		int m_height;
+		real m_aspect;
 		real m_fov;
 		real m_near;
 		real m_far;

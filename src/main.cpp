@@ -27,7 +27,7 @@ using namespace engine;
 
 engine::point light{0.0f, 0.0f, 25.0f};
 engine::point eye{0.0f, 10.0f, 45.0f};
-engine::pov camera(WINDOW_WIDTH, WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point(0.0f, 2.0f, 0.0f) - eye, UNIT_Y);
+engine::pov camera((real)WINDOW_WIDTH / (real)WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point(0.0f, 2.0f, 0.0f) - eye, UNIT_Y);
 
 bool points = false;
 
@@ -104,8 +104,7 @@ void init()
 void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
-	camera.set_width(w);
-	camera.set_height(h);
+	camera.set_aspect((real)w / (real)h);
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
