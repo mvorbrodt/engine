@@ -85,8 +85,8 @@ void init()
 		s->connect_uniform_block(ub2);
 		s->connect_shader_block(sb1);
 
-		t = load_texture_map("data/textures/skull.jpg", true, true);
-		n = load_texture_map("data/textures/skull_normal.jpg", false, false);
+		t = load_texture_map("data/models/skull.jpg", true, true);
+		n = load_texture_map("data/models/skull_normal.jpg", false, false);
 		auto data = load_indexed_model_data("data/models/skull.obj");
 		for(auto& d : data) v.push_back(make_indexed_vertex_array(d));
 
