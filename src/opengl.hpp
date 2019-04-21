@@ -32,12 +32,6 @@ namespace engine
 	inline const unsigned int k_tangent_attribute_location   = 4;
 	inline const unsigned int k_bitangent_attribute_location = 5;
 
-	struct attribute_property
-	{
-		const char* name;
-		const unsigned int location;
-	};
-
 	using attribute_name_to_location_map = std::map<std::string, unsigned int>;
 	inline const attribute_name_to_location_map k_attribute_name_to_location_map =
 	{
