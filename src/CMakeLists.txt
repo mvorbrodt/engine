@@ -6,5 +6,7 @@ add_executable(main
 	vertex_array.cpp
 	loader.cpp
 	../3rd_party/glad/src/glad.c)
-set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -DGL_SILENCE_DEPRECATION)
 target_link_libraries(main ${OPENGL_gl_LIBRARY} -lglfw -lassimp -ldl)
+
+add_executable(asset_info asset_info.cpp)
+target_link_libraries(asset_info -lassimp -ldl)
