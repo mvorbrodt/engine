@@ -69,5 +69,5 @@ namespace engine
 	using opengl_program_handle = handle<GLuint, OpenGLProgramReleasePolicy>;
 	using opengl_program_handles = std::vector<opengl_program_handle>;
 
-	void opengl_defaults();
+	void init_opengl_defaults();
 }

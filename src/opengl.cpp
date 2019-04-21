@@ -13,7 +13,7 @@ namespace engine
 			", message = " << message << endl;
 	}
 
-	void opengl_defaults()
+	void init_opengl_defaults()
 	{
 		cout << "VENDOR   : " << glGetString(GL_VENDOR) << endl;
 		cout << "RENDERED : " << glGetString(GL_RENDERER) << endl;

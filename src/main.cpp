@@ -216,7 +216,7 @@ int main(int argc, char** argv)
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	glfwSwapInterval(1);
 
-	opengl_defaults();
+	init_opengl_defaults();
 	init();
 	reshape(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
