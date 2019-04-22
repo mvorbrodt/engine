@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <string>
 #include <assimp/Importer.hpp>
@@ -73,6 +74,7 @@ int main(int argc, char** argv)
 		cout << "\tFar     : " << camera->mClipPlaneFar << endl;
 
 		const aiNode* node = root->FindNode(camera->mName);
+		assert(node->mParent == root);
 		aiMatrix4x4 transformation = node->mTransformation;
 		aiVector3D position = transformation * camera->mPosition;
 		aiVector3D look_at = (aiMatrix3x3(transformation) * camera->mLookAt).Normalize();
@@ -100,6 +102,7 @@ int main(int argc, char** argv)
 		}
 
 		const aiNode* node = root->FindNode(light->mName);
+		assert(node->mParent == root);
 		aiMatrix4x4 transformation = node->mTransformation;
 		aiVector3D position = transformation * light->mPosition;
 		aiVector3D direction = (aiMatrix3x3(transformation) * light->mDirection).Normalize();
@@ -133,7 +136,6 @@ int main(int argc, char** argv)
 	{
 		cout << "Texture:" << endl;
 		const aiTexture* texture = scene->mTextures[i];
-		cout << "\tFile name: " << texture->mFilename.C_Str() << endl;
 		cout << "\tHint     : " << texture->achFormatHint << endl;
 		cout << "\tWidth    : " << texture->mWidth << endl;
 		cout << "\tHeight   : " << texture->mHeight << endl;
@@ -148,16 +150,17 @@ int main(int argc, char** argv)
 		cout << "\tName              : " << mesh->mName.C_Str() << endl;
 
 		const aiNode* node = root->FindNode(mesh->mName);
+		assert(node->mParent == root);
 		aiMatrix4x4 transformation = node->mTransformation;
-		cout << "\tT matrix          : " << ((transformation != aiMatrix4x4()) ? "yes" : "no") << endl;
+		cout << "\tHas transformation: " << ((transformation != aiMatrix4x4()) ? "yes" : "no") << endl;
 
-		cout << "\tHas positions     : " << mesh->HasPositions() << endl;
-		cout << "\tHas faces         : " << mesh->HasFaces() << endl;
-		cout << "\tHas vertex colors : " << mesh->HasVertexColors(0) << endl;
-		cout << "\tHas texture coords: " << mesh->HasTextureCoords(0) << endl;
-		cout << "\tHas normals       : " << mesh->HasNormals() << endl;
-		cout << "\tHas tan/bitan     : " << mesh->HasTangentsAndBitangents() << endl;
-		cout << "\tHas bones         : " << mesh->HasBones() << endl;
+		cout << "\tHas positions     : " << (mesh->HasPositions() ? "yes" : "no") << endl;
+		cout << "\tHas faces         : " << (mesh->HasFaces() ? "yes" : "no") << endl;
+		cout << "\tHas vertex colors : " << (mesh->HasVertexColors(0) ? "yes" : "no") << endl;
+		cout << "\tHas texture coords: " << (mesh->HasTextureCoords(0) ? "yes" : "no") << endl;
+		cout << "\tHas normals       : " << (mesh->HasNormals() ? "yes" : "no") << endl;
+		cout << "\tHas tan/bitan     : " << (mesh->HasTangentsAndBitangents() ? "yes" : "no") << endl;
+		cout << "\tHas bones         : " << (mesh->HasBones() ? "yes" : "no") << endl;
 		cout << "\tColor channels    : " << mesh->GetNumColorChannels() << endl;
 		cout << "\tUV channels       : " << mesh->GetNumUVChannels() << endl;
 		cout << "\tUV components     : " << mesh->mNumUVComponents[0] << endl;
