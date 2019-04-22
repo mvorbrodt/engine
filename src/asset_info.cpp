@@ -108,9 +108,9 @@ int main(int argc, char** argv)
 		const aiMaterial* material = scene->mMaterials[i];
 		aiString str;
 		material->Get(AI_MATKEY_NAME, str); cout << "\tName      : " << str.C_Str() << endl;
-		if (material->GetTextureCount(aiTextureType_DIFFUSE)) material->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), str); cout << "\tTexture   : " << str.C_Str() << endl;
-		if (material->GetTextureCount(aiTextureType_NORMALS)) material->Get(AI_MATKEY_TEXTURE_NORMALS(0), str); cout << "\tNormals   : " << str.C_Str() << endl;
-		if (material->GetTextureCount(aiTextureType_AMBIENT)) material->Get(AI_MATKEY_TEXTURE_AMBIENT(0), str); cout << "\tAmbient   : " << str.C_Str() << endl;
+		if (material->GetTextureCount(aiTextureType_DIFFUSE))  material->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), str);  cout << "\tDiffuse   : " << str.C_Str() << endl;
+		if (material->GetTextureCount(aiTextureType_SPECULAR)) material->Get(AI_MATKEY_TEXTURE_SPECULAR(0), str); cout << "\tSpecular  : " << str.C_Str() << endl;
+		if (material->GetTextureCount(aiTextureType_NORMALS))  material->Get(AI_MATKEY_TEXTURE_NORMALS(0), str);  cout << "\tNormals   : " << str.C_Str() << endl;
 	}
 
 	if (scene->HasTextures()) cout << endl;
