@@ -72,6 +72,7 @@ int main(int argc, char** argv)
 		cout << "\tPosition: (X: " << camera->mPosition.x << ", Y: " << camera->mPosition.y << ", Z: " << camera->mPosition.z << ")" << endl;
 		cout << "\tLook At : (X: " << camera->mLookAt.x << ", Y: " << camera->mLookAt.y << ", Z: " << camera->mLookAt.z << ")" << endl;
 		cout << "\tUp      : (X: " << camera->mUp.x << ", Y: " << camera->mUp.y << ", Z: " << camera->mUp.z << ")" << endl;
+		cout << endl;
 	}
 
 	if (scene->HasLights()) cout << endl;
@@ -97,6 +98,7 @@ int main(int argc, char** argv)
 		cout << "\tAttenuation constant : " << light->mAttenuationConstant << endl;
 		cout << "\tAttenuation linear   : " << light->mAttenuationLinear << endl;
 		cout << "\tAttenuation quadratic: " << light->mAttenuationQuadratic << endl;
+		cout << endl;
 	}
 
 	if (scene->HasMaterials()) cout << endl;
@@ -104,29 +106,11 @@ int main(int argc, char** argv)
 	{
 		cout << "Material:" << endl;
 		const aiMaterial* material = scene->mMaterials[i];
-		cout << "\tProperties: " << material->mNumProperties << endl;
-		for (unsigned int p = 0; p < material->mNumProperties; ++p)
-		{
-			const aiMaterialProperty* prop = material->mProperties[p];
-			cout << "\t\tKey      : " << prop->mKey.C_Str() << endl;
-			cout << "\t\tType     : ";
-			switch (prop->mType)
-			{
-				case aiPTI_Integer: cout << "Integer" << endl; break;
-				case aiPTI_Float:   cout << "Float" << endl; break;
-				case aiPTI_Double:  cout << "Double" << endl; break;
-				case aiPTI_String:  cout << "String" << endl; break;
-				case aiPTI_Buffer:  cout << "Buffer" << endl; break;
-			}
-			if (prop->mType == aiPTI_String)
-			{
-				string str(prop->mData, prop->mData + prop->mDataLength);
-				cout << "\t\tValue    : " << str << endl;
-			}
-			cout << "\t\tSize     : " << prop->mDataLength << endl;
-			cout << "\t\tTexture #: " << prop->mIndex << endl;
-			cout << "\t\tSemantic : " << prop->mSemantic << endl << endl;
-		}
+		aiString str;
+		material->Get(AI_MATKEY_NAME, str); cout << "\tName      : " << str.C_Str() << endl;
+		if (material->GetTextureCount(aiTextureType_DIFFUSE)) material->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), str); cout << "\tTexture   : " << str.C_Str() << endl;
+		if (material->GetTextureCount(aiTextureType_NORMALS)) material->Get(AI_MATKEY_TEXTURE_NORMALS(0), str); cout << "\tNormals   : " << str.C_Str() << endl;
+		if (material->GetTextureCount(aiTextureType_AMBIENT)) material->Get(AI_MATKEY_TEXTURE_AMBIENT(0), str); cout << "\tAmbient   : " << str.C_Str() << endl;
 	}
 
 	if (scene->HasTextures()) cout << endl;
@@ -137,7 +121,8 @@ int main(int argc, char** argv)
 		cout << "\tFile name: " << texture->mFilename.C_Str() << endl;
 		cout << "\tHint     : " << texture->achFormatHint << endl;
 		cout << "\tWidth    : " << texture->mWidth << endl;
-		cout << "\tHeight   : " << texture->mHeight << endl << endl;
+		cout << "\tHeight   : " << texture->mHeight << endl;
+		cout << endl;
 	}
 
 	if (scene->HasMeshes()) cout << endl;
@@ -164,5 +149,6 @@ int main(int argc, char** argv)
 		if (mesh->mPrimitiveTypes & aiPrimitiveType_LINE)     cout << "\tPrimitive type    : Line" << endl;
 		if (mesh->mPrimitiveTypes & aiPrimitiveType_TRIANGLE) cout << "\tPrimitive type    : Triangle" << endl;
 		if (mesh->mPrimitiveTypes & aiPrimitiveType_POLYGON)  cout << "\tPrimitive type    : Polygon" << endl;
+		cout << endl;
 	}
 }
