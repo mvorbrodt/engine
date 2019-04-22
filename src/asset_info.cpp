@@ -51,6 +51,8 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
+	const aiNode* root = scene->mRootNode;
+
 	cout << endl;
 	cout << "Animations: " << scene->mNumAnimations << endl;
 	cout << "Cameras   : " << scene->mNumCameras << endl;
@@ -69,9 +71,16 @@ int main(int argc, char** argv)
 		cout << "\tFOV     : " << camera->mHorizontalFOV * 180.0f / 3.14159265359f * 2.0f << endl;
 		cout << "\tNear    : " << camera->mClipPlaneNear << endl;
 		cout << "\tFar     : " << camera->mClipPlaneFar << endl;
-		cout << "\tPosition: (X: " << camera->mPosition.x << ", Y: " << camera->mPosition.y << ", Z: " << camera->mPosition.z << ")" << endl;
-		cout << "\tLook At : (X: " << camera->mLookAt.x << ", Y: " << camera->mLookAt.y << ", Z: " << camera->mLookAt.z << ")" << endl;
-		cout << "\tUp      : (X: " << camera->mUp.x << ", Y: " << camera->mUp.y << ", Z: " << camera->mUp.z << ")" << endl;
+
+		const aiNode* node = root->FindNode(camera->mName);
+		aiMatrix4x4 transformation = node->mTransformation;
+		aiVector3D position = transformation * camera->mPosition;
+		aiVector3D look_at = (aiMatrix3x3(transformation) * camera->mLookAt).Normalize();
+		aiVector3D up = (aiMatrix3x3(transformation) * camera->mUp).Normalize();
+
+		cout << "\tPosition: (X: " << position.x << ", Y: " << position.y << ", Z: " << position.z << ")" << endl;
+		cout << "\tLook At : (X: " << look_at.x << ", Y: " << look_at.y << ", Z: " << look_at.z << ")" << endl;
+		cout << "\tUp      : (X: " << up.x << ", Y: " << up.y << ", Z: " << up.z << ")" << endl;
 		cout << endl;
 	}
 
@@ -89,8 +98,14 @@ int main(int argc, char** argv)
 			case aiLightSource_POINT:       cout << "Point" << endl; break;
 			case aiLightSource_SPOT:        cout << "Spot" << endl; break;
 		}
-		cout << "\tPosition  : (X: " << light->mPosition.x << ", Y: " << light->mPosition.y << ", Z: " << light->mPosition.z << ")" << endl;
-		cout << "\tDirection : (X: " << light->mDirection.x << ", Y: " << light->mDirection.y << ", Z: " << light->mDirection.z << ")" << endl;
+
+		const aiNode* node = root->FindNode(light->mName);
+		aiMatrix4x4 transformation = node->mTransformation;
+		aiVector3D position = transformation * light->mPosition;
+		aiVector3D direction = (aiMatrix3x3(transformation) * light->mDirection).Normalize();
+
+		cout << "\tPosition  : (X: " << position.x << ", Y: " << position.y << ", Z: " << position.z << ")" << endl;
+		cout << "\tDirection : (X: " << direction.x << ", Y: " << direction.y << ", Z: " << direction.z << ")" << endl;
 		cout << "\tAmbient   : (R: " << light->mColorAmbient.r << ", G: " << light->mColorAmbient.g << ", B: " << light->mColorAmbient.b << ")" << endl;
 		cout << "\tDiffuse   : (R: " << light->mColorDiffuse.r << ", G: " << light->mColorDiffuse.g << ", B: " << light->mColorDiffuse.b << ")" << endl;
 		cout << "\tSpecular  : (R: " << light->mColorSpecular.r << ", G: " << light->mColorSpecular.g << ", B: " << light->mColorSpecular.b << ")" << endl;
@@ -131,6 +146,11 @@ int main(int argc, char** argv)
 		cout << "Mesh:" << endl;
 		const aiMesh* mesh = scene->mMeshes[i];
 		cout << "\tName              : " << mesh->mName.C_Str() << endl;
+
+		const aiNode* node = root->FindNode(mesh->mName);
+		aiMatrix4x4 transformation = node->mTransformation;
+		cout << "\tT matrix          : " << ((transformation != aiMatrix4x4()) ? "yes" : "no") << endl;
+
 		cout << "\tHas positions     : " << mesh->HasPositions() << endl;
 		cout << "\tHas faces         : " << mesh->HasFaces() << endl;
 		cout << "\tHas vertex colors : " << mesh->HasVertexColors(0) << endl;
