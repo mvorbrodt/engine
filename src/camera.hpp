@@ -12,10 +12,10 @@
 
 namespace engine
 {
-	class pov
+	class camera
 	{
 	public:
-		pov(real aspect, real fov = 60.0f, real _near = 1.0f, real _far = 100.0f, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
+		camera(real aspect, real fov = 60.0f, real _near = 1.0f, real _far = 100.0f, const point& origin = ORIGIN, const vector& direction = -UNIT_Z, const vector& up = UNIT_Y)
 		: m_aspect{ aspect }, m_fov{ fov }, m_near{ _near }, m_far{ _far }, m_origin{ origin }, m_direction{ direction }, m_up{ up }
 		{
 			assert(aspect != 0.0f && aspect > 0.0f);

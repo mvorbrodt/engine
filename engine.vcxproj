@@ -30,7 +30,7 @@
     <ClInclude Include="src\matrix.hpp" />
     <ClInclude Include="src\opengl.hpp" />
     <ClInclude Include="src\point.hpp" />
-    <ClInclude Include="src\pov.hpp" />
+    <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\quaternion.hpp" />
     <ClInclude Include="src\shader.hpp" />
     <ClInclude Include="src\system.hpp" />

@@ -11,7 +11,7 @@
 #include "matrix.hpp"
 #include "axis.hpp"
 #include "system.hpp"
-#include "pov.hpp"
+#include "camera.hpp"
 #include "transforms.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
@@ -27,7 +27,7 @@ using namespace engine;
 
 engine::point light{0.0f, 0.0f, 25.0f};
 engine::point eye{0.0f, 10.0f, 45.0f};
-engine::pov camera((real)WINDOW_WIDTH / (real)WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point(0.0f, 2.0f, 0.0f) - eye, UNIT_Y);
+engine::camera c((real)WINDOW_WIDTH / (real)WINDOW_HEIGHT, 47.0f, 1.0f, 1000.0f, eye, point(0.0f, 2.0f, 0.0f) - eye, UNIT_Y);
 
 bool points = false;
 
@@ -104,7 +104,7 @@ void init()
 void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, w, h);
-	camera.set_aspect((real)w / (real)h);
+	c.set_aspect((real)w / (real)h);
 }
 
 void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -121,10 +121,10 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_6: s->set_bool("Reflect", true); break;
 			case GLFW_KEY_Q: l.rotate( 10, UNIT_Y); break;
 			case GLFW_KEY_E: l.rotate(-10, UNIT_Y); break;
-			case GLFW_KEY_A: camera.move( 0,  0.5f); break;
-			case GLFW_KEY_D: camera.move( 0, -0.5f); break;
-			case GLFW_KEY_W: camera.move( 0.5f,  0); break;
-			case GLFW_KEY_S: camera.move(-0.5f,  0); break;
+			case GLFW_KEY_A: c.move( 0,  0.5f); break;
+			case GLFW_KEY_D: c.move( 0, -0.5f); break;
+			case GLFW_KEY_W: c.move( 0.5f,  0); break;
+			case GLFW_KEY_S: c.move(-0.5f,  0); break;
 			case GLFW_KEY_ESCAPE: glfwSetWindowShouldClose(window, true); break;
 		}
 	}
@@ -146,8 +146,8 @@ void mouse(GLFWwindow* window, double x, double y)
 	int dx = (int)x - last_x;
 	int dy = (int)y - last_y;
 
-	camera.turn(-dx / 5.0f);
-	camera.look(-dy / 5.0f);
+	c.turn(-dx / 5.0f);
+	c.look(-dy / 5.0f);
 
 	last_x = (int)x;
 	last_y = (int)y;
@@ -155,7 +155,7 @@ void mouse(GLFWwindow* window, double x, double y)
 
 void scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.set_fov(camera.get_fov() - (real)yoffset);
+	c.set_fov(c.get_fov() - (real)yoffset);
 }
 
 void draw()
@@ -163,12 +163,12 @@ void draw()
 	glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	ub1->copy_data(0, sizeof(matrix), camera.projection_matrix().data());
-	ub1->copy_data(sizeof(matrix), sizeof(matrix), camera.view_matrix().data());
+	ub1->copy_data(0, sizeof(matrix), c.projection_matrix().data());
+	ub1->copy_data(sizeof(matrix), sizeof(matrix), c.view_matrix().data());
 	ub2->copy_data(0, sizeof(point), light.data());
 
-	sb1->copy_data(0, sizeof(matrix), camera.projection_matrix().data());
-	sb1->copy_data(sizeof(matrix), sizeof(matrix), camera.view_matrix().data());
+	sb1->copy_data(0, sizeof(matrix), c.projection_matrix().data());
+	sb1->copy_data(sizeof(matrix), sizeof(matrix), c.view_matrix().data());
 
 	light *= rotate(1, UNIT_Y);
 	light_system = engine::system(IDENTITY_AXIS, light);

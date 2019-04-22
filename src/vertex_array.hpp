@@ -15,7 +15,7 @@ namespace engine
 	// <vertex, color, texture, normal, tangent, bitangent>
 	using flat_vertex_array_data = std::tuple<point_buffer, color_buffer, texcoord_buffer, normal_buffer, tangent_buffer, bitangent_buffer>;
 	using flat_vertex_array_data_ptr = std::shared_ptr<flat_vertex_array_data>;
-	using flat_vertex_array_data_array = std::vector<flat_vertex_array_data_ptr>;
+	using flat_vertex_array_data_array = std::vector<flat_vertex_array_data_ptr>; // TODO: Remove me once asset loading code is done!
 
 	flat_vertex_array_data_ptr make_flat_vertex_array_data(
 		const point_buffer& point_buffer,
@@ -28,7 +28,7 @@ namespace engine
 	// <vertex, color, texture, normal, tangent, bitangent, index>
 	using indexed_vertex_array_data = std::tuple<point_buffer, color_buffer, texcoord_buffer, normal_buffer, tangent_buffer, bitangent_buffer, index_buffer>;
 	using indexed_vertex_array_data_ptr = std::shared_ptr<indexed_vertex_array_data>;
-	using indexed_vertex_array_data_array = std::vector<indexed_vertex_array_data_ptr>;
+	using indexed_vertex_array_data_array = std::vector<indexed_vertex_array_data_ptr>; // TODO: Remove me once asset loading code is done!
 
 	indexed_vertex_array_data_ptr make_indexed_vertex_array_data(
 		const point_buffer& point_buffer,
