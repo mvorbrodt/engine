@@ -119,10 +119,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="3rd_party\glfw\lib-vc2017\glfw3.lib">
+    <Library Include="3rd_party\glfw\lib\glfw3.lib">
       <Filter>3rd_Party_Libs</Filter>
     </Library>
-    <Library Include="..\Program Files\Assimp\lib\x64\assimp-vc140-mt.lib">
+    <Library Include="3rd_party\assimp\lib\assimp.lib">
+      <Filter>3rd_Party_Libs</Filter>
+    </Library>
+    <Library Include="3rd_party\assimp\lib\IrrXML.lib">
+      <Filter>3rd_Party_Libs</Filter>
+    </Library>
+    <Library Include="3rd_party\assimp\lib\zlibstatic.lib">
       <Filter>3rd_Party_Libs</Filter>
     </Library>
   </ItemGroup>

@@ -10,13 +10,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Program Files\Assimp\lib\x64\assimp-vc140-mt.lib">
-      <Filter>3rd_Party_Libs</Filter>
-    </Library>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\asset_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="3rd_party\assimp\lib\assimp.lib">
+      <Filter>3rd_Party_Libs</Filter>
+    </Library>
+    <Library Include="3rd_party\assimp\lib\IrrXML.lib">
+      <Filter>3rd_Party_Libs</Filter>
+    </Library>
+    <Library Include="3rd_party\assimp\lib\zlibstatic.lib">
+      <Filter>3rd_Party_Libs</Filter>
+    </Library>
   </ItemGroup>
 </Project>

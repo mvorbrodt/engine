@@ -9,9 +9,5 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
-bin/
-.vs/
 x64/
-3rd_party/boost_1_70_0.zip
-3rd_party/glfw/
-3rd_party/boost/
+.vs/
